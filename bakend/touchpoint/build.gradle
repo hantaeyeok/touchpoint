@@ -1,43 +1,58 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.4.1'
-	id 'io.spring.dependency-management' version '1.1.7'
+    id 'java'
+    id 'org.springframework.boot' version '3.4.1'
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'com.touchpoint'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
-	testImplementation 'org.springframework.security:spring-security-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // Spring Boot Starter Dependencies
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'          // JDBC for database connection
+    implementation 'org.springframework.boot:spring-boot-starter-security'      // Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-web'           // Spring Web (REST API)
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'      // JPA for ORM (Optional with MyBatis)
+
+    // MyBatis Dependencies
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'  // MyBatis Integration
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'                                      // Lombok for reducing boilerplate code
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // Devtools for Hot Reload
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // Oracle Database Driver
+    runtimeOnly 'com.oracle.database.jdbc:ojdbc11'                              // Oracle Database 21c+ Driver
+
+    // Testing Dependencies
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'      // Test Framework
+    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4' // MyBatis Test
+    testImplementation 'org.springframework.security:spring-security-test'      // Security Test
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'                // JUnit Platform Launcher for Gradle
+
+    // Optional: Flyway for Database Migrations (If needed)
+    implementation 'org.flywaydb:flyway-core'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
