@@ -18,6 +18,6 @@ import lombok.ToString;
 public class ResponseData {
 	private String message;
 	private Object responseMessage;
-	
+	//수정수정
 }
 
