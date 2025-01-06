@@ -1,17 +1,16 @@
 package com.touchpoint.kh.user.contorller;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.touchpoint.kh.common.service.ResponseData;
 import com.touchpoint.kh.user.model.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-//import templates.ResponseData;
 
 @RestController
 @Slf4j
@@ -21,7 +20,7 @@ public class ProductController {
 	private final ProductService productService;
 
 	@PostMapping
-	public ResponseEntity<Response> save(@RequestBody String data){
+	public ResponseEntity<ResponseData> save(@RequestBody String data){
 		log.info("앞단에서 받은 데이터:{}" , data);
 		return null;
 	}
