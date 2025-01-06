@@ -21,7 +21,10 @@ function App() {
         </a>
       </header>
       <Router>
-      <ButtonLogin url="/signup">회원가입</ButtonLogin>
+     
+        <ButtonLogin url="/signup">회원가입</ButtonLogin>
+
+
     </Router>
     </div>
   );
