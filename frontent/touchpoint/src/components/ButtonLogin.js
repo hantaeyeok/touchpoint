@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/ButtonLogin.css"
-
+import "../styles/ButtonLogin.css";
 
 const ButtonLogin = ({ children, onClick, type = "button", className = "", url }) => {
     const navigate = useNavigate();
