@@ -6,19 +6,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-//import com.touchpoint.kh.user.model.service.ProductService;
+import com.touchpoint.kh.user.model.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-//import touchpoint.ResponseData;
+import templates.ResponseData;
 
 @RestController
 @Slf4j
 @RequestMapping("/product")
 @RequiredArgsConstructor
 public class ProductController {
-	//private final ProductService productService;
+	private final ProductService productService;
 	
-	//test
+	@PostMapping
+	public ResponseEntity<ResponseData> save(@RequestBody String data){
+		log.info("앞단에서 받은 데이터:{}" , data);
+		return null;
+	}
 	
 }
