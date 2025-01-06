@@ -1,5 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
+import ButtonLogin from './components/ButtonLogin';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
   return (
@@ -18,6 +20,9 @@ function App() {
           Learn React
         </a>
       </header>
+      <Router>
+      <ButtonLogin url="/signup">회원가입</ButtonLogin>
+    </Router>
     </div>
   );
 }
