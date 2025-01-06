@@ -1,7 +1,7 @@
 package com.touchpoint.kh.user.model.vo;
 
 import java.time.LocalDate;
-
+/*
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -63,3 +63,4 @@ public class User {
     @Column(name = "USER_TYPE", nullable = false) // USER_TYPE :  기본값 'USER'
     private String userType = "USER";
 }
+*/
