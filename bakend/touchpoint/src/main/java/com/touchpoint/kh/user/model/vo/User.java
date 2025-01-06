@@ -1,5 +1,3 @@
-package com.touchpoint.kh.user.model.vo;
-
 import java.time.LocalDate;
 /*
 import jakarta.persistence.Column;
@@ -64,3 +62,4 @@ public class User {
     private String userType = "USER";
 }
 */
+
