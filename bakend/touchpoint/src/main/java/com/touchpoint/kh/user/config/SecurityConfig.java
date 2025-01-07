@@ -13,8 +13,8 @@ public class SecurityConfig {
         http
             .csrf().disable()
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/index").permitAll() // 기본 경로 허용
-                .anyRequest().authenticated() // 다른 요청은 인증 필요
+                .requestMatchers("/", "/index", "/css/**", "/js/**", "/images/**").permitAll() // 루트 경로 허용
+                .anyRequest().authenticated()
             );
         return http.build();
     }
