@@ -13,14 +13,9 @@ public class SecurityConfig {
         http
             .csrf().disable()
             .authorizeHttpRequests(auth -> auth
-
-                .requestMatchers("/", "/index",  "/product").permitAll() // 기본 경로 허용
-                .requestMatchers("/error").permitAll()
-                .anyRequest().authenticated() // 다른 요청은 인증 필요
-
-                .requestMatchers("/", "/index", "/css/**", "/js/**", "/images/**").permitAll() // 루트 경로 허용
-                .anyRequest().authenticated()
-
+                .requestMatchers("/", "/index", "/product", "/error").permitAll() // 특정 경로 허용
+                .requestMatchers("/css/**", "/js/**", "/images/**").permitAll() // 정적 리소스 허용
+                .anyRequest().authenticated() // 그 외 요청은 인증 필요
             );
         return http.build();
     }
