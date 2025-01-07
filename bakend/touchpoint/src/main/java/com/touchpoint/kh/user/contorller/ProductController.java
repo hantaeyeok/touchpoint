@@ -22,6 +22,8 @@ public class ProductController {
 	@PostMapping
 	public ResponseEntity<Message> save(@RequestBody String data){
 		log.info("앞단에서 받은 데이터:{}" , data);
+		log.info("앞단에서 받은 데이터:{}" , data);
+
 		return null;
 	}
 	
