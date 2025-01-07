@@ -1,10 +1,16 @@
 
 import './App.css';
+import Menubar from './components/indexcomponents/Menubar';
+
+
 
 function App() {
   return (
     <div className="index">
-      <h1>이거되냐</h1>
+      <div ClassName="Menubar">
+       <Menubar></Menubar>
+      </div>
+      
     </div>
   );
 }

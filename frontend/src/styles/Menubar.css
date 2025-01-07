@@ -1,0 +1,86 @@
+/* 메뉴바 스타일 */
+.menu-bar {
+    height: 60px;
+    display: flex;
+    
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 10px 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.logo {
+    font-size: 40px;
+    font-weight: bold;
+    color: #ff007f;
+}
+
+.menu-items {
+    display: flex;
+    margin: auto;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.menu-items .dropdown {
+    position: relative;
+    margin:0 50px;
+}
+
+.menu-items .dropdown-title {
+    text-decoration: none;
+    color: #333;
+    font-size: 25px;
+    cursor: pointer;
+    padding: 40px 30px; /* 텍스트 주변에 여백 추가 */
+}
+
+.menu-items .dropdown-title:hover {
+    color: #ff007f;
+}
+
+/* 드롭다운 컨텐츠 */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 170%; /* 부모 메뉴 바로 아래에 위치 */
+    left: 0;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+    z-index: 10;
+    min-width: 150px; /* 드롭다운 너비 */
+    padding: 10px 0;
+}
+
+.dropdown-content a {
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #333;
+    font-size: 20px;
+}
+
+.dropdown-content a:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+/* 드롭다운 표시 */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* 로그인 메뉴 */
+.login-div a {
+    text-decoration: none;
+    color: #333;
+    font-size: 20px;
+    transition: color 0.3s;
+}
+
+.login-div a:hover {
+    color: #ff007f;
+}
