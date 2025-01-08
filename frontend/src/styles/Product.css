@@ -1,24 +1,25 @@
+
 .product-list{
-    display: flex;
-    width: 1000px;
-    height: 600px;
+    width: 1500px;
+    height: 1200px;
     border: 1px solid rgba(0, 0, 0, 0.049);
     margin: auto;
+    justify-content: center;
 }
 
-.product_compoment{
+.product-component{
     display: inline-block;
-    width: 250px;
+    width: 25%;
     height: 300px;
     padding: 15px;
-    border: 1px solid rgba(0, 0, 0, 0.049);
+    border: 1px solid rgba(160, 13, 13, 0.049);
     border-radius: 15px;
     margin: 17px;
     cursor: pointer; 
 
     >img{
-        width: 200;
-        height: 50%;
+        width: 200px;
+        height:200px;
     }
     >p{
         text-align: center;
