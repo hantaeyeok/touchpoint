@@ -1,54 +1,28 @@
 import React, { useState } from "react";
 import InputDiv from "@components/login/InputDiv";
 import ButtonLogin from "@components/login/ButtonLogin";
-import "@styles/SignUp.css";
+import "@styles/SocalSignUp.css"; 
 
-const SignUpForm = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const [isMandatoryChecked, setIsMandatoryChecked] = useState(false);
-  const [isAdChecked, setIsAdChecked] = useState(false);
+const SocalSignUp = () => {
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!isMandatoryChecked) {
-      alert("필수 약관에 동의해야 회원가입을 진행할 수 있습니다.");
-      return;
-    }
-    alert("회원가입 완료!");
-  };
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("");
+    const [isMandatoryChecked, setIsMandatoryChecked] = useState(false);
+    const [isAdChecked, setIsAdChecked] = useState(false);
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!isMandatoryChecked) {
+            alert("필수 약관에 동의해야 회원가입을 진행할 수 있습니다.");
+            return;
+        }
+        alert("회원가입 완료!");
+    };
 
-  return (
-    <div className="signup-container">
+    return (
+      <div className="signup-container">
     <h2 className="h2Title"> logo 회원가입</h2>
     <form className="form-container" onSubmit={handleSubmit}>
-      <InputDiv
-        className="signup-input"
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="아이디를 입력하세요"
-        iconName="person"
-      />
-
-      <InputDiv
-        className="signup-input"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="비밀번호를 입력하세요"
-        iconName="lock"
-      />
-
-      <InputDiv
-        className="signup-input"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="비밀번호를 입력하세요"
-        iconName="lock"
-      />
 
       <InputDiv
         className="signup-input"
@@ -58,7 +32,6 @@ const SignUpForm = () => {
         placeholder="이름을 입력해주세요"
         iconName="person"
       />
-      
       
       <InputDiv
         className="signup-input"
@@ -92,6 +65,7 @@ const SignUpForm = () => {
         onChange={(e) => setIsAdChecked(e.target.checked)}
       />
     </form>
+
     <ButtonLogin
     className="signup-button"
     text="회원가입"
@@ -99,7 +73,7 @@ const SignUpForm = () => {
   />
  
   </div>
-  );
-};
+);
+}
 
-export default SignUpForm;
+export default SocalSignUp;

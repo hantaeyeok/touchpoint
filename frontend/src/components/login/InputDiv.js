@@ -136,13 +136,15 @@ const InputDiv = ({
       case "mandatory-agreement":
         return (
           <div className="agreement-container">
+           
+            
+            <div className="agreement-header" onClick={toggleMandatoryDropdown}>
+            
             <input
                     type="checkbox"
                     checked={isMandatoryChecked}
                     onChange={handleMandatoryCheckboxChange}
                   />
-            
-            <div className="agreement-header" onClick={toggleMandatoryDropdown}>
               [필수] 개인정보 동의 약관
               <span className="material-symbols-outlined arrow-icon">
                 {isMandatoryDropdownVisible ? "expand_less" : "expand_more"}
@@ -163,12 +165,13 @@ const InputDiv = ({
       case "ad-agreement":
         return (
           <div className="agreement-container">
+            
+            <div className="agreement-header" onClick={toggleAdDropdown}>
             <input
                     type="checkbox"
                     checked={isAdChecked}
                     onChange={handleAdCheckboxChange}
                   />
-            <div className="agreement-header" onClick={toggleAdDropdown}>
               [선택] 광고 정보 동의 약관
               <span className="material-symbols-outlined arrow-icon">
                 {isAdDropdownVisible ? "expand_less" : "expand_more"}

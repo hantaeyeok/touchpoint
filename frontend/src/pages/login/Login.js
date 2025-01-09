@@ -93,6 +93,8 @@ const Login = () => {
             <div className="button-group">
               <ButtonLogin text="로그인" type="submit" />
               <ButtonLogin text="회원가입" url="/signup" type="link" variant="outline"/>
+              <ButtonLogin text="소셜임시회원가입" url="/socalsignup" type="link" variant="outline"/>
+              
             </div>
     
             {/* 소셜 로그인 버튼 */}
@@ -112,10 +114,10 @@ const Login = () => {
             {/* 하단 링크 */}
             <div className="login-links">
               <a href="/find-password">비밀번호 찾기</a>
+              &nbsp;&nbsp;&nbsp;&nbsp;
               <span>|</span>
+              &nbsp;&nbsp;&nbsp;&nbsp;
               <a href="/find-id">아이디 찾기</a>
-              <span>|</span>
-              <a href="/signup">회원가입</a>
             </div>
           </form>
         </div>
