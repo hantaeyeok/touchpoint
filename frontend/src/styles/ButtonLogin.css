@@ -1,3 +1,4 @@
+/* 기본 버튼 스타일 */
 .login-button {
     width: 100%;
     background-color: #F299A0;
@@ -7,9 +8,21 @@
     border-radius: 5px;
     font-size: 13px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, color 0.3s, border 0.3s;
 }
 
 .login-button:hover {
     background-color: #e35555;
+}
+
+/* 회원가입 버튼 (outline 스타일) */
+.login-button.outline {
+    background-color: transparent; 
+    color: #F299A0;
+    border: 2px solid #F299A0; 
+}
+
+.login-button.outline:hover {
+    background-color: #e35555; 
+    color: white; 
 }

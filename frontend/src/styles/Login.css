@@ -5,7 +5,9 @@
     width: 100%;
     max-width: 500px;
     max-height: 600px;
+    margin: 100px auto; /* 위아래 다시 설정해야함.*/
   }
+
 
   .form-group {
     margin-bottom: 15px;
@@ -16,9 +18,10 @@
     padding: 10px 5px;
     margin-bottom: 15px;
     border: none; 
-    border-bottom: 1px solid #ddd; 
+    border-bottom: 1px solid #ddd !important;
     font-size: 16px;
     outline: none;
+    box-shadow: none;
   }
 
   .checkbox-group {
@@ -121,4 +124,11 @@
 
   .login-links a:hover {
     color: #333;
+  }
+
+  .button-group{
+    display: flex; /* Flexbox 사용 */
+  flex-direction: column; /* 세로 정렬 */
+  align-items: center; /* 버튼들을 가운데 정렬 */
+  gap: 10px; /* 버튼 간의 간격 설정 */
   }

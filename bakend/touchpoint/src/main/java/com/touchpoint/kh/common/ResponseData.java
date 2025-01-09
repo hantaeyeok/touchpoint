@@ -1,23 +1,20 @@
-package com.touchpoint.kh.common.service;
+package com.touchpoint.kh.common;
 
-
-
-import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@Builder
 public class ResponseData {
+	 
 	private String message;
-	private Object responseMessage;
-	//수정수정
+    private Object data;
+    
 }
-

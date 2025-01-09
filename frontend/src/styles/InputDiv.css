@@ -1,0 +1,156 @@
+.input-container {
+    width: 500px;
+    padding: 10px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Input Wrapper */
+  .input-wrapper {
+    position: relative;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .input-icon {
+    font-size: 20px;
+    color: #999;
+    margin-right: 10px;
+  }
+  
+  .toggle-icon {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+  }
+  
+  .input-field {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  /* 약관 드롭다운 */
+  .agreement-container {
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    padding: 10px;
+  }
+  
+  .agreement-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .arrow-icon {
+    font-size: 20px;
+    color: #999;
+  }
+  
+  .agreement-content {
+    display: none;
+    font-size: 13px;
+    color: #555;
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+  
+  .agreement-header label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  input[type="checkbox"] {
+    margin-right: 10px;
+    accent-color: #929294; /* 체크박스 색상 */
+  }
+
+  .email-input-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+  }
+  
+  .email-local-part {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .email-at-symbol {
+    font-size: 16px;
+    color: #999;
+    margin: 0 5px;
+  }
+  
+  .email-dropdown {
+    position: relative;
+  }
+  
+  .email-dropdown-button {
+    border: 1px solid #ddd;
+    background-color: #ffffff;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .email-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 10;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #ffffff;
+    margin-top: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .email-dropdown-option {
+    padding: 8px 10px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .email-dropdown-option:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .email-dropdown-option:last-child {
+    border-bottom: none;
+  }
+  
+  /* 약관 드롭다운 활성화 상태 */
+  .agreement-content.open {
+    display: block;
+  }

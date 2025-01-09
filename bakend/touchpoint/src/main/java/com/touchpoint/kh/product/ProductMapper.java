@@ -1,4 +1,4 @@
-package com.touchpoint.kh.user.model.dao;
+package com.touchpoint.kh.product;
 
 import org.apache.ibatis.annotations.Mapper;
 

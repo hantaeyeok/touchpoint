@@ -1,7 +1,7 @@
 import React from "react";
 import '@styles/ButtonLogin.css'
 
-const ButtonLogin = ({ text, url, onSubmit, type = "button" }) => {
+const ButtonLogin = ({ text, url, onSubmit, type = "button", variant = "default" }) => {
   const handleClick = () => {
     if (type === "link" && url) {
       window.location.href = url;
@@ -11,7 +11,11 @@ const ButtonLogin = ({ text, url, onSubmit, type = "button" }) => {
   };
 
   return (
-    <button type="button" className="login-button" onClick={handleClick}>
+    <button
+      type="button"
+      className={`login-button ${variant === "outline" ? "outline" : ""}`}
+      onClick={handleClick}
+    >
       {text}
     </button>
   );

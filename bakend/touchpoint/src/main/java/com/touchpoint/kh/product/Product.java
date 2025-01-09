@@ -1,4 +1,4 @@
-package com.touchpoint.kh.user.model.vo;
+package com.touchpoint.kh.product;
 
 import java.time.LocalDateTime;
 
