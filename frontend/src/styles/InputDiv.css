@@ -1,12 +1,3 @@
-.input-container {
-    width: 500px;
-    padding: 10px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Input Wrapper */
   .input-wrapper {
     position: relative;
     margin-bottom: 10px;
@@ -15,31 +6,113 @@
     display: flex;
     align-items: center;
     padding: 10px;
-    background-color: #f9f9f9;
+    
   }
-  
+
   .input-icon {
     font-size: 20px;
     color: #999;
     margin-right: 10px;
   }
-  
+
   .toggle-icon {
+    font-size: 18px;
     cursor: pointer;
     position: absolute;
     right: 10px;
+    color: #999;
   }
-  
-  .input-field {
+
+  .input-wrapper > input {
+    text-decoration : none;
+    border-bottom: none;
     width: 100%;
     border: none;
     outline: none;
-    background: transparent;
+    font-size: 16px;
+    outline: none; /* 포커스 시 나오는 외곽선 제거 */
+    font-size: 16px; /* 원하는 글자 크기 */
+  }
+
+  .email-input-wrapper {
+    display: flex;
+    align-items: center; /* 세로 가운데 정렬 */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    gap: 10px; /* 요소 간 간격 추가 */
+}
+
+.email-input-wrapper > input {
+    text-decoration: none;
+    border-bottom: none;
+    width: 100%;
+    border: none;
+    outline: none;
     font-size: 16px;
     color: #333;
-  }
+}
+
+.email-at {
+    font-size: 16px; /* 글자 크기 */
+    color: #999; /* 색상 */
+    margin: auto; /* 좌우 간격 조정 */
+    display: flex;
+    align-items: center; /* @의 세로 가운데 정렬 */
+}
   
-  /* 약관 드롭다운 */
+.email-domain-dropdown {
+  border: none; /* 외곽선 제거 */
+  outline: none; /* 포커스 시 외곽선 제거 */
+  font-size: 16px; /* 글자 크기 */
+  color: #333; /* 글자 색상 */
+  cursor: pointer; /* 마우스 포인터 변경 */
+  appearance: none; /* 기본 드롭다운 스타일 제거 */
+  padding: 5px 10px; /* 내부 간격 추가 */
+
+}
+.email-domain-dropdown:focus {
+  outline: none; /* 포커스 시 외곽선 제거 */
+}
+
+.email-domain-dropdown::-ms-expand {
+  display: none; /* IE 화살표 제거 */
+}
+
+.email-domain-dropdown:hover {
+  background-color: #f1f1f1; /* 호버 시 배경색 변경 */
+}
+
+.custom-domain-input {
+  border: none; /* 외곽선 제거 */
+  outline: none;
+  font-size: 14px;
+  padding: 5px;
+  color: #333;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+/* 아래 두개는 적용이 안됨 다시해봐야함. */
+.custom-select-wrapper::after {
+  content: "▼"; /* 커스텀 화살표 추가 */
+  font-size: 12px;
+  color: #999;
+  position: absolute;
+  top: 50%;
+  right: 10px; /* select 내부 오른쪽 간격 */
+  transform: translateY(-50%);
+  pointer-events: none; /* 화살표 클릭 방지 */
+}
+
+.email-domain-dropdown:focus::after {
+  color: #666; /* 포커스 시 화살표 색 변경 */
+}  
+
+
+
+
   .agreement-container {
     margin-top: 10px;
     border: 1px solid #ddd;
@@ -64,7 +137,7 @@
   }
   
   .agreement-content {
-    display: none;
+    display: block;
     font-size: 13px;
     color: #555;
     margin-top: 10px;
@@ -82,73 +155,7 @@
     accent-color: #929294; /* 체크박스 색상 */
   }
 
-  .email-input-wrapper {
-    display: flex;
-    align-items: center;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 10px;
-    background-color: #f9f9f9;
-    margin-bottom: 10px;
-  }
   
-  .email-local-part {
-    flex: 1;
-    border: none;
-    outline: none;
-    background: transparent;
-    font-size: 16px;
-    color: #333;
-  }
-  
-  .email-at-symbol {
-    font-size: 16px;
-    color: #999;
-    margin: 0 5px;
-  }
-  
-  .email-dropdown {
-    position: relative;
-  }
-  
-  .email-dropdown-button {
-    border: 1px solid #ddd;
-    background-color: #ffffff;
-    border-radius: 4px;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-size: 14px;
-    color: #333;
-  }
-  
-  .email-dropdown-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 10;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #ffffff;
-    margin-top: 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .email-dropdown-option {
-    padding: 8px 10px;
-    font-size: 14px;
-    color: #333;
-    cursor: pointer;
-    background-color: #ffffff;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .email-dropdown-option:hover {
-    background-color: #f1f1f1;
-  }
-  
-  .email-dropdown-option:last-child {
-    border-bottom: none;
-  }
   
   /* 약관 드롭다운 활성화 상태 */
   .agreement-content.open {

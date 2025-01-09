@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import InputDiv from "@components/login/InputDiv";
 import ButtonLogin from "@components/login/ButtonLogin";
+import "@styles/SignUp.css";
 
 const SignUpForm = () => {
   const [username, setUsername] = useState("");
@@ -19,10 +20,11 @@ const SignUpForm = () => {
   };
 
   return (
-    <div>
+    <div className="signup-container">
+    <h2> logo 회원가입</h2>
     <form onSubmit={handleSubmit}>
       <InputDiv
-        label="아이디"
+        className="signup-input"
         type="text"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
@@ -31,7 +33,7 @@ const SignUpForm = () => {
       />
 
       <InputDiv
-        label="비밀번호"
+        className="signup-input"
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
@@ -40,7 +42,35 @@ const SignUpForm = () => {
       />
 
       <InputDiv
-        label="이메일"
+        className="signup-input"
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="비밀번호를 입력하세요"
+        iconName="lock"
+      />
+
+      <InputDiv
+        className="signup-input"
+        type="text"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        placeholder="이름을 입력해주세요"
+        iconName="person"
+      />
+      
+      
+      <InputDiv
+        className="signup-input"
+        type="text"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        placeholder="전화번호를 입력하세요"
+        iconName="phone"
+      />
+
+      <InputDiv
+        className="signup-input"
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
@@ -49,22 +79,26 @@ const SignUpForm = () => {
       />
 
       <InputDiv
-        label="[필수] 개인정보 동의 약관"
-        type="agreement"
+        className="signup-agreement"
+        type="mandatory-agreement"
         value={isMandatoryChecked}
         onChange={(e) => setIsMandatoryChecked(e.target.checked)}
       />
 
       <InputDiv
-        label="[선택] 광고 정보 동의 약관"
-        type="agreement"
+        className="signup-agreement"
+        type="ad-agreement"
         value={isAdChecked}
         onChange={(e) => setIsAdChecked(e.target.checked)}
-      />    
+      />
     </form>
-    <ButtonLogin>회원가입</ButtonLogin>
-
-    </div>
+    <ButtonLogin
+    className="signup-button"
+    text="회원가입"
+    type="submit"
+  />
+ 
+  </div>
   );
 };
 
