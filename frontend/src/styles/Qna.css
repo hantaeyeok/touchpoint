@@ -1,0 +1,154 @@
+.qnaList {
+    width: 100%;
+    display: flex;
+    gap: 20px;
+    margin-top: 50px;
+    justify-content: center; /* 세로 방향 중앙 정렬 */
+    align-items: center; /* 가로 방향 중앙 정렬 */
+}
+
+.qnaList > a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.imgBox {
+        display: flex;
+        justify-content: center; /* 세로 방향 중앙 정렬 */
+        align-items: center; /* 가로 방향 중앙 정렬 */
+        width: 100%;
+}
+
+.faqBox1{
+    width: 1200px;
+    height: 200px;
+    margin-bottom: 20px;
+    margin: auto;
+    height: auto;
+}
+
+.faqBox2 {
+    border: 1px solid #D1337D;
+    border-radius: 35px;
+    background: #D1337D;
+    width: 1200px;
+    height: 50px;
+    margin: auto;
+    margin-top: 80px;
+    
+}
+
+.q-icon {
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    margin-left: 20px;
+}
+
+.q-text {
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    margin-left: 40px;
+}
+
+.faq_answer {
+    margin-top: 10px;
+    margin: auto;
+    padding-left: 20px;
+    width: 1200px;
+}
+
+.a-icon {
+font-weight: bold;
+font-size: 30px;
+color: #333;
+margin-top: 15px;
+margin-left: 20px;
+margin-bottom: 5px;
+display: inline-block;
+}
+
+.answer-text {
+    font-size: 25px;
+    font-weight: bold;
+    margin-left: 50px;
+    color: #333;
+    
+}
+
+.btn_box{
+    width: 1200px;
+    margin: auto;    
+}
+
+.qna_btn{
+    border: 1px solid #D1337D;
+    border-radius: 20px;
+    background-color: #D1337D;
+    color: white;
+    margin-left: 93%;
+    width: 80px;
+    height: 30px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.faq_btn1 {
+    border: 1px solid #D1337D;
+    border-radius: 20px;
+    background-color: #D1337D;
+    color: white;
+    margin-left: 80%;
+    width: 80px;
+    height: 30px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.faq_btn2 {
+    border: 1px solid #D1337D;
+    border-radius: 20px;
+    background-color: #D1337D;
+    color: white;
+    margin-left: 10px;
+    width: 80px;
+    height: 30px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.form-container {
+    width: 800px;
+    height: 500px;
+    margin: auto;
+    margin-top: 50px;
+    background-color: #b6abab;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 95%;
+    padding: 10px;
+    font-size: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+.form-group textarea {
+    height: 400px;
+    resize: none;
+}
+
+
