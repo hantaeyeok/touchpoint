@@ -42,7 +42,7 @@ public class User {
     private String email; // 이메일
 
     @Column(name = "PHONE_NO", nullable = true)
-    private Long phoneNo; // 전화번호
+    private String phoneNo; // 전화번호
 
     @Column(name = "NAME", length = 50, nullable = true)
     private String name; // 사용자 이름

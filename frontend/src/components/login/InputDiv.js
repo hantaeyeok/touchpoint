@@ -1,20 +1,26 @@
 import React, { useState } from "react";
 import "@styles/InputDiv.css";
+import { validateField } from '@components/login/ValidateField'
 
 const InputDiv = ({
   label,
-  type = "text",
+  type = "text", // input 필드 타입 (text, email, password 등)
+  name,
   value,
   onChange,
   placeholder,
   iconName,
 }) => {
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [customDomain, setCustomDomain] = useState("");
-  const [isMandatoryDropdownVisible, setIsMandatoryDropdownVisible] = useState(false);
-  const [isAdDropdownVisible, setIsAdDropdownVisible] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false); //비밀번호 보기 숨기기
+  const [customDomain, setCustomDomain] = useState(""); // 이메일 직접 입력 도메인 상태
+  const [isMandatoryDropdownVisible, setIsMandatoryDropdownVisible] = useState(false); //필수 약관  드롭다운 상태
+  const [isAdDropdownVisible, setIsAdDropdownVisible] = useState(false); // 광고 동의 드롭다운 상태
+  const [errorMessage, setErrorMessage] = useState(""); // 오류 메시지 상태
+
+
   const [isMandatoryChecked, setIsMandatoryChecked] = useState(false);
   const [isAdChecked, setIsAdChecked] = useState(false);
+
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
@@ -39,6 +45,19 @@ const InputDiv = ({
     setIsAdDropdownVisible(!isAdDropdownVisible);
   };
 
+ // 유효성 검사 수행 (onBlur에서 호출)
+ const handleValidation = () => {
+  const { isValid, message } = validateField(name, value);
+  if (!isValid) setErrorMessage(message); // 오류 메시지 저장
+  else setErrorMessage(""); // 오류 메시지 초기화
+};
+
+// 값 변경 시 오류 메시지 초기화
+const handleChange = (e) => {
+  setErrorMessage(""); // 오류 메시지 초기화
+  onChange(e);
+};
+
   const handleMandatoryCheckboxChange = (e) => {
     setIsMandatoryChecked(e.target.checked);
     console.log("[필수] 개인정보 동의 상태:", e.target.checked);
@@ -48,6 +67,10 @@ const InputDiv = ({
     setIsAdChecked(e.target.checked);
     console.log("[선택] 광고 정보 동의 상태:", e.target.checked);
   };
+
+
+
+
 
 
 
@@ -118,6 +141,7 @@ const InputDiv = ({
             )}
             <input
               type={isPasswordVisible ? "text" : "password"}
+              name={name}
               value={value}
               onChange={onChange}
               placeholder={placeholder}
@@ -199,6 +223,7 @@ const InputDiv = ({
             )}
             <input
               type={type} 
+              name={name}
               value={value}
               onChange={onChange}
               placeholder={placeholder} 
@@ -210,7 +235,9 @@ const InputDiv = ({
 
   return (
     <div className="input-container">
+      <label className="input-label">{label}</label>
       {renderInputField()}
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
     </div>
   );
 };

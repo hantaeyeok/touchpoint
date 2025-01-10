@@ -1,0 +1,38 @@
+.input-wrapper {
+    position: relative;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+  }
+  
+  .input-icon {
+    font-size: 20px;
+    color: #999;
+    margin-right: 10px;
+  }
+  
+  .input-wrapper > input {
+    text-decoration : none;
+    border-bottom: none;
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    outline: none; /* 포커스 시 나오는 외곽선 제거 */
+    font-size: 16px; /* 원하는 글자 크기 */
+  }
+  
+
+  .input-error {
+    border: 1px solid red;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  

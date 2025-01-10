@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-route
 import Login from '@pages/login/Login'; 
 import SignUp from '@pages/login/SignUp'; 
 import SocalSignUp from '@pages/login/SocalSignUp'; 
-
+import SignUpForm from '@pages/login/SignUpForm'; 
 import Menubar from '@components/indexcomponts/Menubar';
 import './App.css'
 import axios from "axios";
@@ -12,10 +12,11 @@ function App() {
 
   return (
     <Router>
-      <Menubar/>
+      <Menubar/> 
       <Routes>
         <Route path="/login" element={<Login />} /> 
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/signupform" element={<SignUpForm />} /> 
         <Route path="/socalsignup" element={<SocalSignUp />} /> 
         
       </Routes>

@@ -14,7 +14,7 @@ import lombok.Setter;
 @Builder
 public class ResponseData {
 	 
-	private String message;
+ 	private String message;
     private Object data;
     
 }

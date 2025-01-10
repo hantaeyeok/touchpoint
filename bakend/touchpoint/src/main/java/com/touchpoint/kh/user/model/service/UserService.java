@@ -1,6 +1,7 @@
 package com.touchpoint.kh.user.model.service;
 
 import com.touchpoint.kh.user.model.vo.User;
+import com.touchpoint.kh.user.model.vo.UserDto;
 
 public interface UserService {
 	
@@ -10,8 +11,8 @@ public interface UserService {
 	//user email checked
 	Boolean userEmailChecked(String email);
 	
-	// 
-	User signupGeneralUser(User user);
+	//user signupGeneralUser
+	User signupGeneralUser(UserDto userDto);
 	
 	
 }

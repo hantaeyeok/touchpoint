@@ -3,7 +3,7 @@ export const validateField = (name, value, formData = {}) => {
     let message = "";
   
     switch (name) {
-      case "username":
+      case "userId":
         if (!value) {
           isValid = false;
           message = "아이디를 입력해주세요.";
@@ -43,7 +43,7 @@ export const validateField = (name, value, formData = {}) => {
         }
         break;
   
-      case "name":
+      case "username":
         if (!value) {
           isValid = false;
           message = "이름을 입력해주세요.";

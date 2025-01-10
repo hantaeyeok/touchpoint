@@ -32,7 +32,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'		
     // MyBatis Dependencies
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'  // MyBatis Integration
-
+	
     // Lombok
     compileOnly 'org.projectlombok:lombok'                                      // Lombok for reducing boilerplate code
     annotationProcessor 'org.projectlombok:lombok'
