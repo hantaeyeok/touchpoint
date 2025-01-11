@@ -1,12 +1,21 @@
 import logo from './logo.svg';
 import React, { useEffect, useState } from "react";
 import './App.css';
+<<<<<<< Updated upstream
 import Qna from './components/Qna';
 import Faq from './components/Faq';
 import AddFaq from './components/AddFaq';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import axios from "axios";
 import Menubar from './components/indexcomponts/Menubar';
+=======
+import Qna from './components/qna/Qna';
+import Faq from './components/qna/Faq';
+import AddFaq from './components/qna/AddFaq';
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import axios from "axios";
+import Menubar from './components/indexcomponents/Menubar';
+>>>>>>> Stashed changes
 
 
 function App() {
