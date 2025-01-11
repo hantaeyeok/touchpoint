@@ -3,6 +3,7 @@ package com.touchpoint.kh.qna.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,4 +42,9 @@ public class QnaController {
 		return ResponseEntity.ok(updateFaq);
 	}
 	
+	@DeleteMapping("/delete/{faqNo}")
+	public ResponseEntity<Faq> deleteFaq(@PathVariable int faqNo){
+		faqService.deleteFaq(faqNo);
+		return ResponseEntity.noContent().build(); // 204 no content만 응답
+	}
 }

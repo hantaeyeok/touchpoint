@@ -25,12 +25,19 @@ public class FaqService {
 
 	public Faq updateFaq(Faq faqDetails, int faqNo) {
 		Faq originFaq = faqRepository.findById(faqNo)
-								  .orElseThrow(()-> new RuntimeException("FAQ not found with faqNo :"+faqNo));
+								     .orElseThrow(()-> new RuntimeException("FAQ not found with faqNo :"+faqNo));
 		originFaq.setFaqTitle(faqDetails.getFaqTitle());
 		originFaq.setAnswer(faqDetails.getAnswer());
 		
 		return faqRepository.save(originFaq);
 	}
-	
+
+	public void deleteFaq(int faqNo) {
+		/*Faq deleteFaq = faqRepository.findById(faqNo)
+									 .orElseThrow(()-> new RuntimeException("FAQ not found with faqNo :"+faqNo));
+		faqNo 가 pk이기 때문에 없으면 예외처리가 자동으로됨
+		*/
+		faqRepository.deleteById(faqNo);
+	}
 	
 }
