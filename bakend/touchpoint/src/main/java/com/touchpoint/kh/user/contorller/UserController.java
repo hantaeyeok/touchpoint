@@ -1,7 +1,11 @@
 package com.touchpoint.kh.user.contorller;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,8 +34,8 @@ public class UserController {
 	public ResponseEntity<ResponseData> checkUserId(@RequestParam String userId) {
 	    try {
 	       return userService.userIdChecked(userId) //사용가능 true userid.isempty();
-	    		   	? responseHandler.createResponse(LoginMessage.USER_ID_EXISTS_SUCCESS, null, HttpStatus.OK)
-	    			: responseHandler.createResponse(LoginMessage.USER_ID_EXISTS, null, HttpStatus.BAD_REQUEST);
+	    		   	? responseHandler.createResponse(LoginMessage.USER_ID_EXISTS_SUCCESS, true, HttpStatus.OK)
+	    			: responseHandler.createResponse(LoginMessage.USER_ID_EXISTS, false, HttpStatus.BAD_REQUEST);
 	    } catch (Exception e) {
 	        return responseHandler.handleException("아이디 중복 확인 중 에러 발생", e);
 	    }
@@ -41,13 +45,15 @@ public class UserController {
 	public ResponseEntity<ResponseData> checkEmail(@RequestParam String email) {
 	    try {
 	       return userService.userEmailChecked(email) //사용가능 true userid.isempty();
-	    		   	? responseHandler.createResponse(LoginMessage.EMAIL_EXISTS_SUCCESS, null, HttpStatus.OK)
-	    			: responseHandler.createResponse(LoginMessage.EMAIL_EXISTS, null, HttpStatus.BAD_REQUEST);
+	    		   	? responseHandler.createResponse(LoginMessage.EMAIL_EXISTS_SUCCESS, true, HttpStatus.OK)
+	    			: responseHandler.createResponse(LoginMessage.EMAIL_EXISTS, false, HttpStatus.BAD_REQUEST);
 	    } catch (Exception e) {
 	        return responseHandler.handleException("이메일 중복 확인 중 에러 발생", e);
 	    }
 	}
 	
+	
+	//일반회원가입
 	@PostMapping("/signup")
 	public ResponseEntity<ResponseData> signupGeneralUser(@RequestBody UserDto userDto ){
 	    try {
@@ -60,6 +66,24 @@ public class UserController {
 	    } catch (Exception e) {
 	        return responseHandler.handleException("회원가입 중 에러 발생", e);
 	    }
+	}
+	
+	
+	//소셜 회원가입 로직 
+	
+	
+	@GetMapping("/socal-user")
+	public ResponseEntity<ResponseData> getSocialUserInfo(@AuthenticationPrincipal OAuth2User oAuth2User) {
+		 try {
+		        if (oAuth2User == null) {
+		            return responseHandler.createResponse("소셜 로그인 정보가 없습니다.", false, HttpStatus.UNAUTHORIZED);
+		        }
+
+		        Map<String, Object> userAttributes = oAuth2User.getAttributes();
+		        return responseHandler.createResponse("소셜 사용자 정보 반환 성공", userAttributes, HttpStatus.OK);
+		    } catch (Exception e) {
+		        return responseHandler.handleException("소셜 사용자 정보를 가져오는 중 에러 발생", e);
+		    }
 	}
 	
 	

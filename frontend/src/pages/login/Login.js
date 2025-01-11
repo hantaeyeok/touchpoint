@@ -1,7 +1,9 @@
 import React, {useState} from "react";
 import axios from "axios";
 import ButtonLogin from '@components/login/ButtonLogin'
+import naverIcon from '@pages/login/icon/navericon.png';
 import "@styles/Login.css";
+
 
 const Login = () => {
     const [formData,setFormData] = useState({
@@ -26,6 +28,7 @@ const Login = () => {
             password: formData.password,
             remember: formData.remember,
           });
+          
     /* 성공 실패 다시 해야함 error 코드 및 */
           if (response.status === 200) {
             alert("로그인 성공!");
@@ -42,6 +45,11 @@ const Login = () => {
           handleSubmit(e);
         }
       };
+
+      const handleNaverLogin = () => {
+        window.location.href = "http://localhost:8989/oauth2/authorization/naver";
+      };
+
 
       return (
         <div className="login-container">
@@ -101,8 +109,8 @@ const Login = () => {
             {/* 소셜 로그인 버튼 */}
             <div className="login-or">or</div>
             <div className="social-login">
-              <button type="button" className="social-button naver">
-                <img src="/icons/naver.png" alt="Naver" className="icon" />
+              <button type="button" className="social-button naver" onClick={handleNaverLogin}>
+                <img src={naverIcon} alt="Naver" className="icon" />
               </button>
               <button type="button" className="social-button kakao">
                 <img src="/icons/kakao.png" alt="Kakao" className="icon" />

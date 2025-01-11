@@ -26,10 +26,10 @@ repositories {
 dependencies {
     // Spring Boot Starter Dependencies
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'          // JDBC for database connection
-    implementation 'org.springframework.boot:spring-boot-starter-security'      // Spring Security
     implementation 'org.springframework.boot:spring-boot-starter-web'           // Spring Web (REST API)
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'      // JPA for ORM (Optional with MyBatis)
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'		
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'	
+		
     // MyBatis Dependencies
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'  // MyBatis Integration
 	
@@ -53,6 +53,12 @@ dependencies {
 
     // Optional: Flyway for Database Migrations (If needed)
     implementation 'org.flywaydb:flyway-core'
+    
+    // login 
+    implementation 'org.springframework.boot:spring-boot-starter-security'      // Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    
+    
 }
 
 tasks.named('test') {
