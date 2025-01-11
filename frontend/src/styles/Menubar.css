@@ -1,16 +1,8 @@
-<<<<<<< Updated upstream
-
+/* 메뉴바 스타일 */ 
 .menu-bar {
     height: 60px;
     display: flex;
 
-=======
-/* 메뉴바 스타일 */
-.menu-bar {
-    height: 60px;
-    display: flex;
-    
->>>>>>> Stashed changes
     align-items: center;
     background-color: #f8f9fa;
     padding: 10px 20px;
@@ -42,40 +34,24 @@
     color: #333;
     font-size: 25px;
     cursor: pointer;
-<<<<<<< Updated upstream
     padding: 40px 30px; 
-=======
-    padding: 40px 30px; /* 텍스트 주변에 여백 추가 */
->>>>>>> Stashed changes
 }
 
 .menu-items .dropdown-title:hover {
     color: #ff007f;
 }
 
-<<<<<<< Updated upstream
 
 .dropdown-content {
     display: none;
     position: absolute;
     top: 170%; 
-=======
-/* 드롭다운 컨텐츠 */
-.dropdown-content {
-    display: none;
-    position: absolute;
-    top: 170%; /* 부모 메뉴 바로 아래에 위치 */
->>>>>>> Stashed changes
     left: 0;
     background-color: #fff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border: 1px solid #e0e0e0;
     z-index: 10;
-<<<<<<< Updated upstream
     min-width: 150px; 
-=======
-    min-width: 150px; /* 드롭다운 너비 */
->>>>>>> Stashed changes
     padding: 10px 0;
 }
 
@@ -92,20 +68,12 @@
     color: #fff;
 }
 
-<<<<<<< Updated upstream
 
-=======
-/* 드롭다운 표시 */
->>>>>>> Stashed changes
 .dropdown:hover .dropdown-content {
     display: block;
 }
 
-<<<<<<< Updated upstream
 
-=======
-/* 로그인 메뉴 */
->>>>>>> Stashed changes
 .login-div a {
     text-decoration: none;
     color: #333;
@@ -115,8 +83,4 @@
 
 .login-div a:hover {
     color: #ff007f;
-<<<<<<< Updated upstream
 }
-=======
-}
->>>>>>> Stashed changes
