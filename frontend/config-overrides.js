@@ -5,10 +5,6 @@ module.exports = override(
     addWebpackAlias({
         '@components': path.resolve(__dirname, 'src/components'),
         '@styles': path.resolve(__dirname, 'src/styles'),
-<<<<<<< Updated upstream
-=======
         '@img': path.resolve(__dirname, 'src/img')
->>>>>>> Stashed changes
-        
     })
 );
