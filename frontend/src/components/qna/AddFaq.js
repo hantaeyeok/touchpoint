@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import qnaImg from "@img/qna.avif";
 import "@styles/Qna.css";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";

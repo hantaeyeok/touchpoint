@@ -1,8 +1,11 @@
-import React from "react";
 import "@styles/Qna.css";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 function FaqList() {
+
+    const [qTilte, setTilte] = useState('');
+
     return(
         <div>
             <div className="faqBox1">
