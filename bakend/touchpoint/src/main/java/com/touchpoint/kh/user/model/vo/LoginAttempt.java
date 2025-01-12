@@ -40,5 +40,5 @@ public class LoginAttempt {
     private String captchaActive; // 캡차 활성화 여부 ('Y' 또는 'N')
 
     @Column(name = "CAPTCHA_TIMER")
-    private LocalDateTime captchaTimer; // 캡차 제한 시간
+    private LocalDateTime captchaTimer; // 캡차 제한 시간// 다시 삭제해야함
 }

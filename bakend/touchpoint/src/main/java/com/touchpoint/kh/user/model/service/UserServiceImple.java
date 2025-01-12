@@ -25,7 +25,8 @@ public class UserServiceImple implements UserService{
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	private final LoginAttemptRepository loginAttemptRepository;
 	private final UserSessionRepository userSessionRepository;
-
+	private final GoogleRecaptchaService googleRecaptchaService;
+	
 	//user id checked
 	@Override
 	public Boolean userIdChecked(String userId) {
@@ -61,7 +62,9 @@ public class UserServiceImple implements UserService{
 	public ResponseData validateLogin(LoginRequest lgoinRequest) {
 
 	    // 사용자 정보 조회
-	    User user = findUser(lgoinRequest.getUserId());
+		User user = userRepository.findByUserId(
+				lgoinRequest.getUserId())
+				  			.orElseThrow(() -> new RuntimeException("사용자 ID를 찾을 수 없습니다."));
 
 	    // 로그인 시도 조회 및 초기화
 	    LoginAttempt attempt = loginAttemptRepository.findByUserId(lgoinRequest.getUserId())
@@ -71,51 +74,52 @@ public class UserServiceImple implements UserService{
 	                    .captchaActive("N")
 	                    .build());
 
-	    // 캡차 검증
-	    ResponseData captchaResult = validateCaptcha(attempt);
-	    if (captchaResult != null) {
-	        return captchaResult;
-	    }
+	    // 20회 이상 로그인 잠금
+	    if (attempt.getFailedLoginCnt() >= 20) {
+	    	user.setUserSt("N");
+	    	userRepository.save(user);
+	    		    	
+            return ResponseData.builder()
+                    .message("계정이 잠겼습니다. 관리자에게 문의하세요.")
+                    .data(null)
+                    .build();
+        }
 
-	    // 비밀번호 검증
+		 // 5회 이상 구글 캡쳐 api start
+		if(attempt.getFailedLoginCnt() >=5 &&
+				"Y".equals(attempt.getFailedLoginCnt())) {
+			boolean captchaVerified =googleRecaptchaService.verifyRecaptcha(lgoinRequest.getCaptchaToken());
+			if(!captchaVerified) {
+				return ResponseData.builder().message("캡차 검증에 실패했습니다. 다시 시도하세요").data(null).build();
+			}
+			
+		}
+
+	    
 	    if (!checkPassword(lgoinRequest.getPassword(), user.getPassword())) {
-	        return handleFailedLogin(attempt);
-	    }
-
-	    // 중복 세션 검증 및 종료
-	    closeActiveSessions(user.getUserId());
-
-	    // 새로운 세션 생성
-	    createSession(user.getUserId());
-
-	    return ResponseData.builder()
-	            .message("로그인 성공")
-	            .data(user)
-	            .build();
+            return handleFailedLogin(attempt);
+        }
+	    
+	    
+	    resetFailedLoginAttempts(attempt, user);
+        closeActiveSessions(user.getUserId()); // 중복 세션 검증 및 종료
+        createSession(user.getUserId()); // 새로운 세션 생성
+	    
+        return ResponseData.builder()
+                .message("로그인 성공")
+                .data(user)
+                .build();
 	}
 	
-
-	private User findUser(String userId) {
-	    return userRepository.findByUserId(userId)
-	            .orElseThrow(() -> new RuntimeException("사용자 ID를 찾을 수 없습니다."));
-	}
-
-	private ResponseData validateCaptcha(LoginAttempt attempt) {
-	    if ("Y".equals(attempt.getCaptchaActive())) {
-	        if (LocalDateTime.now().isBefore(attempt.getCaptchaTimer().plusHours(1))) {
-	            return ResponseData.builder()
-	                    .message("캡차가 활성화되어 있습니다. 캡차를 해결하고 다시 시도하세요.")
-	                    .data(null)
-	                    .build();
-	        } else {
-	            return ResponseData.builder()
-	                    .message("계정이 잠겼습니다. 관리자에게 문의하세요.")
-	                    .data(null)
-	                    .build();
-	        }
-	    }
-	    return null;
-	}
+	
+	private void resetFailedLoginAttempts(LoginAttempt attempt, User user) {
+        attempt.setFailedLoginCnt(0);
+        attempt.setCaptchaActive("N");
+        user.setUserSt("Y");
+        userRepository.save(user);
+        loginAttemptRepository.save(attempt);
+    }
+	
 
 	private boolean checkPassword(String inputPassword, String storedPassword) {
 	    return bCryptPasswordEncoder.matches(inputPassword, storedPassword);

@@ -2,24 +2,34 @@ package com.touchpoint.kh.user.model.service;
 
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class GoogleRecaptchaService {
 
-    private static final String RECAPTCHA_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
-    private static final String SECRET_KEY = "6Lc-m7QqAAAAAGnwC5OIFaJxiHlknAVpNvuS9Xnp"; // 발급받은 Secret Key
+	@Value("${google.recaptcha.secret}")
+    private String recaptchaSecret;
 
+    @Value("${google.recaptcha.url}")
+    private String recaptchaUrl;
     public boolean verifyRecaptcha(String recaptchaToken) {
         RestTemplate restTemplate = new RestTemplate();
+
+        // 요청 파라미터 설정
         Map<String, String> params = Map.of(
-            "secret", SECRET_KEY,
+            "secret", recaptchaSecret,
             "response", recaptchaToken
         );
 
         // Google API 호출 및 응답 처리
-        Map<String, Object> response = restTemplate.postForObject(RECAPTCHA_VERIFY_URL, params, Map.class);
-        return response != null && (Boolean) response.get("success");
+        Map<String, Object> response = restTemplate.postForObject(recaptchaUrl, params, Map.class);
+
+        // 검증 성공 여부 반환
+        return response != null && Boolean.TRUE.equals(response.get("success"));
     }
 }
