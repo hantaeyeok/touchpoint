@@ -75,7 +75,7 @@ display: inline-block;
     font-weight: bold;
     margin-left: 50px;
     color: #333;
-    
+    white-space: pre-wrap;
 }
 
 .btn_box{
@@ -149,6 +149,7 @@ display: inline-block;
 .form-group textarea {
     height: 400px;
     resize: none;
+    white-space: pre-wrap;
 }
 
 

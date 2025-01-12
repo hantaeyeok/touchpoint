@@ -3,9 +3,8 @@ import qnaImg from "@img/qna.avif";
 import "@styles/Qna.css";
 import { useNavigate } from "react-router-dom";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import FaqList from "./FaqList";
 import { FaqContext } from "../../context/FaqContext";
-
+import axios from "axios";
 
 function AddFaq() {
     
@@ -16,13 +15,24 @@ function AddFaq() {
     const { FaqTodoList, setFaqTodoList } = useContext(FaqContext);
     console.log("FaqTodoList 상태:", FaqTodoList);
     
-    const faqSubmit = () =>{
+    const faqSubmit = async () =>{
         if(!qTitle || !qContent){
             alert("제목과 내용을 입력해주세요")
             return;
         };
 
-        setFaqTodoList([...FaqTodoList, { qTitle, qContent }]);
+        const newFaq = { qTitle, qContent };
+        setFaqTodoList([...FaqTodoList, newFaq]);
+
+        try {
+            const response = await axios.post("http://localhost:8989/qna/createFaq", newFaq);
+            console.log("서버 응답:", response.data);
+            alert("글이 성공적으로 저장되었습니다!");
+        } catch (error) {
+        console.error("데이터 저장 중 오류 발생:", error.message);
+        alert("글 저장 중 문제가 발생했습니다. 다시 시도해주세요.");
+        }
+        
         setTilte('');
         setContent('');
         navigate("/faq");

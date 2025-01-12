@@ -34,9 +34,9 @@ function App() {
         <div>
           {/* 라우트 설정 */}
           <Routes>
-            <Route path="/qna" element={<Qna />} />
-            <Route path="/faq" element={<Faq />} />
-            <Route path="/addFaq" element={<AddFaq />} />
+            <Route path="/qna/*" element={<Qna />} />
+            <Route path="/faq/*" element={<Faq />} />
+            <Route path="/addFaq/*" element={<AddFaq />} />
           </Routes>
         </div>
       </Router>
