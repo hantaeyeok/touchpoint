@@ -58,10 +58,103 @@ public class UserServiceImple implements UserService{
 	
 	
 	@Override
-	public ResponseData validateLogin(LoginRequest loginRequest) {return null;}
+	public ResponseData validateLogin(LoginRequest lgoinRequest) {
+
+	    // 사용자 정보 조회
+	    User user = findUser(lgoinRequest.getUserId());
+
+	    // 로그인 시도 조회 및 초기화
+	    LoginAttempt attempt = loginAttemptRepository.findByUserId(lgoinRequest.getUserId())
+	            .orElseGet(() -> LoginAttempt.builder()
+	                    .userId(lgoinRequest.getUserId())
+	                    .failedLoginCnt(0)
+	                    .captchaActive("N")
+	                    .build());
+
+	    // 캡차 검증
+	    ResponseData captchaResult = validateCaptcha(attempt);
+	    if (captchaResult != null) {
+	        return captchaResult;
+	    }
+
+	    // 비밀번호 검증
+	    if (!checkPassword(lgoinRequest.getPassword(), user.getPassword())) {
+	        return handleFailedLogin(attempt);
+	    }
+
+	    // 중복 세션 검증 및 종료
+	    closeActiveSessions(user.getUserId());
+
+	    // 새로운 세션 생성
+	    createSession(user.getUserId());
+
+	    return ResponseData.builder()
+	            .message("로그인 성공")
+	            .data(user)
+	            .build();
+	}
 	
-	
-	
+
+	private User findUser(String userId) {
+	    return userRepository.findByUserId(userId)
+	            .orElseThrow(() -> new RuntimeException("사용자 ID를 찾을 수 없습니다."));
+	}
+
+	private ResponseData validateCaptcha(LoginAttempt attempt) {
+	    if ("Y".equals(attempt.getCaptchaActive())) {
+	        if (LocalDateTime.now().isBefore(attempt.getCaptchaTimer().plusHours(1))) {
+	            return ResponseData.builder()
+	                    .message("캡차가 활성화되어 있습니다. 캡차를 해결하고 다시 시도하세요.")
+	                    .data(null)
+	                    .build();
+	        } else {
+	            return ResponseData.builder()
+	                    .message("계정이 잠겼습니다. 관리자에게 문의하세요.")
+	                    .data(null)
+	                    .build();
+	        }
+	    }
+	    return null;
+	}
+
+	private boolean checkPassword(String inputPassword, String storedPassword) {
+	    return bCryptPasswordEncoder.matches(inputPassword, storedPassword);
+	}
+
+	private ResponseData handleFailedLogin(LoginAttempt attempt) {
+	    attempt.setFailedLoginCnt(attempt.getFailedLoginCnt() + 1);
+
+	    if (attempt.getFailedLoginCnt() >= 5) {
+	        attempt.setCaptchaActive("Y");
+	        attempt.setCaptchaTimer(LocalDateTime.now());
+	    }
+
+	    loginAttemptRepository.save(attempt);
+
+	    return ResponseData.builder()
+	            .message("비밀번호가 일치하지 않습니다.")
+	            .data(null)
+	            .build();
+	}
+
+	private void closeActiveSessions(String userId) {
+	    userSessionRepository.findByUserIdAndSessionStatus(userId, "A")
+	            .ifPresent(session -> {
+	                session.setSessionStatus("I");
+	                userSessionRepository.save(session);
+	            });
+	}
+
+	private void createSession(String userId) {
+	    UserSession session = UserSession.builder()
+	            .userId(userId)
+	            .sessionStatus("A")
+	            .loginTime(LocalDateTime.now())
+	            .build();
+	    userSessionRepository.save(session);
+	}
+
+
 	
 	
 	/*
