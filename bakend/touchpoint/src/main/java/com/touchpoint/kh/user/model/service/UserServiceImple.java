@@ -46,7 +46,7 @@ public class UserServiceImple implements UserService{
 		                .password(encodePassword) 
 		                .email(userDto.getEmail())           
 		                .phoneNo(userDto.getPhone().replaceAll("-", "")) //전화번호 front에서 010-1234-1234 or 01012341234              
-		                .name(userDto.getName())
+		                .name(userDto.getUsername())
 		                .adAgreed(userDto.isAdAgreed() ? "Y" : "N")
 		                .joinDt(java.time.LocalDate.now())
 		                .userSt("Y")
@@ -57,6 +57,14 @@ public class UserServiceImple implements UserService{
 	}
 	
 	
+	@Override
+	public ResponseData validateLogin(LoginRequest loginRequest) {return null;}
+	
+	
+	
+	
+	
+	/*
 
 	@Override
 	public ResponseData validateLogin(LoginRequest loginRequest) {
@@ -66,7 +74,7 @@ public class UserServiceImple implements UserService{
 		 * 비밀번호 검증
 		 * 중복세션 검증
 		 * 새로운 세션 생성
-		 * */
+		 * 
 		
 		//사용자 정보 조회
 		User user =  userRepository.findByUserId(loginRequest.getUserId()).orElseThrow(() -> new RuntimeException("사용자 id 못찾아여"));
@@ -149,7 +157,7 @@ public class UserServiceImple implements UserService{
 
 	
 	
-	
+	*/
 	
 
 

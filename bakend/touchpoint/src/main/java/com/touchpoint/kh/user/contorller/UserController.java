@@ -31,22 +31,22 @@ public class UserController {
 	private final ResponseHandler responseHandler;
 	
 	@GetMapping("/check-id")//ID CHECK
-	public ResponseEntity<ResponseData> checkUserId(@RequestParam String userId) {
+	public ResponseEntity<ResponseData> checkUserId(@RequestParam("userId") String userId) {
 	    try {
 	       return userService.userIdChecked(userId) //사용가능 true userid.isempty();
 	    		   	? responseHandler.createResponse(LoginMessage.USER_ID_EXISTS_SUCCESS, true, HttpStatus.OK)
-	    			: responseHandler.createResponse(LoginMessage.USER_ID_EXISTS, false, HttpStatus.BAD_REQUEST);
+	    			: responseHandler.createResponse(LoginMessage.USER_ID_EXISTS, false, HttpStatus.OK);
 	    } catch (Exception e) {
 	        return responseHandler.handleException("아이디 중복 확인 중 에러 발생", e);
 	    }
 	}
 		
 	@GetMapping("/check-email")// EMAIL CHECK
-	public ResponseEntity<ResponseData> checkEmail(@RequestParam String email) {
+	public ResponseEntity<ResponseData> checkEmail(@RequestParam("email") String email) {
 	    try {
 	       return userService.userEmailChecked(email) //사용가능 true userid.isempty();
 	    		   	? responseHandler.createResponse(LoginMessage.EMAIL_EXISTS_SUCCESS, true, HttpStatus.OK)
-	    			: responseHandler.createResponse(LoginMessage.EMAIL_EXISTS, false, HttpStatus.BAD_REQUEST);
+	    			: responseHandler.createResponse(LoginMessage.EMAIL_EXISTS, false, HttpStatus.OK);
 	    } catch (Exception e) {
 	        return responseHandler.handleException("이메일 중복 확인 중 에러 발생", e);
 	    }
@@ -55,7 +55,7 @@ public class UserController {
 	
 	//일반회원가입
 	@PostMapping("/signup")
-	public ResponseEntity<ResponseData> signupGeneralUser(@RequestBody UserDto userDto ){
+	public ResponseEntity<ResponseData> signupGeneralUser(@RequestBody UserDto userDto){
 	    try {
 	    	
 	    	User savedUser =userService.signupGeneralUser(userDto);

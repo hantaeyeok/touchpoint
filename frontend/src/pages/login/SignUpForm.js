@@ -6,6 +6,7 @@ import EmailField from "@components/login/EmailField";
 import AgreementField from "@components/login/AgreementField";
 import { validateField } from "@components/login/ValidateField";
 import ButtonLogin from "@components/login/ButtonLogin";
+
 import "@styles/SignUp.css";
 
 const SignUpForm = () => {
@@ -21,96 +22,115 @@ const SignUpForm = () => {
   const [errors, setErrors] = useState({});
   const [isMandatoryChecked, setIsMandatoryChecked] = useState(false);
   const [isAdChecked, setIsAdChecked] = useState(false);
+  const [userIdAvailable, setUserIdAvailable] = useState(null);
+  const [emailAvailable, setEmailAvailable] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+   
+  // 공통 handleChange
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // 입력 값 업데이트
     setFormData((prev) => ({ ...prev, [name]: value }));
+    validateAndSetError(name, value);
+  };
 
-    // 실시간 유효성 검사 실행
+  // 유효성 검사
+  const validateAndSetError = (name, value) => {
     const { isValid, message } = validateField(name, value, { ...formData, [name]: value });
-
     setErrors((prev) => ({
       ...prev,
-      [name]: isValid ? "" : message, // 유효성 검사 결과에 따라 오류 메시지 업데이트
+      [name]: isValid ? "" : message,
     }));
   };
 
+  // 중복 체크
+  const handleBlur = async (field, value, checkApi, setAvailable) => {
+    console.log(formData.email);
+    console.log("handleBlur 호출된 URL:", checkApi);
+    if (!value) {
+      setErrors((prev) => ({ ...prev, [field]: `${field}을(를) 입력해주세요.` }));
+      return;
+    }
+    try {
+      const response = await axios.get(checkApi);
+      const available = response.data.data;
+      setAvailable(available);
+      //setErrors((prev) => ({
+     //   ...prev,
+      // [field]: available ? "" : `이미 사용 중인 ${field}입니다.`,
+      //}));
+    } catch (error) {
+      console.error(`${field} 중복 체크 중 오류 발생:`, error);
+      setErrors((prev) => ({ ...prev, [field]: "오류 발생. 다시 시도해주세요." }));
+    }
+  };
+
+  // 회원가입 처리
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let valid = true;
-    const newErrors = {};
 
+    const newErrors = validateForm();
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length || userIdAvailable === false || emailAvailable === false) {
+      alert("입력된 정보를 확인해주세요.");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      const response = await axios.post("http://localhost:8989/api/user/signup", {
+        ...formData,
+        adAgreed: isAdChecked,
+      });
+      console.log("formData",formData);
+
+      if (response.data.data === true) {
+        alert("회원가입이 완료되었습니다!");
+        resetForm(); 
+      } else {
+        alert("회원가입을 다시 시도해주세요.");
+      }
+    } catch (error) {
+      console.error("회원가입 중 오류 발생:", error);
+      alert("회원가입 중 오류가 발생했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // 전체 유효성 검사
+  const validateForm = () => {
+    const newErrors = {};
     Object.entries(formData).forEach(([name, value]) => {
       const { isValid, message } = validateField(name, value, formData);
       if (!isValid) {
-        valid = false;
         newErrors[name] = message;
       }
     });
 
     if (!isMandatoryChecked) {
-      valid = false;
       newErrors.mandatoryAgreement = "필수 약관에 동의해야 합니다.";
     }
 
-    setErrors(newErrors);
+    return newErrors;
+  };
 
-    if (valid) {
-      alert("회원가입이 완료되었습니다!");
-    }
-
-    //axois
-    try {
-      const response = await axios.post("api/user/signup",{
-        ...formData,
-        adAgreed: isAdChecked,
-      });
-
-      if (response.data.data === true){
-        alert("회원가입이 완료되었습니다!");
-        setFormData({
-          userId: "", 
-          password: "",
-          confirmPassword: "",
-          username: "",
-          phone: "",
-          email: "",
-        });
-        setIsMandatoryChecked(false);
-        setIsAdChecked(false);
-        setErrors({});
-      };
-
-      if (response.data.data === false){
-        alert("회원가입을 다시 시도해주세요. ㅜㅜ");
-        setFormData({
-          userId: "",
-          password: "",
-          confirmPassword: "",
-          username: "",
-          phone: "",
-          email: "",
-        });
-        setIsMandatoryChecked(false);
-        setIsAdChecked(false);
-        setErrors({});
-      };
-
-    } catch (error) {
-      console.error("회원가입 중 오류 발생:", error);      
-      alert(
-        error.response?.data?.message || "회원가입 중 오류가 발생했습니다. 다시 시도해주세요."
-      );
-    } finally{
-      setIsSubmitting(false); // 제출 완료
-    }
-
-
-
-
+  // 폼 초기화
+  const resetForm = () => {
+    setFormData({
+      userId: "",
+      password: "",
+      confirmPassword: "",
+      username: "",
+      phone: "",
+      email: "",
+    });
+    setIsMandatoryChecked(false);
+    setIsAdChecked(false);
+    setErrors({});
+    setUserIdAvailable(null);
+    setEmailAvailable(null);
   };
 
   return (
@@ -122,10 +142,15 @@ const SignUpForm = () => {
           name="userId"
           value={formData.userId}
           onChange={handleChange}
+          onBlur={() =>
+            handleBlur("userId", formData.userId, `http://localhost:8989/api/user/check-id?userId=${formData.userId}`, setUserIdAvailable)
+          }
           placeholder="아이디를 입력하세요"
           iconName="person"
           errorMessage={errors.userId}
         />
+        {userIdAvailable === false && <p className="error-message">이미 사용 중인 아이디입니다.</p>}
+
         <PasswordField
           name="password"
           value={formData.password}
@@ -134,7 +159,7 @@ const SignUpForm = () => {
           iconName="lock"
           errorMessage={errors.password}
         />
-        <PasswordField 
+        <PasswordField
           name="confirmPassword"
           value={formData.confirmPassword}
           onChange={handleChange}
@@ -161,13 +186,29 @@ const SignUpForm = () => {
           errorMessage={errors.phone}
         />
         <EmailField
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="이메일을 입력하세요"
-          iconName="mail"
-          errorMessage={errors.email}
-        />
+  name="email"
+  value={formData.email}
+  onChange={handleChange}
+  onBlur={() => {
+    // 이메일이 완전한 형식인지 확인
+    const [local, domain] = formData.email.split("@");
+    if (!local || !domain) {
+      setErrors((prev) => ({ ...prev, email: "올바른 이메일 주소를 입력해주세요." }));
+      return;
+    }
+    handleBlur(
+      "email",
+      formData.email,
+      `http://localhost:8989/api/user/check-email?email=${formData.email}`,
+      setEmailAvailable
+    );
+  }}
+  placeholder="이메일을 입력하세요"
+  iconName="mail"
+  errorMessage={errors.email}
+/>
+        {emailAvailable === false && <p className="error-message">이미 사용 중인 이메일입니다.</p>}
+
         <AgreementField
           type="mandatory"
           isChecked={isMandatoryChecked}
@@ -180,13 +221,14 @@ const SignUpForm = () => {
           onToggle={() => setIsAdChecked(!isAdChecked)}
         />
 
-        <ButtonLogin
+      </form>
+      <ButtonLogin
           className="signup-button"
           text="회원가입"
           type="submit"
+          disabled={isSubmitting}
+          onSubmit={handleSubmit}
         />
-
-      </form>
     </div>
   );
 };

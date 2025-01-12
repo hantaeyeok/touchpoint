@@ -10,7 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
-import com.touchpoint.kh.config.service.Oath2Service;
+import com.touchpoint.kh.user.model.service.oath2.Oath2Service;
 
 @Configuration
 @EnableWebSecurity
@@ -74,8 +74,8 @@ public class SecurityConfig {
 		// OAuth2 로그인 설정
         http.oauth2Login((oauth2) -> oauth2
                 .loginPage("/login")                                   // OAuth2 로그인 페이지 경로
-                .defaultSuccessUrl("http://localhost:4000/socalsignup", true)                      // 로그인 성공 후 리다이렉트 경로
-                .failureUrl("http://localhost:4000/socalsignup?error=true")                       // 로그인 실패 시 리다이렉트 경로
+                .defaultSuccessUrl("/api/oauth2/callback/success", true)                      // 로그인 성공 후 리다이렉트 경로
+                .failureUrl("http://localhost:4000/login?error=true")                       // 로그인 실패 시 리다이렉트 경로
                 .userInfoEndpoint(userInfo -> userInfo
                         .userService(oath2Service())    // 사용자 정보를 처리할 서비스 등록
                 )

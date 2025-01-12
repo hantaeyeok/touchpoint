@@ -18,7 +18,7 @@ public class UserDto {
     private String userId;
     private String password;
     private String email;
-    private String name;
+    private String username;
     private String phone;
     private boolean adAgreed; // 광고 동의 여부
 }

@@ -23,17 +23,18 @@ public class LoginController {
 	private final UserService userService;
 	private final ResponseHandler responseHandler;
     
+	/*
     @PostMapping
     public ResponseEntity<ResponseData> login(@RequestBody LoginRequest loginRequest) {
     	try {
-    		//return userService.validateLogin(loginRequest) //true : 일치
-        	//		? responseHandler.createResponse(LoginMessage.LOGIN_SUCCESS, true, HttpStatus.OK)
-        	//		: responseHandler.createResponse(LoginMessage.LOGIN_FAILURE, false, HttpStatus.BAD_REQUEST);
+    		return userService.validateLogin(loginRequest) //true : 일치
+        			? responseHandler.createResponse(LoginMessage.LOGIN_SUCCESS, true, HttpStatus.OK)
+        			: responseHandler.createResponse(LoginMessage.LOGIN_FAILURE, false, HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
 	        return responseHandler.handleException("로그인 시도 중 에러 발생", e);
 		}    	
     }
-    
+    */
     
 
 }
