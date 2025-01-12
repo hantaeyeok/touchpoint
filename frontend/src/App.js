@@ -7,8 +7,7 @@ import AddFaq from './components/qna/AddFaq';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import axios from "axios";
 import Menubar from './components/indexcomponents/Menubar';
-
-
+import { FaqProvider } from './context/FaqContext';
 
 function App() {
 
@@ -28,18 +27,20 @@ function App() {
     }, []);
 
   return (
-    <Router>
-      <Menubar/>
-      <p>받은 데이터: {data}</p> 
-      <div>
-        {/* 라우트 설정 */}
-        <Routes>
-          <Route path="/qna" element={<Qna />} />
-          <Route path="/faq" element={<Faq />} />
-          <Route path="/addFaq" element={<AddFaq />} />
-        </Routes>
-      </div>
-    </Router>
+    <FaqProvider>
+      <Router>
+        <Menubar/>
+        <p>받은 데이터: {data}</p> 
+        <div>
+          {/* 라우트 설정 */}
+          <Routes>
+            <Route path="/qna" element={<Qna />} />
+            <Route path="/faq" element={<Faq />} />
+            <Route path="/addFaq" element={<AddFaq />} />
+          </Routes>
+        </div>
+      </Router>
+    </FaqProvider>
 );
 }
 
