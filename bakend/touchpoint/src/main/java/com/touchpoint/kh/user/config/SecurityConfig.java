@@ -16,6 +16,7 @@ public class SecurityConfig {
     @Order(Ordered.HIGHEST_PRECEDENCE) // 필터 실행 순서를 가장 높은 우선순위로 설정
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+
             .csrf().disable() // CSRF 보호 비활성화
             .cors() // CORS 활성화
             .and()
@@ -27,16 +28,17 @@ public class SecurityConfig {
     }
 
     // 글로벌 CORS 설정
+  
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/*")
+                registry.addMapping("/api/**") // /api/** 경로만 적용
                         .allowedOrigins("http://localhost:3000") // React 서버 주소
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("")
-                        .allowCredentials(true); // 쿠키 허용 (필요 시)
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 메서드
+                        .allowedHeaders("*") // 모든 헤더 허용
+                        .allowCredentials(true); // 쿠키 허용
             }
         };
     }

@@ -1,0 +1,47 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.touchpoint.kh.history.model.dao.SetupHistoryMapper">
+
+    <!-- 설치사례와 메인이미지, 서브이미지 조회 -->
+    <select id="getSetupHistory" resultMap="SetupHistoryResultMap">
+        SELECT 
+            h.HISTORY_NO,
+            h.STORE_NAME,
+            h.STORE_ADDRESS,
+            h.MODEL_NAME,
+            h.HISTORY_CONTENT,
+            h.HISTORY_DATE,
+            h.USER_ID,
+            i.IMAGE_NO AS IMAGE_NO,
+            i.HISTORY_IMAGE_NAME AS IMAGE_NAME,
+            i.HISTORY_IMAGER_ORDER AS IMAGE_ORDER
+        FROM 
+            TB_SETUP_HISTORY h
+        LEFT JOIN 
+            TB_HISTORY_IMAGE i
+        ON 
+            h.HISTORY_NO = i.HISTORY_NO
+        ORDER BY 
+            h.HISTORY_DATE DESC, i.HISTORY_IMAGER_ORDER ASC
+    </select>
+
+    <resultMap id="SetupHistoryResultMap" type="com.touchpoint.kh.history.model.vo.SetupHistory">
+        <id property="historyNo" column="HISTORY_NO" />
+        <result property="storeName" column="STORE_NAME" />
+        <result property="storeAddress" column="STORE_ADDRESS" />
+        <result property="modelName" column="MODEL_NAME" />
+        <result property="historyContent" column="HISTORY_CONTENT" />
+        <result property="historyDate" column="HISTORY_DATE" />
+        <result property="userId" column="USER_ID" />
+        <result property="mainImage" column="IMAGE_NAME" />
+        
+        <collection property="subImages" ofType="com.touchpoint.kh.history.model.vo.HistoryImage">
+            <id property="imageNo" column="IMAGE_NO" />
+            <result property="historyImageName" column="IMAGE_NAME" />
+            <result property="historyImageOrder" column="IMAGE_ORDER" />
+        </collection>
+    </resultMap>
+
+</mapper>
