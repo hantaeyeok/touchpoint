@@ -19,4 +19,33 @@
   .style-button:hover {
     color: #E72681; /* 호버 시 색상 변경 */
   }
+
   
+.product-list{
+  width: 1500px;
+  height: 1200px;
+  border: 1px solid rgba(0, 0, 0, 0.049);
+  margin: auto;
+  justify-content: center;
+}
+
+.product-component{
+  display: inline-block;
+  width: 25%;
+  height: 300px;
+  padding: 15px;
+  border: 1px solid rgba(160, 13, 13, 0.049);
+  border-radius: 15px;
+  margin: 17px;
+  cursor: pointer; 
+
+  >img{
+      width: 200px;
+      height:200px;
+  }
+  >p{
+      text-align: center;
+  }
+  
+}
+

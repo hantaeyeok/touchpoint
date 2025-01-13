@@ -1,0 +1,145 @@
+
+.insertPage {
+    display: grid;
+    grid-template-columns: 20% 80%;
+    width: 100%;
+    height: 100vh;
+    background-color: #f9f9f9;
+}
+
+.sidebar {
+    background-color: #f2f2f2;
+    padding: 20px;
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-menu {
+    margin: 15px 0;
+}
+
+.sidebar-menu a {
+    text-decoration: none;
+    font-size: 18px;
+    color: #333;
+}
+
+
+
+.insertGride {
+    padding: 50px;
+    background-color: #fff;
+}
+
+.insertDiv {
+    max-width: 900px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+
+    >.title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 60px;
+    }
+}
+
+.form-group {
+    display: flex;
+    margin-bottom: 40px;
+    
+    >input,
+    textarea {
+        flex: 1; /* 입력 필드가 가용 공간을 차지하도록 설정 */
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        border-bottom: 0.5px solid #d1d1d1;
+        resize: none;
+    }
+}
+
+.form-label {
+    width: 100px; /* 레이블의 고정 너비 */
+    font-size: 16px;
+    font-weight: bold;
+    margin-right: 50px; /* 레이블과 입력 필드 사이의 간격 */
+    margin-top: 10px;
+}
+
+#category{
+    width: 200px;
+    height: 40px;
+    margin-right: 20px;
+    font-size: 15px;
+    border: none;
+    border-bottom: 0.5px solid #d1d1d1;
+}
+
+
+
+.file {
+    padding: 5px;
+}
+
+.buttons {
+    display: flex;
+    gap: 20px;
+    margin-top: 80px;
+    
+}
+
+.square-button,
+.square-button-fa {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.square-button {
+    background-color: #cbcbcb;
+    color: #1b1b1b;
+    border: none;
+}
+
+.square-button:hover {
+    background-color: #b8b8b8;
+}
+
+.square-button-fa {
+    background-color: #373737;
+    color: #ffffff;
+    border: 1px solid #ddd;
+}
+
+.square-button-fa:hover {
+    background-color: #000000;
+}
+
+
+  
+  
+  .ImgInputWrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 10px;
+  }
+  
+  .ImgInputWrap label {
+    width: 150px;
+    height: 100px;
+    background-color: gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 60px;
+    cursor: pointer;
+    border: 1px solid silver;
+  }
+  
+  .ImgInputWrap label input {
+    display: none;
+  }
+  

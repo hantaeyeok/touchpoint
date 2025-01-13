@@ -1,31 +1,21 @@
 import React from "react";
 import "@styles/Menubar.css";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import App from '../../App';
 
 const Menubar = () => {
 
-    const navi = useNavigate();
-
-    const toMain = () => {
-        navi('/');
-    };
-
-    const toProduct = () => {
-        navi('/product')
-    };
-    
    
-
     return (
         <div className="menu-bar">
-            <div className="logo" onClick={toMain}>logo</div>
+            
+            <Link className="logo" to="/">logo</Link>
             <div className="menu-items">
                 <div className="dropdown">
                     <a href="#product" className="dropdown-title">제품소개</a>
                     <div className="dropdown-content">
-                        <a href="#product" onClick={toProduct}>제품 1</a>
-                        <a href="#product" onClick={toProduct} >제품 2</a>
+                        <Link to="/product">제품 1</Link>
+                        <Link to="/product">제품 2</Link>
                     </div>
                 </div>
 
