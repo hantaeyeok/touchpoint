@@ -12,9 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ResponseData {
-
-    private String message;
+public class ResponseData {	 
+ 	private String message;
     private Object data;
-
 }

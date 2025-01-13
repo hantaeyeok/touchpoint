@@ -1,0 +1,18 @@
+.h2Title{
+    margin-bottom: 30px;
+}
+
+.signup-container {
+    background: #ffffff;
+    padding: 70px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    max-height: 1000px;
+    margin: 100px auto; /* 위아래 다시 설정해야함.*/
+  }
+
+.form-container{
+    padding: auto;
+    margin-bottom: 50px;
+}

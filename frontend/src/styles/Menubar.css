@@ -33,12 +33,13 @@
     color: #333;
     font-size: 25px;
     cursor: pointer;
-    padding: 40px 30px; /* 텍스트 주변에 여백 추가 */
+    padding: 40px 30px; 
 }
 
 .menu-items .dropdown-title:hover {
     color: #ff007f;
 }
+
 
 /* 드롭다운 컨텐츠 */
 .dropdown-content {
@@ -50,6 +51,7 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border: 1px solid #e0e0e0;
     z-index: 10;
+    min-width: 150px; 
     min-width: 150px; /* 드롭다운 너비 */
     padding: 10px 0;
 }
@@ -67,19 +69,15 @@
     color: #fff;
 }
 
-/* 드롭다운 표시 */
 .dropdown:hover .dropdown-content {
     display: block;
 }
-
-/* 로그인 메뉴 */
 .login-div a {
     text-decoration: none;
     color: #333;
     font-size: 20px;
     transition: color 0.3s;
 }
-
 .login-div a:hover {
     color: #ff007f;
 }

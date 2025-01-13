@@ -1,0 +1,173 @@
+  .input-wrapper {
+    position: relative;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    
+  }
+
+  .input-icon {
+    font-size: 20px;
+    color: #999;
+    margin-right: 10px;
+  }
+
+  .toggle-icon {
+    font-size: 18px;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    color: #999;
+  }
+
+  .input-wrapper > input {
+    text-decoration : none;
+    border-bottom: none;
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    outline: none; /* 포커스 시 나오는 외곽선 제거 */
+    font-size: 16px; /* 원하는 글자 크기 */
+  }
+
+  .email-input-wrapper {
+    display: flex;
+    align-items: center; /* 세로 가운데 정렬 */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    gap: 10px; /* 요소 간 간격 추가 */
+}
+
+.email-input-wrapper > input {
+    text-decoration: none;
+    border-bottom: none;
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+}
+
+.email-at {
+    font-size: 16px; /* 글자 크기 */
+    color: #999; /* 색상 */
+    margin: auto; /* 좌우 간격 조정 */
+    display: flex;
+    align-items: center; /* @의 세로 가운데 정렬 */
+}
+  
+.email-domain-dropdown {
+  border: none; /* 외곽선 제거 */
+  outline: none; /* 포커스 시 외곽선 제거 */
+  font-size: 16px; /* 글자 크기 */
+  color: #333; /* 글자 색상 */
+  cursor: pointer; /* 마우스 포인터 변경 */
+  appearance: none; /* 기본 드롭다운 스타일 제거 */
+  padding: 5px 10px; /* 내부 간격 추가 */
+
+}
+.email-domain-dropdown:focus {
+  outline: none; /* 포커스 시 외곽선 제거 */
+}
+
+.email-domain-dropdown::-ms-expand {
+  display: none; /* IE 화살표 제거 */
+}
+
+.email-domain-dropdown:hover {
+  background-color: #f1f1f1; /* 호버 시 배경색 변경 */
+}
+
+.custom-domain-input {
+  border: none; /* 외곽선 제거 */
+  outline: none;
+  font-size: 14px;
+  padding: 5px;
+  color: #333;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+/* 아래 두개는 적용이 안됨 다시해봐야함. */
+.custom-select-wrapper::after {
+  content: "▼"; /* 커스텀 화살표 추가 */
+  font-size: 12px;
+  color: #999;
+  position: absolute;
+  top: 50%;
+  right: 10px; /* select 내부 오른쪽 간격 */
+  transform: translateY(-50%);
+  pointer-events: none; /* 화살표 클릭 방지 */
+}
+
+.email-domain-dropdown:focus::after {
+  color: #666; /* 포커스 시 화살표 색 변경 */
+}  
+
+
+
+
+  .agreement-container {
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    padding: 10px;
+  }
+  
+  .agreement-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .arrow-icon {
+    font-size: 20px;
+    color: #999;
+  }
+  
+  .agreement-content {
+    display: block;
+    font-size: 13px;
+    color: #555;
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+  
+  .agreement-header label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  input[type="checkbox"] {
+    margin-right: 10px;
+    accent-color: #929294; /* 체크박스 색상 */
+  }
+
+  
+  
+  /* 약관 드롭다운 활성화 상태 */
+  .agreement-content.open {
+    display: block;
+  }
+
+  .input-error {
+    border: 1px solid red;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+  }
