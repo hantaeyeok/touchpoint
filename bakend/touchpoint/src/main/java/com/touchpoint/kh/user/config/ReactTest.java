@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class ReactTest {
 
-	//@CrossOrigin(origins = "http://localhost:3000")
+
+	@CrossOrigin(origins = "http://localhost:3000")
+
     @GetMapping("/test")
     public ResponseEntity<String> testApi() {
         return ResponseEntity.ok("Hello from Spring Boot!");

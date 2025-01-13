@@ -5,9 +5,9 @@
   "dependencies": {
     "axios": "^1.7.9",
     "cra-template": "1.2.0",
+    "http-proxy-middleware": "^3.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router": "^7.1.1",
     "react-router-dom": "^6.28.1",
     "react-scripts": "^5.0.1",
     "web-vitals": "^4.2.4"
@@ -37,9 +37,9 @@
     ]
   },
   "devDependencies": {
-    "confusing-browser-globals": "^1.0.11",
     "customize-cra": "^1.0.0",
-    "react-app-rewired": "^2.2.1"
-  },
-  "proxy": "http://localhost:8989/"
+    "html-webpack-plugin": "^4.5.2",
+    "react-app-rewired": "^2.2.1",
+    "webpack": "^4.42.0"
+  }
 }

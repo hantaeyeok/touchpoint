@@ -21,6 +21,7 @@ public class SecurityConfig {
             .and()
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/*", "/product/**").permitAll() // /api/ 경로 허용
+
                 .anyRequest().authenticated() // 나머지 요청은 인증 필요
             );
         return http.build();
