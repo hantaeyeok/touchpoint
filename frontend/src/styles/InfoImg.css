@@ -1,0 +1,65 @@
+.infoImg{
+    position: relative;
+}
+
+.image-banner {
+    
+    width: 100%;
+    max-width: 1086px; /* 이미지의 실제 너비 */
+    margin: 0 auto;
+    border: 2px solid #2196f3; /* 이미지 테두리 */
+}
+
+.banner-image {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.text-overlay {
+    position: absolute;
+    text-align: left;
+    top: 50%;
+    left: 7%;
+    transform: translateY(-40%);
+    color: white; /* 텍스트 색상 */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* 텍스트 그림자 */
+}
+
+.service-name {
+    font-size: 20px;
+    margin: 0;
+    font-weight: normal;
+}
+
+.main-text {
+    font-size: 36px;
+    font-weight:bold;
+    margin: 10px 0;
+}
+
+.page-indicator {
+    display: flex;
+    
+    font-size: 16px;
+    background-color: rgba(231, 38, 129, 0.4); /* 반투명 배경 */
+    padding: 5px 20px;
+    border-radius: 15px; /* 둥근 모서리 */
+    width: 40px;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.page-num{
+    align-items: center;
+    text-align: center;
+}
+
+.current-page {
+    color: #fff;
+    font-weight: bold;
+}
+
+.total-page {
+    color: #dddddd;
+}

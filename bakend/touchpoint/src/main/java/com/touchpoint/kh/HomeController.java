@@ -1,13 +1,14 @@
 package com.touchpoint.kh;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class HomeController {
 
-    @GetMapping("/")
-    public String index() {
-        return "index";
+    @RequestMapping(value = "/**")
+    public String redirectReact() {
+        // 외부 URL로 리다이렉트
+        return "redirect:http://localhost:3000/";
     }
 }

@@ -1,8 +1,10 @@
-package com.touchpoint.kh.user.model.dao;
+package com.touchpoint.kh.product.model.dao;
 
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface ProductMapper {
+	
+	
 
 }

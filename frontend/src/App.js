@@ -1,24 +1,24 @@
-import logo from './logo.svg';
 import './App.css';
+import Product from '@src/page/Product';
+import ProductInsert from '@src/page/ProductInsert';
+import Menubar from '@components/indexcomponents/Menubar';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 
 function App() {
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Menubar/>
+
+      <Routes>
+        <Route path="/" element={<h1>메인</h1>} />
+        <Route path="/product" element={<Product/>}/>
+        <Route path="/productInsert" element={<ProductInsert/>}/>
+      </Routes>
+
     </div>
+
+    
   );
 }
 
