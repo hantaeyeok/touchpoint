@@ -4,7 +4,7 @@ import Login from '@pages/login/Login';
 import SignUp from '@pages/login/SignUp'; 
 import SocalSignUp from '@pages/login/SocalSignUp'; 
 import SignUpForm from '@pages/login/SignUpForm'; 
-import Menubar from '@components/indexcomponts/Menubar';
+import Menubar from '@components/indexcomponents/Menubar';
 import Product from '@src/page/Product';
 import ProductInsert from '@src/page/ProductInsert';
 import Qna from '@components/qna/Qna';
