@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom'; // 올바른 import
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import Login from '@pages/login/Login'; 
 import SignUp from '@pages/login/SignUp'; 
 import SocalSignUp from '@pages/login/SocalSignUp'; 
@@ -7,6 +7,12 @@ import SignUpForm from '@pages/login/SignUpForm';
 import Menubar from '@components/indexcomponts/Menubar';
 import Product from '@src/page/Product';
 import ProductInsert from '@src/page/ProductInsert';
+import Qna from '@components/qna/Qna';
+import Faq from '@components/qna/Faq';
+import AddFaq from '@components/qna/AddFaq';
+
+import { FaqProvider } from 'context/FaqContext';
+
 import './App.css'
 import axios from "axios";
 
@@ -29,7 +35,6 @@ function App() {
 
   return (
     <FaqProvider>
-      <Router>
         <Menubar/>
         <p>받은 데이터: {data}</p> 
         <div>
@@ -48,7 +53,6 @@ function App() {
         
           </Routes>
         </div>
-      </Router>
     </FaqProvider>
 );
 }
