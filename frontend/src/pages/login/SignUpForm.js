@@ -6,7 +6,6 @@ import EmailField from "@components/login/EmailField";
 import AgreementField from "@components/login/AgreementField";
 import { validateField } from "@components/login/ValidateField";
 import ButtonLogin from "@components/login/ButtonLogin";
-
 import "@styles/SignUp.css";
 
 const SignUpForm = () => {
@@ -136,7 +135,7 @@ const SignUpForm = () => {
   return (
     <div className="signup-container">
       <h2 className="h2Title">회원가입</h2>
-      <form className="form-container" onSubmit={handleSubmit}>
+      <form className="login-form-container" onSubmit={handleSubmit}>
         <InputField
           type="text"
           name="userId"

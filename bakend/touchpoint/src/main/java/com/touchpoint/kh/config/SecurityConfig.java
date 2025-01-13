@@ -9,6 +9,8 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.touchpoint.kh.user.model.service.oath2.Oath2Service;
 
@@ -38,7 +40,21 @@ public class SecurityConfig {
         return new Oath2Service();
     }
 	
-	
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/*")
+                        .allowedOrigins("http://localhost:3000") // React 서버 주소
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("")
+                        .allowCredentials(true); // 쿠키 허용 (필요 시)
+            }
+        };
+    }
+    
+    
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http,  AuthSuccessHandler authSuccessHandler) throws Exception{
 		
