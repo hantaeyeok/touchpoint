@@ -4,6 +4,12 @@ import ProductInsert from '@src/page/ProductInsert';
 import Menubar from '@components/indexcomponents/Menubar';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from "react";
+import Qna from '@components/qna/Qna';
+import Faq from '@components/qna/Faq';
+import AddFaq from '@components/qna/AddFaq';
+import { FaqProvider } from 'context/FaqContext';
+import axios from 'axios';
+
 
     
 function App() {
@@ -25,7 +31,6 @@ function App() {
 
   return (
     <FaqProvider>
-      <Router>
         <Menubar/>
         <p>받은 데이터: {data}</p> 
         <div>
@@ -39,7 +44,6 @@ function App() {
             <Route path="/productInsert" element={<ProductInsert/>}/>
           </Routes>
         </div>
-      </Router>
     </FaqProvider>
 );
 }
