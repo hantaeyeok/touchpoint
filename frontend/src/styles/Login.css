@@ -1,0 +1,134 @@
+.login-container {
+    background: #ffffff;
+    padding: 70px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    max-height: 600px;
+    margin: 100px auto; /* 위아래 다시 설정해야함.*/
+  }
+
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .input-field {
+    width: 100%;
+    padding: 10px 5px;
+    margin-bottom: 15px;
+    border: none; 
+    border-bottom: 1px solid #ddd !important;
+    font-size: 16px;
+    outline: none;
+    box-shadow: none;
+  }
+
+  .checkbox-group {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+  }
+  
+  .login-button {
+    width: 100%;
+    background-color: #F299A0;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .login-button:hover {
+    background-color: #e35555;
+  }
+
+  .login-or {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #aaa;
+    margin: 15px 0;
+  }
+
+  .login-or::before,
+  .login-or::after {
+    content: "";
+    flex: 1;
+    border-top: 1px solid #ddd;
+  }
+
+  .login-or::before {
+    margin-right: 10px;
+  }
+
+  .login-or::after {
+    margin-left: 10px;
+  }
+
+  .social-login {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    position: relative; 
+    margin-bottom: 15px; 
+    padding: 20px;
+  }
+  
+  .social-login::after {
+    content: "";
+    position: absolute; 
+    bottom: -10px; 
+    left: 0;
+    right: 0;
+    border-top: 1px solid #ddd; 
+  }
+
+  .social-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    background-color: #f1f1f1;
+    transition: transform 0.2s;
+  }
+
+  .social-button:hover {
+    transform: scale(1.1);
+  }
+
+  .social-button img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .login-links {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+    padding:20px;
+  }
+
+  .login-links a {
+    color: #666;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .login-links a:hover {
+    color: #333;
+  }
+
+  .button-group{
+    display: flex; /* Flexbox 사용 */
+  flex-direction: column; /* 세로 정렬 */
+  align-items: center; /* 버튼들을 가운데 정렬 */
+  gap: 10px; /* 버튼 간의 간격 설정 */
+  }
