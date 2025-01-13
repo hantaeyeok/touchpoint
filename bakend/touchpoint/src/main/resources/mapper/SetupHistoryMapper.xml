@@ -18,13 +18,13 @@
             i.HISTORY_IMAGE_NAME AS IMAGE_NAME,
             i.HISTORY_IMAGER_ORDER AS IMAGE_ORDER
         FROM 
-            SETUP_HISTORY h
+            TB_SETUP_HISTORY h
         LEFT JOIN 
-            HISTORY_IMAGE i
+            TB_HISTORY_IMAGE i
         ON 
             h.HISTORY_NO = i.HISTORY_NO
         ORDER BY 
-            h.HISTORY_DATE DESC, i.HISTORY_IMAGER_ORDER ASC;
+            h.HISTORY_DATE DESC, i.HISTORY_IMAGER_ORDER ASC
     </select>
 
     <resultMap id="SetupHistoryResultMap" type="com.touchpoint.kh.history.model.vo.SetupHistory">
