@@ -5,7 +5,7 @@ import App from '../../App';
 
 const Menubar = () => {
 
-   
+
     return (
         <div className="menu-bar">
             
@@ -38,8 +38,8 @@ const Menubar = () => {
                 <div className="dropdown">
                     <a href="#support" className="dropdown-title">고객상담</a>
                     <div className="dropdown-content">
-                        <a href="#faq">FAQ</a>
-                        <a href="#contact">문의하기</a>
+                        <Link to="/qna">QNA</Link>
+                        <Link to="/faq">FAQ</Link>
                     </div>
                 </div>
             </div>

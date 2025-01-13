@@ -19,8 +19,6 @@ function Faq() {
                     <div className="btn_box">
                         <Link to="/addFaq"><button className="qna_btn" >글 등록</button></Link>
                     </div>
-                    <Routes>
-                    </Routes>
                     <FaqList/>
                 </div>
     )

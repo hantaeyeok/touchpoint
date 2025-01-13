@@ -51,9 +51,10 @@ function AddFaq() {
             <div className="btn_box">
                 <button className="qna_btn" onClick={faqSubmit}>글 등록</button>
             </div>
-            <div className="form-container">
+            <div className="qna-form-container">
                 <div className="form-group">
                     <input 
+                            className="qnaInput"
                             value={qTitle}
                             onChange={(event)=>setTilte(event.target.value)} 
                             type="text" 
@@ -61,8 +62,9 @@ function AddFaq() {
                             name="title" 
                             placeholder="제목을 입력하세요" />
                 </div>
-                <div className="form-group">
-                    <textarea 
+                <div className="qna-form-group">
+                    <textarea
+                            className="qnaTextarea"
                             value={qContent}
                             onChange={(event)=>setContent(event.target.value)}
                             id="content" 

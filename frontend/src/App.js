@@ -10,11 +10,10 @@ import ProductInsert from '@src/page/ProductInsert';
 import Qna from '@components/qna/Qna';
 import Faq from '@components/qna/Faq';
 import AddFaq from '@components/qna/AddFaq';
-
 import { FaqProvider } from 'context/FaqContext';
-
+import axios from 'axios';
 import './App.css'
-import axios from "axios";
+
 
     
 function App() {
