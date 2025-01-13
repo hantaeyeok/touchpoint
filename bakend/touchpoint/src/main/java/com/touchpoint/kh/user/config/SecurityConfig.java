@@ -20,7 +20,7 @@ public class SecurityConfig {
             .cors() // CORS 활성화
             .and()
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/*").permitAll() // /api/ 경로 허용
+                .requestMatchers("/api/*", "/product/**").permitAll() // /api/ 경로 허용
                 .anyRequest().authenticated() // 나머지 요청은 인증 필요
             );
         return http.build();
