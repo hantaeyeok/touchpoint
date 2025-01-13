@@ -90,7 +90,7 @@ const SocalSignUp = () => {
   return (
     <div className="signup-container">
       <h2 className="h2Title">소셜 회원가입</h2>
-      <form className="form-container" onSubmit={handleSubmit}>
+      <form className="login-form-container" onSubmit={handleSubmit}>
         <InputField
           type="text"
           name="username"
