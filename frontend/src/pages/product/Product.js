@@ -46,9 +46,9 @@ const Product = () => {
         const data = props.data; // props 구조 분해
         return (
           <div className="product-component">
-            <img src={process.env.PUBLIC_URL + data.thumbnailImage} alt={data.productName} />  {/*이미지를 동적으로 불러오고싶으면 publid폴더에 넣어야함*/}
+            <img className="proImg" src={process.env.PUBLIC_URL + data.thumbnailImage} alt={data.productName} />  {/*이미지를 동적으로 불러오고싶으면 publid폴더에 넣어야함*/}
             <h4>{data.productName}</h4>
-            <p>{data.shortDescription}</p>
+            <p className="proP">{data.shortDescription}</p>
           </div>
         );
       };
@@ -63,10 +63,10 @@ const Product = () => {
       <Search/>
 
       {/*카테고리 나뉘는 부분*/}
-      <div className="style-div">
-        <button className="style-button" onClick={onClick_kioskButton}>키오스크 / 포스</button>
-        <button className="style-button" onClick={onClick_cctvButton}>출입인증기 / CCTV / 인터넷</button>
-        <button className="style-button" onClick={onClick_otherButton}>부가상품</button>
+      <div className="style-divPro">
+        <button className="style-button1" onClick={onClick_kioskButton}>키오스크 / 포스</button>
+        <button className="style-button1" onClick={onClick_cctvButton}>출입인증기 / CCTV / 인터넷</button>
+        <button className="style-button1" onClick={onClick_otherButton}>부가상품</button>
       </div>
             
       <div className="product-list">

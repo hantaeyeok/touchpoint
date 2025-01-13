@@ -1,13 +1,13 @@
 import "@styles/InfoImg.css";
-import productIntro from '@src/images/productIntro.png';
 
 
+const imageUrl = `${process.env.PUBLIC_URL}/images/productIntro.png`;
 function InfoImg() {
     
     return (
         
         <div className="infoImg">
-            <img src={productIntro} alt="Banner Image" className="banner-image" />
+            <img src={imageUrl} alt="Banner Image" className="banner-image" />
             
             <div className="text-overlay">
                 <p className="service-name">TouchPoint Service</p>
