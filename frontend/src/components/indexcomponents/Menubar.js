@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom"; // React Router Link import
 import "@styles/Menubar.css";
 
 const Menubar = () => {
@@ -6,7 +7,6 @@ const Menubar = () => {
         <div className="menu-bar">
             <div className="logo">logo</div>
             <div className="menu-items">
-                {/* 제품소개 */}
                 <div className="dropdown">
                     <a href="#product" className="dropdown-title">제품소개</a>
                     <div className="dropdown-content">
@@ -14,8 +14,6 @@ const Menubar = () => {
                         <a href="#product2">제품 2</a>
                     </div>
                 </div>
-
-                {/* 솔루션소개 */}
                 <div className="dropdown">
                     <a href="#solution" className="dropdown-title">솔루션소개</a>
                     <div className="dropdown-content">
@@ -23,17 +21,13 @@ const Menubar = () => {
                         <a href="#solution2">솔루션 2</a>
                     </div>
                 </div>
-
-                {/* 설치사례 */}
                 <div className="dropdown">
                     <a href="#install" className="dropdown-title">설치사례</a>
                     <div className="dropdown-content">
-                        <a href="#case">설치사례</a>
+                        <Link to="/history">설치사례</Link>
                         <a href="#review">설치후기</a>
                     </div>
                 </div>
-
-                {/* 고객상담 */}
                 <div className="dropdown">
                     <a href="#support" className="dropdown-title">고객상담</a>
                     <div className="dropdown-content">
@@ -42,8 +36,6 @@ const Menubar = () => {
                     </div>
                 </div>
             </div>
-
-            {/* 로그인 / 회원가입 */}
             <div className="login-div">
                 <a href="#login">로그인 / 회원가입</a>
             </div>

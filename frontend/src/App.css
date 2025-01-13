@@ -1,6 +1,8 @@
 .App {
   text-align: center;
+ 
 }
+
 .index {
   width: 1920px; /* 가로 고정 */
   min-height: 100vh; /* 세로는 콘텐츠 크기 또는 화면 크기 기준으로 조정 */
