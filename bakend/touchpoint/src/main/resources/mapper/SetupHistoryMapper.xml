@@ -5,7 +5,7 @@
 <mapper namespace="com.touchpoint.kh.history.model.dao.SetupHistoryMapper">
 
     <!-- 설치사례와 메인이미지, 서브이미지 조회 -->
-    <select id="selectSetupHistoryWithImages" resultMap="SetupHistoryResultMap">
+    <select id="selectSetupHistory" resultMap="SetupHistoryResultMap">
         SELECT 
             h.HISTORY_NO,
             h.STORE_NAME,
