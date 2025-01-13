@@ -53,7 +53,7 @@ const Login = () => {
 
       return (
         <div className="login-container">
-          <form className="login-form" onSubmit={handleSubmit}>
+        <form className="login-form" onSubmit={handleSubmit}>
             {/* 아이디 또는 전화번호 입력 필드 */}
             <div className="form-group">
               <input

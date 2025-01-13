@@ -1,5 +1,7 @@
 package com.touchpoint.kh.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -40,23 +42,20 @@ public class SecurityConfig {
         return new Oath2Service();
     }
 	
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/*")
-                        .allowedOrigins("http://localhost:3000") // React 서버 주소
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("")
-                        .allowCredentials(true); // 쿠키 허용 (필요 시)
-            }
-        };
-    }
-    
     
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http,  AuthSuccessHandler authSuccessHandler) throws Exception{
+		
+		//cors 허용
+		http
+				.cors(cors -> cors.configurationSource(request -> {
+					var corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
+		            corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000")); // React 서버 주소
+		            corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		            corsConfiguration.setAllowedHeaders(List.of("*")); // 모든 헤더 허용
+		            corsConfiguration.setAllowCredentials(true); // 쿠키 허용
+		            return corsConfiguration;	
+				}));
 		
 		//권한 설정
 		http

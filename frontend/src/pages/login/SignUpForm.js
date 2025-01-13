@@ -17,7 +17,6 @@ const SignUpForm = () => {
     phone: "",
     email: "",
   });
-
   const [errors, setErrors] = useState({});
   const [isMandatoryChecked, setIsMandatoryChecked] = useState(false);
   const [isAdChecked, setIsAdChecked] = useState(false);
