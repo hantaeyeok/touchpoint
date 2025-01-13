@@ -2,7 +2,6 @@
 .menu-bar {
     height: 60px;
     display: flex;
-    
     align-items: center;
     background-color: #f8f9fa;
     padding: 10px 20px;

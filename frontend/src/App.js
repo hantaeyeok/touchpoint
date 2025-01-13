@@ -1,43 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import './App.css';
+import Product from '@src/page/Product';
+import ProductInsert from '@src/page/ProductInsert';
+import Menubar from '@components/indexcomponents/Menubar';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import axios from 'axios'; 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; 
-import Menubar from './components/indexcomponents/Menubar';
 import HistoryMain from './page/history/HistoryMain';
+import React, { useState, useEffect } from 'react';
 
-import './App.css';
 
 function App() {
-  const [data, setData] = useState(""); 
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:8989/api/test")
-      .then((response) => {
-        console.log("Response from server:", response.data);
-        setData(response.data); 
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
 
   return (
+    <div className="App">
     <Router>
-      <div className="index">
-       
-        <div className="Menubar">
-          <Menubar />
-        </div>
+      <Menubar/>
 
-        
-        <Routes>
-          
-          <Route path="/" element={<div className="content"><h1>{data}</h1></div>} />
-
-          <Route path="/history" element={<HistoryMain></HistoryMain>} />
-        </Routes>
-      </div>
-    </Router>
+      <Routes>
+        <Route path="/" element={<h1>메인</h1>} />
+        <Route path="/product" element={<Product/>}/>
+        <Route path="/productInsert" element={<ProductInsert/>}/>
+        <Route path="/history" element={<HistoryMain></HistoryMain>} />
+      </Routes>
+    </Router>                                   
+    </div>
   );
 }
 
