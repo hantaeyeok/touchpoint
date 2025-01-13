@@ -30,7 +30,7 @@ const Menubar = () => {
                 <div className="dropdown">
                     <a href="#install" className="dropdown-title">설치사례</a>
                     <div className="dropdown-content">
-                        <a href="#case">설치사례</a>
+                        <Link to="/history">설치사례</Link>
                         <a href="#review">설치후기</a>
                     </div>
                 </div>
@@ -45,7 +45,7 @@ const Menubar = () => {
             </div>
 
             <div className="login-div">
-                <a href="#login">로그인 / 회원가입</a>
+                <Link to="/login">로그인 / 회원가입</Link>
             </div>
         </div>
     );
