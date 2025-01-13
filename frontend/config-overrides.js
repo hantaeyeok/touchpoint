@@ -7,5 +7,6 @@ module.exports = override(
         '@styles': path.resolve(__dirname, 'src/styles'),
         '@pages': path.resolve(__dirname, 'src/pages'),
         '@src': path.resolve(__dirname, 'src/'),
+        '@img': path.resolve(__dirname, 'src/img')
     })
 );

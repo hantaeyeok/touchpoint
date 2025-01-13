@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 public class ResponseHandler {
-
 	
 	// 공통 성공 응답
 	public ResponseEntity<ResponseData> createResponse(String message, Object data, HttpStatus status){

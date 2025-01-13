@@ -1,0 +1,14 @@
+.historyMain {
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.historyTitle {
+    font-size: 28px;
+    color: #ff007f;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
