@@ -42,6 +42,8 @@ const Product = () => {
         setParam('부가상품');
     };
 
+    
+
     const ResponseProduct = (props) => {
         const data = props.data; // props 구조 분해
         return (

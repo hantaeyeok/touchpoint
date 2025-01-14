@@ -3,6 +3,8 @@ import "@styles/InfoImg.css";
 
 const imageUrl = `${process.env.PUBLIC_URL}/images/productIntro.png`;
 function InfoImg() {
+
+    
     
     return (
         
