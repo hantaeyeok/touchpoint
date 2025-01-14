@@ -1,5 +1,7 @@
 import "@styles/ProductInsert.css";
 import React, { useState, useEffect } from 'react';
+import axios from "axios";
+
 
 const onChangeTitle = (e) => {
     console.log(e.target.value); // 입력값 출력 (추후 상태 관리 가능)
@@ -29,14 +31,7 @@ function ProductInsert() {
     const [title, setTitle] = useState('');
     const [shortDesc, setShortDesc] = useState('');
     const [details, setDetails] = useState('');
-    const [kind, setKind] = useState('');
- 
-
-    const onChangeKind = (e) =>{
-        setKind(e.target.value); 
-    }
-   
-
+    const [kind, setKind] = useState('kiosk');
     
     const onChangeTitle = e =>{
         setTitle(e.target.value); //작성된 제목
@@ -47,27 +42,63 @@ function ProductInsert() {
     const onChangeDetails = e =>{
         setDetails(e.target.value);
     }
-    
-    const onChangeButton = e =>{
-        
-        const obj = {
-            title : title,
-            shortDesc : shortDesc,
-            details  :details
-        }
-        console.log(obj);
-        
-        
-        if(kind === 'kiosk'){
-            setKioskList([...kioskList, obj]); //객체랑 키오스크 리스트랑 합쳐서 하나의 배열로 만듦
-        } else if(kind === 'cctv'){
-            setCctvList([...cctvList, obj]);
-        } else{
-            setOtherList([...otherList, obj]);
-        }
+    const onChangeKind = (e) =>{
+        setKind(e.target.value); 
     }
+   
+    
+    const [obj, setObj] = useState({
+        productName: '',
+        productCategory: '',
+        shortDescription: '',
+        detailedDescription: ''
+    });
+    
+    const onChangeButton = e => {
+        // obj를 직접 수정하지 않고 updatedObj라는 새로운 객체로 변경
+        const updatedObj = {
+            productName: title || '기본 설명',  
+            productCategory: '부가상품' || '기본 설명', 
+            shortDescription: shortDesc || '기본 설명', 
+            detailedDescription: details || '기본 상세 설명'  
+        };
+        
+        console.log(updatedObj);  // 콘솔에서 확인할 수 있음
+        setObj(updatedObj);  // 상태 업데이트
+        
+        // 리스트 업데이트
+        if (kind === 'kiosk') {
+            setKioskList([...kioskList, updatedObj]);  // 키오스크 리스트에 추가
+        } else if (kind === 'cctv') {
+            setCctvList([...cctvList, updatedObj]);  // CCTV 리스트에 추가
+        } else {
+            setOtherList([...otherList, updatedObj]);  // 다른 리스트에 추가
+        }
+    
+        post(updatedObj);  // 상태 업데이트 후 post 요청 보내기
+    };
+    
+    const post = (data) => {
+        axios({
+            method: 'post',
+            url: 'http://localhost:8989/product',
+            data: JSON.stringify(data),   // 서버에 보내는 데이터
+        })
+        .then((response) => {
+            // 성공적으로 데이터를 받았을 때 처리할 로직
+            const responseData = response.data.responseData;
+            console.log('Successfully posted data:', responseData);
+            // 상태 업데이트 또는 다른 로직 추가
+        })
+        .catch((error) => {
+            // 오류 발생 시 처리할 로직
+            console.error('Error posting data:', error);
+            // 오류 메시지를 확인하고 적절한 에러 핸들링 추가
+        });
+    };
 
-    const [mainImg, setMainImg] = useState('');  // 썸네일 이미지 한장만 저장장
+    
+    const [mainImg, setMainImg] = useState('');  // 썸네일 이미지 한장만 저장
     const [imgList, setImgList] = useState([]);  // 상세 이미지 여러장 저장
     
     const [productList, setProductList] = useState([]); // 작성한 정보를 객체로 만들어서 담을 곳
@@ -79,6 +110,7 @@ function ProductInsert() {
 
         reader.onload = () => {
             setMainImg(reader.result); // 썸네일 이미지 저장
+            //console.log(reader.result); 
         };
     };
 
@@ -93,7 +125,7 @@ function ProductInsert() {
             setImgList((prev) => [
                 ...prev,
                 { id, previewUrl: reader.result, originFile: e.target.files[0] },
-            ]); // 상세 이미지 리스트에 추가
+            ]); // 상세 이미지 리스트에 추가(url이랑 오리진 파일이랑 뭔차이)
         };
     };
 
@@ -225,7 +257,7 @@ function ProductInsert() {
 
                             <div className="buttons">
                                 <button type="button" className="square-button">취소하기</button>
-                                <button onClick={onChangeButton} type="submit" className="square-button-fa">수정하기</button>
+                                <button onClick={onChangeButton} type="button" className="square-button-fa">수정하기</button>
                             </div>
                         </form>
                     </div>

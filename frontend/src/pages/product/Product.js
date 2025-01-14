@@ -27,9 +27,12 @@ const Product = () => {
         });
     };
 
+    
+
      // clickCategory 변경될 때마다 axios실행후 데이터를 가져옴
     useEffect(() => {
         fetchData();
+        //여기에 버튼 색 고정 시켜놓으면 될듯
     }, [clickCategory]); // clickCategory 상태가 변경될 때 실행
 
     const onClick_kioskButton = () => {
@@ -88,7 +91,7 @@ const Product = () => {
 
         <div>
           <button className="insert-button">
-            <Link to="/ProductInsert" style={{ textDecoration: "none"}}>상품 추가</Link>
+            <Link to="/productInsert" style={{ textDecoration: "none"}}>상품 추가</Link>
           </button>
         </div>
       </div>

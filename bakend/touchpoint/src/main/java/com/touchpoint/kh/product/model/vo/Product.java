@@ -20,24 +20,17 @@ import lombok.NoArgsConstructor;
 @Table(name = "TB_PRODUCT")
 public class Product {
 	@Id
-    @Column(name = "PRODUCT_ID")
-    private String productId; // NUMBER 타입 매핑
+    private Long productId; 
 
-    @Column(name = "PRODUCT_NAME", nullable = false)
     private String productName;
 
-    @Column(name = "PRODUCT_CATEGORY", nullable = false)
     private String productCategory;
 
-    @Column(name = "SHORT_DESCRIPTION", nullable = false)
     private String shortDescription;
 
-    @Column(name = "DETAILED_DESCRIPTION")
     private String detailedDescription; 
 
-    @Column(name = "THUMBNAIL_IMAGE", nullable = false)
     private String thumbnailImage;
 
-    @Column(name = "CREATED_DATE", nullable = false)
     private LocalDateTime createdDate;
 }

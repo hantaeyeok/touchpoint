@@ -4,10 +4,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,24 +22,25 @@ import com.touchpoint.kh.product.resposnse.ResponseData;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oracle.jdbc.driver.Message;
 
 @RestController
 @Slf4j
 @RequestMapping("/product")
+@CrossOrigin(origins = "http://localhost:3000")
 @RequiredArgsConstructor
 public class ProductController {
 	private final ProductService productService;
 
+
 	@PostMapping
-	public ResponseEntity<ResponseData> save(@RequestBody String data) throws JsonMappingException, JsonProcessingException{
+	public ResponseEntity<ResponseData> save(@RequestBody String product) throws JsonMappingException, JsonProcessingException{
 	
-		log.info("앞단에서 받은 데이터:{}" , data);
+		log.info("앞단에서 받은 데이터:{}" , product);
 		
-		Product product = new ObjectMapper().readValue(data, Product.class);
-		product.setCreatedDate(LocalDateTime.now());
+		Product responseProduct = new ObjectMapper().readValue(product, Product.class);
+		responseProduct.setCreatedDate(LocalDateTime.now());
 		
-		Product saveObj = productService.save(product);
+		Product saveObj = productService.save(responseProduct);
 		
 		ResponseData rd = ResponseData.builder()
 									  .message("상품 추가 성공!")
@@ -74,7 +77,7 @@ public class ProductController {
 									  .responseData(productCategory)
 									  .build();
 		
-		log.info("카데고리별 product :{}" , productCategory);
+		//log.info("카데고리별 product :{}" , productCategory);
 		
 		return ResponseEntity.ok(rd);
 	}
