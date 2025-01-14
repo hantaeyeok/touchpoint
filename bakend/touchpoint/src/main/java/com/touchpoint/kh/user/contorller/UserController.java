@@ -23,7 +23,7 @@ import com.touchpoint.kh.user.model.vo.UserDto;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
 

@@ -12,8 +12,10 @@ import lombok.ToString;
 @ToString
 public class LoginRequest {
 
-	private String userId;
+	private String userIdOrPhone;
+	private String userType;
 	private String password;
 	private String captchaToken;
+	private String remember;
 	
-}
+} 

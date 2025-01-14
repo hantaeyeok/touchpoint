@@ -25,7 +25,7 @@ import lombok.Setter;
 public class LoginAttempt {
 
 	@Id
-	 @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "LOGIN_ATTEMPT_SEQ_GEN")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "LOGIN_ATTEMPT_SEQ_GEN")
     @SequenceGenerator(name = "LOGIN_ATTEMPT_SEQ_GEN", sequenceName = "LOGIN_ATTEMPT_SEQ", allocationSize = 1)
     @Column(name = "ID")
     private Long id; // 기본 키
@@ -39,6 +39,4 @@ public class LoginAttempt {
     @Column(name = "CAPTCHA_ACTIVE", nullable = false, length = 1, columnDefinition = "CHAR(1) DEFAULT 'N'")
     private String captchaActive; // 캡차 활성화 여부 ('Y' 또는 'N')
 
-    @Column(name = "CAPTCHA_TIMER")
-    private LocalDateTime captchaTimer; // 캡차 제한 시간// 다시 삭제해야함
 }
