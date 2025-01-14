@@ -3,7 +3,6 @@ package com.touchpoint.kh.product.model.service;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
-import com.touchpoint.kh.product.model.dao.ProductMapper;
 import com.touchpoint.kh.product.model.dao.ProductRepository;
 import com.touchpoint.kh.product.model.vo.Product;
 
@@ -12,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
-	private final ProductMapper productMapper;
 	private final ProductRepository productRepository;
 	
 	@Override

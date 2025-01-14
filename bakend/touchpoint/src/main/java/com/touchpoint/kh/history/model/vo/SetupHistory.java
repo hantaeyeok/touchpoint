@@ -22,6 +22,5 @@ public class SetupHistory {
     private LocalDate historyDate;  // 등록일자
     private String userId;          // 게시글 작성자
     private String mainImage;       // 메인이미지
-    private List<HistoryImage> subImages; // 서브이미지 리스트
 }
 
