@@ -89,7 +89,7 @@ public class SecurityConfig {
 						.logoutUrl("logout")
 						.logoutSuccessHandler(authLogoutHandler)
 						.invalidateHttpSession(true) //세션 무효화
-						.deleteCookies(null)
+						.deleteCookies("JSESSIONID")
 						.permitAll()		
 						);
 		

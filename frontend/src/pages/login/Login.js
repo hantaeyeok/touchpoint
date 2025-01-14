@@ -22,7 +22,7 @@ const Login = () => {
   useEffect(() => {
     const captchaScript = () => {
       const script = document.createElement("script");
-      script.src = "https://www.google.com/recaptcha/api.js?render=6Lc-m7QqAAAAAGnwC5OIFaJxiHlknAVpNvuS9Xnp"; // ✅ 캡차 키 확인 필요 (개발용 키인지, 프로덕션용인지)
+      script.src = "https://www.google.com/recaptcha/api.js?render=6Lek_LYqAAAAAM8fC9lWQNrJlR66_vgZINVe3cc1"; // ✅ 캡차 키 확인 필요 (개발용 키인지, 프로덕션용인지)
       script.async = true;
       document.body.appendChild(script);
     };
@@ -51,7 +51,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("/api/login", {
+      const response = await axios.post("http://localhost:8989/login/login", {
         userIdOrPhone: formData.usernameOrPhone,
         userType: formData.userType,
         password: formData.password,
@@ -64,7 +64,7 @@ const Login = () => {
         setFailedLoginCnt(response.data.data.failedLoginCnt);
 
         // 캡차 실행
-        const token = await window.grecaptcha.execute("6Lc-m7QqAAAAAGnwC5OIFaJxiHlknAVpNvuS9Xnp", { action: "login" });
+        const token = await window.grecaptcha.execute("6Lek_LYqAAAAAM8fC9lWQNrJlR66_vgZINVe3cc1", { action: "login" });
         setFormData({ ...formData, captchaToken: token });
       } else {
         handleLoginResponse(response);

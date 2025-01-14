@@ -24,18 +24,18 @@ import lombok.Setter;
 @Table(name = "USER_SESSION")
 public class UserSession {
 
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_SESSION_SEQ_GEN")
     @SequenceGenerator(name = "USER_SESSION_SEQ_GEN", sequenceName = "USER_SESSION_SEQ", allocationSize = 1)
     @Column(name = "SESSION_ID")
-    private Long sessionId;
+    private Long sessionId; // 고유 식별자
 
     @Column(name = "USER_ID", length = 20, nullable = false)
-    private String userId;
+    private String userId; // 사용자 ID
 
-    @Column(name = "SESSION_STATUS", length = 1, nullable = false)
-    private String sessionStatus; // A: 활성, I: 비활성
+    @Column(name = "SESSION_STATUS", length = 1, nullable = false, columnDefinition = "CHAR(1) DEFAULT 'A'")
+    private String sessionStatus; // 세션 상태 ('A': 활성, 'I': 비활성)
 
-    @Column(name = "LOGIN_TIME", nullable = false)
-    private LocalDateTime loginTime;
+    @Column(name = "LOGIN_TIME", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime loginTime; // 로그인 시간
 }

@@ -2,6 +2,8 @@ package com.touchpoint.kh.user.contorller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,11 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.touchpoint.kh.common.ResponseData;
 import com.touchpoint.kh.common.ResponseHandler;
-import com.touchpoint.kh.common.message.LoginMessage;
+import com.touchpoint.kh.user.model.dao.UserRepository;
+import com.touchpoint.kh.user.model.dao.UserSessionRepository;
 import com.touchpoint.kh.user.model.service.UserService;
 import com.touchpoint.kh.user.model.vo.LoginRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -23,6 +27,8 @@ public class LoginController {
 
 	private final UserService userService;
 	private final ResponseHandler responseHandler;
+	private final UserSessionRepository userSessionRepository;
+	private final UserRepository userRepository;
 	 
 	 @PostMapping("/login")
 	    public ResponseEntity<ResponseData> login(@RequestBody LoginRequest loginRequest) {
@@ -34,10 +40,7 @@ public class LoginController {
 	        }
 	    }
 	 
-	 @PostMapping("/logout")
-	 public ResponseEntity<String> logout(HttpServletRequest request) {
-		    return ResponseEntity.ok("로그아웃 성공");
-	 }
+
 	 
 	 @PostMapping("/logout")
 	    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
@@ -63,7 +66,7 @@ public class LoginController {
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("로그아웃 실패");
 	        }
 	    }
-	 
+}	 
 	 
 	 
 
@@ -87,4 +90,4 @@ public class LoginController {
 		}
 	 }
      * */
-}
+

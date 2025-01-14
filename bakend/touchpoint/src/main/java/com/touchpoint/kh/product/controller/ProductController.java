@@ -20,7 +20,6 @@ import com.touchpoint.kh.product.resposnse.ResponseData;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oracle.jdbc.driver.Message;
 
 @RestController
 @Slf4j
