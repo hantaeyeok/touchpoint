@@ -98,7 +98,6 @@ function FaqList() {
                     <div className ="faq_answer">
                         <span className="a-icon">A.</span>
                         <div className="answer-text">{item.answer}</div>
-                        <div className="answer-text">{item.faqNo}</div>
                         <div className="faq_btn">
                             <button className="faq_btn1" onClick={() => editOpenModal (item)}>수정하기</button>
                             <button className="faq_btn2" onClick={() => deleteOpenModal(item)}>삭제하기</button>
