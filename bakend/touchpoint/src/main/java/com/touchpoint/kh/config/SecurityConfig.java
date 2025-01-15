@@ -11,8 +11,6 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.touchpoint.kh.user.model.service.oath2.Oath2Service;
 
@@ -44,7 +42,18 @@ public class SecurityConfig {
 	
     
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http,  AuthSuccessHandler authSuccessHandler) throws Exception{
+	public SecurityFilterChain filterChain(HttpSecurity http,  AuthSuccessHandler authSuccessHandler, AuthLogoutHandler authLogoutHandler) throws Exception{
+		
+		//cors 허용 
+		http
+				.cors(cors -> cors.configurationSource(request -> {
+					var corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
+		            corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000")); // React 서버 주소
+		            corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		            corsConfiguration.setAllowedHeaders(List.of("*")); // 모든 헤더 허용
+		            corsConfiguration.setAllowCredentials(true); // 쿠키 허용
+		            return corsConfiguration;	
+				}));
 		
 		//cors 허용
 		http
@@ -81,9 +90,21 @@ public class SecurityConfig {
 				.sessionManagement(session -> session
 						.maximumSessions(1) // 동시 세션 1개 제한
 						.maxSessionsPreventsLogin(false) //기존 세선 무효화
-						.expiredUrl("/login?sessionExpired-true") //세션 만료시 url
+						.expiredUrl("/login?sessionExpired=true") //세션 만료시 url
 						.sessionRegistry(sessionRegistry())
 				);
+		
+		// 로그아웃 설정
+		http
+				.logout(logout -> logout
+						.logoutUrl("logout")
+						.logoutSuccessHandler(authLogoutHandler)
+						.invalidateHttpSession(true) //세션 무효화
+						.deleteCookies("JSESSIONID")
+						.permitAll()		
+						);
+		
+		
 		
 		
 		// OAuth2 로그인 설정
@@ -95,18 +116,9 @@ public class SecurityConfig {
                         .userService(oath2Service())    // 사용자 정보를 처리할 서비스 등록
                 )
         );
-        
-        
-		
 		// CSRF 비활성화
 		http
 				.csrf((auth) -> auth.disable());
-		
-		
 		return http.build();
 	}
-	
-	
-	
-    
 }

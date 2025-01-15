@@ -17,13 +17,14 @@ const SignUpForm = () => {
     phone: "",
     email: "",
   });
-
   const [errors, setErrors] = useState({});
   const [isMandatoryChecked, setIsMandatoryChecked] = useState(false);
   const [isAdChecked, setIsAdChecked] = useState(false);
   const [userIdAvailable, setUserIdAvailable] = useState(null);
   const [emailAvailable, setEmailAvailable] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [phoneAvailable, setPhoneAvailable] = useState(null);
+
    
   // 공통 handleChange
   const handleChange = (e) => {
@@ -71,14 +72,15 @@ const SignUpForm = () => {
     const newErrors = validateForm();
     setErrors(newErrors);
 
-    if (Object.keys(newErrors).length || userIdAvailable === false || emailAvailable === false) {
+    if (Object.keys(newErrors).length || userIdAvailable === false || emailAvailable === false || phoneAvailable === false
+  ) {
       alert("입력된 정보를 확인해주세요.");
       return;
     }
 
     try {
       setIsSubmitting(true);
-      const response = await axios.post("http://localhost:8989/api/user/signup", {
+      const response = await axios.post("http://localhost:8989/user/signup", {
         ...formData,
         adAgreed: isAdChecked,
       });
@@ -142,7 +144,7 @@ const SignUpForm = () => {
           value={formData.userId}
           onChange={handleChange}
           onBlur={() =>
-            handleBlur("userId", formData.userId, `http://localhost:8989/api/user/check-id?userId=${formData.userId}`, setUserIdAvailable)
+            handleBlur("userId", formData.userId, `http://localhost:8989/user/check-id?userId=${formData.userId}`, setUserIdAvailable)
           }
           placeholder="아이디를 입력하세요"
           iconName="person"
@@ -183,7 +185,17 @@ const SignUpForm = () => {
           placeholder="전화번호를 입력하세요"
           iconName="phone"
           errorMessage={errors.phone}
+          onBlur={() =>
+            handleBlur(
+              "phone",
+              formData.phone,
+              `http://localhost:8989/user/check-phone?phone=${formData.phone}`,
+              setPhoneAvailable
+            )
+          }
         />
+        {phoneAvailable === false && <p className="error-message">이미 사용 중인 전화번호입니다.</p>}
+
         <EmailField
   name="email"
   value={formData.email}
@@ -198,7 +210,7 @@ const SignUpForm = () => {
     handleBlur(
       "email",
       formData.email,
-      `http://localhost:8989/api/user/check-email?email=${formData.email}`,
+      `http://localhost:8989/user/check-email?email=${formData.email}`,
       setEmailAvailable
     );
   }}

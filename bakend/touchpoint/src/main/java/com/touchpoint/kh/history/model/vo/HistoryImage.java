@@ -1,6 +1,5 @@
 package com.touchpoint.kh.history.model.vo;
 
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
