@@ -40,13 +40,13 @@ public class QnaController {
 	
 	@PutMapping("/update/{faqNo}")
 	public ResponseEntity<Faq> updateFaq(@RequestBody Faq faqDetails,
-										 @PathVariable int faqNo){
+										 @PathVariable("faqNo") int faqNo){
 		Faq updateFaq = faqService.updateFaq(faqDetails, faqNo);
 		return ResponseEntity.ok(updateFaq);
 	}
 	
 	@DeleteMapping("/delete/{faqNo}")
-	public ResponseEntity<Faq> deleteFaq(@PathVariable int faqNo){
+	public ResponseEntity<Faq> deleteFaq(@PathVariable("faqNo") int faqNo){
 		faqService.deleteFaq(faqNo);
 		return ResponseEntity.noContent().build(); // 204 no content만 응답
 	}

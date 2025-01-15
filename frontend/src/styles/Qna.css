@@ -158,4 +158,34 @@ display: inline-block;
     white-space: pre-wrap;
 }
 
+.modalBox {
+    width: 100vh;
+    height: 100vh;
+    display: flex;
+    justify-content: center; /* 가로 중앙 */
+    align-items: center;    /* 세로 중앙 */
+}
 
+.editModal {
+    width: 800px;
+    height: 500px;
+    margin: auto;
+    margin-top: 50px;
+    background-color: #b6abab;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.deleteModal {
+    width: 250px;
+    height: 70px;
+    margin: auto;
+    margin-top: auto;
+    background-color: #b6abab;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
