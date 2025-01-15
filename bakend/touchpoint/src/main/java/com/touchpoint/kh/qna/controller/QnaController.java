@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.touchpoint.kh.qna.model.service.FaqService;
+import com.touchpoint.kh.qna.model.service.QnaService;
 import com.touchpoint.kh.qna.model.vo.Faq;
 
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,9 @@ import lombok.RequiredArgsConstructor;
 public class QnaController {
 	
 	private final FaqService faqService;
+	private final QnaService QnaService;
 	
+	//jpa
 	@GetMapping
 	public List<Faq> getAllFaqs(){
 		return faqService.getAllFaqs();
@@ -49,5 +51,13 @@ public class QnaController {
 	public ResponseEntity<Faq> deleteFaq(@PathVariable("faqNo") int faqNo){
 		faqService.deleteFaq(faqNo);
 		return ResponseEntity.noContent().build(); // 204 no content만 응답
+		
+	//mybatis
+	
+	//select
+	//insert
+	//update
+	//delete
+		
 	}
 }

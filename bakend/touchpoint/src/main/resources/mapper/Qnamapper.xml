@@ -4,6 +4,44 @@
 
 <mapper namespace="com.touchpoint.kh.qna.model.dao.QnaMapper">
 	
-   
+   <select id="qnaFindAll">
+   		SELECT 
+			    Q.QNA_NO,
+			    Q.QNA_TITLE,
+			    Q.USER_ID,
+			    Q.QNA_DATE,
+			    A.ANSWER_STATUS
+		  FROM
+			    QNA Q
+	 LEFT JOIN
+			    ANSWER A
+			ON
+			    Q.QNA_NO = A.QNA_NO
+	  ORDER BY
+			    Q.QNA_NO DESC;
+   </select>
 
+	<select id="qnaDetail">
+		SELECT
+			    U.USER_ID,
+			    U.PHONE_NO,
+			    Q.QNA_DATE,
+			    Q.QNA_TITLE,
+			    Q.QNA_CONTENT,
+			    F.ORIGIN_NAME,
+			    F.CHANGE_NAME,
+			    F.PATH
+		  FROM
+			    MEMBER U
+	INNER JOIN    
+			    QNA Q
+			ON
+			    U.USER_ID = Q.USER_ID
+	INNER JOIN
+			    FILE_ADD F
+			ON
+			    Q.QNA_NO = F.QNA_NO
+		 WHERE
+			    Q.QNA_NO = #{QNA_NO};
+	</select>
 </mapper>
