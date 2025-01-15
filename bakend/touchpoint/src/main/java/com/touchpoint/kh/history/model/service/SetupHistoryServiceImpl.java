@@ -2,6 +2,7 @@ package com.touchpoint.kh.history.model.service;
 
 import com.touchpoint.kh.history.model.dao.SetupHistoryMapper;
 import com.touchpoint.kh.history.model.vo.SetupHistory;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,4 +20,6 @@ public class SetupHistoryServiceImpl implements SetupHistoryService {
     public List<SetupHistory> getSetupHistory() {
         return setupHistoryMapper.selectSetupHistory();
     }
+
 }
+
