@@ -12,26 +12,18 @@ function ProductInsert() {
 
     const [type, setType] = useState(''); 
 
-    const onClick_kioskButton =() =>{
-        setType('kiosk');
-    };
-    const onClick_cctvButton =() =>{
-        setType('cctv');
-    };
-    const onClick_otherButton =() =>{
-        setType('other');
-    };
-
 
     const [kioskList, setKioskList] = useState(''); 
     const [cctvList, setCctvList] = useState(''); 
     const [otherList, setOtherList] = useState(''); 
 
+    const [mainImg, setMainImg] = useState('');  // 썸네일 이미지 한장만 저장
+    const [imgList, setImgList] = useState([]);  // 상세 이미지 여러장 저장
 
     const [title, setTitle] = useState('');
     const [shortDesc, setShortDesc] = useState('');
     const [details, setDetails] = useState('');
-    const [kind, setKind] = useState('kiosk');
+    const [kind, setKind] = useState('키오스크/포스');
     
     const onChangeTitle = e =>{
         setTitle(e.target.value); //작성된 제목
@@ -44,6 +36,7 @@ function ProductInsert() {
     }
     const onChangeKind = (e) =>{
         setKind(e.target.value); 
+        console.log(e.target.value);
     }
    
     
@@ -51,68 +44,84 @@ function ProductInsert() {
         productName: '',
         productCategory: '',
         shortDescription: '',
-        detailedDescription: ''
+        detailedDescription: '',
+        thumbnailImage: '',
+
     });
+
     
     const onChangeButton = e => {
-        // obj를 직접 수정하지 않고 updatedObj라는 새로운 객체로 변경
         const updatedObj = {
-            productName: title || '기본 설명',  
-            productCategory: '부가상품' || '기본 설명', 
-            shortDescription: shortDesc || '기본 설명', 
-            detailedDescription: details || '기본 상세 설명'  
+            productName: title,
+            productCategory: kind,
+            shortDescription: shortDesc,
+            detailedDescription: details,
+            thumbnailImage: mainImg.name, // 파일 이름 설정
         };
-        
-        console.log(updatedObj);  // 콘솔에서 확인할 수 있음
-        setObj(updatedObj);  // 상태 업데이트
-        
-        // 리스트 업데이트
-        if (kind === 'kiosk') {
-            setKioskList([...kioskList, updatedObj]);  // 키오스크 리스트에 추가
-        } else if (kind === 'cctv') {
-            setCctvList([...cctvList, updatedObj]);  // CCTV 리스트에 추가
-        } else {
-            setOtherList([...otherList, updatedObj]);  // 다른 리스트에 추가
-        }
     
-        post(updatedObj);  // 상태 업데이트 후 post 요청 보내기
+        setObj(updatedObj);
+    
+        const updatedList =
+            kind === 'kiosk'
+                ? [...kioskList, updatedObj]
+                : kind === 'cctv'
+                ? [...cctvList, updatedObj]
+                : [...otherList, updatedObj];
+    
+        kind === 'kiosk'
+            ? setKioskList(updatedList)
+            : kind === 'cctv'
+            ? setCctvList(updatedList)
+            : setOtherList(updatedList);
+    
+        post(updatedObj, mainImg); // 파일 객체를 전달
     };
     
-    const post = (data) => {
-        axios({
-            method: 'post',
-            url: 'http://localhost:8989/product',
-            data: JSON.stringify(data),   // 서버에 보내는 데이터
-        })
-        .then((response) => {
-            // 성공적으로 데이터를 받았을 때 처리할 로직
-            const responseData = response.data.responseData;
-            console.log('Successfully posted data:', responseData);
-            // 상태 업데이트 또는 다른 로직 추가
-        })
-        .catch((error) => {
-            // 오류 발생 시 처리할 로직
-            console.error('Error posting data:', error);
-            // 오류 메시지를 확인하고 적절한 에러 핸들링 추가
-        });
+    const post = (data, file) => {
+        const formData = new FormData();
+        formData.append('product', JSON.stringify(data)); // JSON 데이터를 추가
+        formData.append('upfile', file); // 파일 추가 (업로드할 파일 객체 전달)
+    
+        axios
+            .post('http://localhost:8989/product/save', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            })
+            .then(response => {
+                console.log('Response:', response.data);
+            })
+            .catch(error => {
+                if (error.response) {
+                    console.error('Server Error:', error.response.data);
+                } else {
+                    console.error('Error:', error.message);
+                }
+            });
     };
-
     
-    const [mainImg, setMainImg] = useState('');  // 썸네일 이미지 한장만 저장
-    const [imgList, setImgList] = useState([]);  // 상세 이미지 여러장 저장
-    
-    const [productList, setProductList] = useState([]); // 작성한 정보를 객체로 만들어서 담을 곳
-
     // 썸네일 이미지 추가 함수
     const onMainImgSelected = (e) => {
+        const file = e.target.files[0]; // 선택한 파일
+    
+        if (!file) return; // 파일이 없는 경우 종료
+    
+        setMainImg(file); // 파일 객체로 저장
+    
+        // 이미지를 미리보기용으로 읽어서 출력
         const reader = new FileReader();
-        reader.readAsDataURL(e.target.files[0]);
-
+        reader.readAsDataURL(file);
+    
         reader.onload = () => {
-            setMainImg(reader.result); // 썸네일 이미지 저장
-            //console.log(reader.result); 
+            // 미리보기 이미지 설정
+            console.log(reader.result); // 이미지 데이터 URI 출력
+        };
+    
+        reader.onerror = (error) => {
+            console.error("File reading error:", error);
         };
     };
+    
 
     // 상세 이미지 추가 함수
     const onDetailImgSelected = (e) => {
@@ -131,13 +140,6 @@ function ProductInsert() {
 
     
     const [button, setButton] = useState('');
-
-    const [formState, setFormState] = useState({
-        title : '',
-        mainImg : '',
-        shortDesc : '',
-        details : ''
-    });
 
 
     const onChangeHandler = e =>{
@@ -168,9 +170,9 @@ function ProductInsert() {
                             <div className="form-group">
                                 <label htmlFor="form-label" className="form-label">카테고리</label>
                                 <select name="category" id="category" onChange={onChangeKind} required>
-                                    <option value="kiosk" >키오스크/포스</option>
-                                    <option value="cctv" >출입인증기/CCTV/인터넷</option>
-                                    <option value="other" >부가상품</option>
+                                    <option value="키오스크/포스" >키오스크/포스</option>
+                                    <option value="출입인증기/CCTV/인터넷" >출입인증기/CCTV/인터넷</option>
+                                    <option value="부가상품" >부가상품</option>
                                 </select>
 
                                 <input
