@@ -23,6 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	//
 	Optional<User> findByPhoneNo(String phoneNo);
 	
+	//아래 코드 동작 안해서 mapper에함
 	@Query("SELECT u FROM User u WHERE u.userId = :userIdOrPhone OR u.phoneNo = :userIdOrPhone")
     Optional<User> findByUserIdOrPhone(@Param("userIdOrPhone") String userIdOrPhone);
 	

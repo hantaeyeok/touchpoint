@@ -108,14 +108,19 @@ public class SecurityConfig {
 		
 		
 		// OAuth2 로그인 설정
-        http.oauth2Login((oauth2) -> oauth2
-                .loginPage("/login")                                   // OAuth2 로그인 페이지 경로
-                .defaultSuccessUrl("/api/oauth2/callback/success", true)                      // 로그인 성공 후 리다이렉트 경로
-                .failureUrl("http://localhost:3000/login?error=true")                       // 로그인 실패 시 리다이렉트 경로
-                .userInfoEndpoint(userInfo -> userInfo
-                        .userService(oath2Service())    // 사용자 정보를 처리할 서비스 등록
-                )
-        );
+        http.
+        		oauth2Login((oauth2) -> oauth2
+	                .loginPage("/login")                                   // OAuth2 로그인 페이지 경로
+	                .defaultSuccessUrl("/api/oauth2/callback/success", true)                      // 로그인 성공 후 리다이렉트 경로
+	                .failureUrl("http://localhost:3000/login?error=true")                       // 로그인 실패 시 리다이렉트 경로
+	                .userInfoEndpoint(userInfo -> userInfo
+	                        .userService(oath2Service())    // 사용자 정보를 처리할 서비스 등록
+	                )
+				);
+        
+        
+		
+
 		// CSRF 비활성화
 		http
 				.csrf((auth) -> auth.disable());
