@@ -23,7 +23,7 @@ import com.touchpoint.kh.user.model.vo.UserDto;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -49,6 +49,17 @@ public class UserController {
 	    			: responseHandler.createResponse(LoginMessage.EMAIL_EXISTS, false, HttpStatus.OK);
 	    } catch (Exception e) {
 	        return responseHandler.handleException("이메일 중복 확인 중 에러 발생", e);
+	    }
+	}
+	
+	@GetMapping("/check-phone")
+	public ResponseEntity<ResponseData> checkPhone(@RequestParam("phone") String phone) {
+	    try {
+	       return userService.userPhoneChecked(phone) //사용가능 true userid.isempty();
+	    		   	? responseHandler.createResponse("사용가능", true, HttpStatus.OK)
+	    			: responseHandler.createResponse("불가", false, HttpStatus.OK);
+	    } catch (Exception e) {
+	        return responseHandler.handleException("전화번호 중복체크", e);
 	    }
 	}
 	

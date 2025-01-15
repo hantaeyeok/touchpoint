@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.touchpoint.kh.user.model.dao.UserMapper">
+
+    <!-- 사용자 조회: userId 또는 phoneNo로 검색 -->
+    <select id="findByUserIdOrPhone" parameterType="string" resultType="com.touchpoint.kh.user.model.vo.User">
+SELECT 
+        USER_CD AS userCd,
+        USER_ID AS userId,
+        PASSWORD AS password,
+        EMAIL AS email,
+        PHONE_NO AS phoneNo,
+        NAME AS name,
+        JOIN_DT AS joinDt,
+        USER_ST AS userSt,
+        SOCIAL_USER AS socialUser,
+        AD_AGREED AS adAgreed
+    FROM users
+    WHERE USER_ID = #{userIdOrPhone} OR PHONE_NO = #{userIdOrPhone}
+    </select>
+
+</mapper>

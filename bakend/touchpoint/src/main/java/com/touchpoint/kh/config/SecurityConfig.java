@@ -1,5 +1,7 @@
 package com.touchpoint.kh.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,8 +11,6 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.touchpoint.kh.user.model.service.oath2.Oath2Service;
 
@@ -40,23 +40,31 @@ public class SecurityConfig {
         return new Oath2Service();
     }
 	
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/*")
-                        .allowedOrigins("http://localhost:3000") // React 서버 주소
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("")
-                        .allowCredentials(true); // 쿠키 허용 (필요 시)
-            }
-        };
-    }
-    
     
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http,  AuthSuccessHandler authSuccessHandler) throws Exception{
+	public SecurityFilterChain filterChain(HttpSecurity http,  AuthSuccessHandler authSuccessHandler, AuthLogoutHandler authLogoutHandler) throws Exception{
+		
+		//cors 허용 
+		http
+				.cors(cors -> cors.configurationSource(request -> {
+					var corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
+		            corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000")); // React 서버 주소
+		            corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		            corsConfiguration.setAllowedHeaders(List.of("*")); // 모든 헤더 허용
+		            corsConfiguration.setAllowCredentials(true); // 쿠키 허용
+		            return corsConfiguration;	
+				}));
+		
+		//cors 허용
+		http
+				.cors(cors -> cors.configurationSource(request -> {
+					var corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
+		            corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000")); // React 서버 주소
+		            corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		            corsConfiguration.setAllowedHeaders(List.of("*")); // 모든 헤더 허용
+		            corsConfiguration.setAllowCredentials(true); // 쿠키 허용
+		            return corsConfiguration;	
+				}));
 		
 		//권한 설정
 		http
@@ -82,32 +90,42 @@ public class SecurityConfig {
 				.sessionManagement(session -> session
 						.maximumSessions(1) // 동시 세션 1개 제한
 						.maxSessionsPreventsLogin(false) //기존 세선 무효화
-						.expiredUrl("/login?sessionExpired-true") //세션 만료시 url
+						.expiredUrl("/login?sessionExpired=true") //세션 만료시 url
 						.sessionRegistry(sessionRegistry())
 				);
 		
+		// 로그아웃 설정
+		http
+				.logout(logout -> logout
+						.logoutUrl("logout")
+						.logoutSuccessHandler(authLogoutHandler)
+						.invalidateHttpSession(true) //세션 무효화
+						.deleteCookies("JSESSIONID")
+						.permitAll()		
+						);
+		
+		
+		
 		
 		// OAuth2 로그인 설정
-        http.oauth2Login((oauth2) -> oauth2
-                .loginPage("/login")                                   // OAuth2 로그인 페이지 경로
-                .defaultSuccessUrl("/api/oauth2/callback/success", true)                      // 로그인 성공 후 리다이렉트 경로
-                .failureUrl("http://localhost:3000/login?error=true")                       // 로그인 실패 시 리다이렉트 경로
-                .userInfoEndpoint(userInfo -> userInfo
-                        .userService(oath2Service())    // 사용자 정보를 처리할 서비스 등록
-                )
-        );
+
+        http.
+        		oauth2Login((oauth2) -> oauth2
+	                .loginPage("/login")                                   // OAuth2 로그인 페이지 경로
+	                .defaultSuccessUrl("/api/oauth2/callback/success", true)                      // 로그인 성공 후 리다이렉트 경로
+	                .failureUrl("http://localhost:3000/login?error=true")                       // 로그인 실패 시 리다이렉트 경로
+	                .userInfoEndpoint(userInfo -> userInfo
+	                        .userService(oath2Service())    // 사용자 정보를 처리할 서비스 등록
+	                )
+				);
+
         
         
 		
+
 		// CSRF 비활성화
 		http
 				.csrf((auth) -> auth.disable());
-		
-		
 		return http.build();
 	}
-	
-	
-	
-    
 }

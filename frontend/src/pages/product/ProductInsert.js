@@ -1,5 +1,7 @@
 import "@styles/ProductInsert.css";
 import React, { useState, useEffect } from 'react';
+import axios from "axios";
+
 
 const onChangeTitle = (e) => {
     console.log(e.target.value); // 입력값 출력 (추후 상태 관리 가능)
@@ -10,33 +12,18 @@ function ProductInsert() {
 
     const [type, setType] = useState(''); 
 
-    const onClick_kioskButton =() =>{
-        setType('kiosk');
-    };
-    const onClick_cctvButton =() =>{
-        setType('cctv');
-    };
-    const onClick_otherButton =() =>{
-        setType('other');
-    };
-
 
     const [kioskList, setKioskList] = useState(''); 
     const [cctvList, setCctvList] = useState(''); 
     const [otherList, setOtherList] = useState(''); 
 
+    const [mainImg, setMainImg] = useState('');  // 썸네일 이미지 한장만 저장
+    const [imgList, setImgList] = useState([]);  // 상세 이미지 여러장 저장
 
     const [title, setTitle] = useState('');
     const [shortDesc, setShortDesc] = useState('');
     const [details, setDetails] = useState('');
-    const [kind, setKind] = useState('');
- 
-
-    const onChangeKind = (e) =>{
-        setKind(e.target.value); 
-    }
-   
-
+    const [kind, setKind] = useState('키오스크/포스');
     
     const onChangeTitle = e =>{
         setTitle(e.target.value); //작성된 제목
@@ -47,40 +34,94 @@ function ProductInsert() {
     const onChangeDetails = e =>{
         setDetails(e.target.value);
     }
-    
-    const onChangeButton = e =>{
-        
-        const obj = {
-            title : title,
-            shortDesc : shortDesc,
-            details  :details
-        }
-        console.log(obj);
-        
-        
-        if(kind === 'kiosk'){
-            setKioskList([...kioskList, obj]); //객체랑 키오스크 리스트랑 합쳐서 하나의 배열로 만듦
-        } else if(kind === 'cctv'){
-            setCctvList([...cctvList, obj]);
-        } else{
-            setOtherList([...otherList, obj]);
-        }
+    const onChangeKind = (e) =>{
+        setKind(e.target.value); 
+        console.log(e.target.value);
     }
-
-    const [mainImg, setMainImg] = useState('');  // 썸네일 이미지 한장만 저장장
-    const [imgList, setImgList] = useState([]);  // 상세 이미지 여러장 저장
+   
     
-    const [productList, setProductList] = useState([]); // 작성한 정보를 객체로 만들어서 담을 곳
+    const [obj, setObj] = useState({
+        productName: '',
+        productCategory: '',
+        shortDescription: '',
+        detailedDescription: '',
+        thumbnailImage: '',
 
+    });
+
+    
+    const onChangeButton = e => {
+        const updatedObj = {
+            productName: title,
+            productCategory: kind,
+            shortDescription: shortDesc,
+            detailedDescription: details,
+            thumbnailImage: mainImg.name, // 파일 이름 설정
+        };
+    
+        setObj(updatedObj);
+    
+        const updatedList =
+            kind === 'kiosk'
+                ? [...kioskList, updatedObj]
+                : kind === 'cctv'
+                ? [...cctvList, updatedObj]
+                : [...otherList, updatedObj];
+    
+        kind === 'kiosk'
+            ? setKioskList(updatedList)
+            : kind === 'cctv'
+            ? setCctvList(updatedList)
+            : setOtherList(updatedList);
+    
+        post(updatedObj, mainImg); // 파일 객체를 전달
+    };
+    
+    const post = (data, file) => {
+        const formData = new FormData();
+        formData.append('product', JSON.stringify(data)); // JSON 데이터를 추가
+        formData.append('upfile', file); // 파일 추가 (업로드할 파일 객체 전달)
+    
+        axios
+            .post('http://localhost:8989/product/save', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            })
+            .then(response => {
+                console.log('Response:', response.data);
+            })
+            .catch(error => {
+                if (error.response) {
+                    console.error('Server Error:', error.response.data);
+                } else {
+                    console.error('Error:', error.message);
+                }
+            });
+    };
+    
     // 썸네일 이미지 추가 함수
     const onMainImgSelected = (e) => {
+        const file = e.target.files[0]; // 선택한 파일
+    
+        if (!file) return; // 파일이 없는 경우 종료
+    
+        setMainImg(file); // 파일 객체로 저장
+    
+        // 이미지를 미리보기용으로 읽어서 출력
         const reader = new FileReader();
-        reader.readAsDataURL(e.target.files[0]);
-
+        reader.readAsDataURL(file);
+    
         reader.onload = () => {
-            setMainImg(reader.result); // 썸네일 이미지 저장
+            // 미리보기 이미지 설정
+            console.log(reader.result); // 이미지 데이터 URI 출력
+        };
+    
+        reader.onerror = (error) => {
+            console.error("File reading error:", error);
         };
     };
+    
 
     // 상세 이미지 추가 함수
     const onDetailImgSelected = (e) => {
@@ -93,19 +134,12 @@ function ProductInsert() {
             setImgList((prev) => [
                 ...prev,
                 { id, previewUrl: reader.result, originFile: e.target.files[0] },
-            ]); // 상세 이미지 리스트에 추가
+            ]); // 상세 이미지 리스트에 추가(url이랑 오리진 파일이랑 뭔차이)
         };
     };
 
     
     const [button, setButton] = useState('');
-
-    const [formState, setFormState] = useState({
-        title : '',
-        mainImg : '',
-        shortDesc : '',
-        details : ''
-    });
 
 
     const onChangeHandler = e =>{
@@ -136,9 +170,9 @@ function ProductInsert() {
                             <div className="form-group">
                                 <label htmlFor="form-label" className="form-label">카테고리</label>
                                 <select name="category" id="category" onChange={onChangeKind} required>
-                                    <option value="kiosk" >키오스크/포스</option>
-                                    <option value="cctv" >출입인증기/CCTV/인터넷</option>
-                                    <option value="other" >부가상품</option>
+                                    <option value="키오스크/포스" >키오스크/포스</option>
+                                    <option value="출입인증기/CCTV/인터넷" >출입인증기/CCTV/인터넷</option>
+                                    <option value="부가상품" >부가상품</option>
                                 </select>
 
                                 <input
@@ -225,7 +259,7 @@ function ProductInsert() {
 
                             <div className="buttons">
                                 <button type="button" className="square-button">취소하기</button>
-                                <button onClick={onChangeButton} type="submit" className="square-button-fa">수정하기</button>
+                                <button onClick={onChangeButton} type="button" className="square-button-fa">수정하기</button>
                             </div>
                         </form>
                     </div>
