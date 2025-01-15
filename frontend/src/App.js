@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import Login from '@pages/login/Login'; 
 import SignUp from '@pages/login/SignUp'; 
-
 import SocalSignUp from '@pages/login/SocalSignUp'; 
 import SignUpForm from '@pages/login/SignUpForm'; 
 import Menubar from '@components/indexcomponents/Menubar';
@@ -10,6 +9,7 @@ import Product from '@pages/product/Product';
 import ProductInsert from '@pages/product/ProductInsert';
 import Qna from '@pages/Qna/Qna';
 import Faq from '@pages/Qna/Faq';
+import QnaDetail from '@pages/Qna/QnaDetail';
 import AddFaq from '@components/qna/AddFaq';
 import AddQna from '@components/qna/AddQna';
 import { FaqProvider } from 'context/FaqContext';
@@ -34,6 +34,8 @@ function App() {
             <Route path="/faq/*" element={<Faq />} />
             <Route path="/addFaq/*" element={<AddFaq />} />
             <Route path="/addQna/*" element={<AddQna />} />
+            <Route path="/QnaDetail/*" element={<QnaDetail />} />
+            <Route path="/" element={<h1>메인</h1>} />
             <Route path="/" element={<h1>메인</h1>} />
             <Route path="/product" element={<Product/>}/>
             <Route path="/productInsert" element={<ProductInsert/>}/>

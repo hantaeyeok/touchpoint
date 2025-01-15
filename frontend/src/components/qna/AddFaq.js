@@ -40,7 +40,6 @@ function AddFaq() {
 
     return(
         <div>
-            <h1>시작해볼까</h1>
             <div className="imgBox"> 
                 <img src={imageUrl}/>
             </div>

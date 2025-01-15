@@ -1,35 +1,63 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useRef } from "react";
 import "@styles/Qna2.css";
-import { useNavigate } from "react-router-dom";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { FaqContext } from "@context/FaqContext";
-import axios from "axios";
+import { Routes, Route, Link } from "react-router-dom";
 
-function AddQna() {
+
+
+
+function QnaDetail() {
 
     const fileImg = `${process.env.PUBLIC_URL}/images/fileAdd.JPG`;
-    const [userId,setUserId] = useState('');
-    const [phoneNo,setPhoneNo] = useState('');
     const [OriginName,setOriginName] = useState('');
-    
+
     const handleFileChange = (event) => {
-        
+
         const fileList = Array.from(event.target.files);
-        const fileNames = fileList.map((file)=> file.name);
+        const fileNames = fileList.map((file)=>file.name);
         setOriginName(fileNames);
     };
-
+    
     return(
-        <div>
-            <div className="formContainer">
+        <div className="formContainer">
+            <div className="formRow">
+                <div className="formField">
+                <label>작성자</label>
+                <span className="fieldValue">작성자</span>
+                </div>
+                <div className="formField">
+                <label>연락처</label>
+                <input type="text" placeholder="연락처를 입력하세요" />
+                </div>
+                <div className="formField">
+                <label>작성일</label>
+                <input type="date" />
+                </div>
+            </div>
+            <div className="formRow">
+                <div className="formField fullWidth">
+                <label>제목</label>
+                <input type="text" placeholder="제목을 입력하세요" />
+                </div>
+            </div>
+            <div className="formTextarea">
+                <textarea placeholder="내용을 입력하세요"></textarea>
+            </div>
+            <div className="qnaAdd_btn">
+                <Link to="/qna"><button>이전으로</button></Link>
+                <button>수정하기</button>
+            </div>
+
+            <h1>답변</h1>
+            <div className="formContainer" style={{ marginTop : "20px" }}>
                 <div className="formRow">
                     <div className="formField">
                     <input
-                        value={userId}
+                        value={''}
                         type="text" 
                         style={{ display: "none" }}/>
                     <input 
-                        value={phoneNo}
+                        value={''}
                         type="text" 
                         style={{ display: "none" }}/>
                     </div>
@@ -43,18 +71,17 @@ function AddQna() {
                 <div className="formField">
                 <label>파일첨부</label>
                 <input 
-                    value={OriginName} 
-                    readOnly
-                    type="text" 
+                    value={OriginName}
+                    readOnly 
+                    ype="text" 
                     id="fileName" 
                     className="fileName" />
-                    
                 <label className="fileLabel">
                     <img src={fileImg} className="fileImg"/>
                     <input 
                         type="file" 
+                        multiple="multiple"
                         onChange={handleFileChange}
-                        multiple="multiple" 
                         className="fileAdd" />
                 </label>
 
@@ -70,4 +97,4 @@ function AddQna() {
         </div>
     )
 }
-export default AddQna
+export default QnaDetail
