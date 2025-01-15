@@ -21,22 +21,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class LoginAttempt {
-/*
-	@Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "LOGIN_ATTEMPT_SEQ_GEN")
-    @SequenceGenerator(name = "LOGIN_ATTEMPT_SEQ_GEN", sequenceName = "LOGIN_ATTEMPT_SEQ", allocationSize = 1)
-    @Column(name = "ATTEMPT_ID", nullable = false)
-    private Long attemptId; // 기본 키
-
-    @Column(name = "USER_ID", nullable = false, length = 20)
-    private String userId; // 사용자 ID
-
-    @Column(name = "FAILED_LOGIN_CNT", nullable = false, columnDefinition = "NUMBER DEFAULT 0")
-    private int failedLoginCnt; // 로그인 실패 횟수
-
-    @Column(name = "CAPTCHA_ACTIVE", nullable = false, length = 1, columnDefinition = "CHAR(1) DEFAULT 'N' CHECK (CAPTCHA_ACTIVE IN ('Y', 'N'))")
-    private String captchaActive; // 캡차 활성화 여부 ('Y' 또는 'N')
-  */  
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "LOGIN_ATTEMPT_SEQ_GEN")
     @SequenceGenerator(name = "LOGIN_ATTEMPT_SEQ_GEN", sequenceName = "LOGIN_ATTEMPT_SEQ", allocationSize = 1)
@@ -53,5 +37,4 @@ public class LoginAttempt {
     @Builder.Default
     @Column(name = "CAPTCHA_ACTIVE", nullable = false, length = 1)
     private String captchaActive = "N"; // 캡차 활성화 여부, 기본값 'N'
-
 }

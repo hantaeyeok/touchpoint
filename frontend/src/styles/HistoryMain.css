@@ -12,3 +12,25 @@
     text-transform: uppercase;
     margin-bottom: 20px;
 }
+
+/* 버튼 스타일 */
+.addHistoryButton {
+    display: inline-block;
+    background-color: #ff007f; /* 기본 핑크색 */
+    color: white; /* 기본 글자색 */
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease; /* 호버 효과 */
+    float: right;    
+}
+
+/* 호버 시 스타일 변경 */
+.addHistoryButton:hover {
+    background-color: #fff; 
+    color: #ff007f; 
+    border: 1px solid #ff007f; 
+}

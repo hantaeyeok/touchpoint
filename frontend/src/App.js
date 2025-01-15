@@ -37,7 +37,7 @@ function App() {
   return (
     <FaqProvider>
         <Menubar/>
-        <p>받은 데이터: {data}</p> 
+    
         <div>
           {/* 라우트 설정 */}
           <Routes>

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.touchpoint.kh.product.model.vo.Product;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, String>{
+public interface ProductRepository extends JpaRepository<Product, Long>{
 
-	List<Product> findByProductCategory(String category);
+    List<Product> findByProductCategory(String category);
 }
