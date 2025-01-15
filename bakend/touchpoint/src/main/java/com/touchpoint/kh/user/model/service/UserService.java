@@ -13,6 +13,8 @@ public interface UserService {
 	//user email checked
 	Boolean userEmailChecked(String email);
 	
+	Boolean userPhoneChecked(String phone);
+	
 	//user signupGeneralUser
 	User signupGeneralUser(UserDto userDto);
 	

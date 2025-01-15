@@ -9,7 +9,6 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -21,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class Product {
 	@Id
     @Column(name = "PRODUCT_ID")
-    private String productId; // NUMBER 타입 매핑
+    private Long productId; // NUMBER 타입 매핑
 
     @Column(name = "PRODUCT_NAME", nullable = false)
     private String productName;
