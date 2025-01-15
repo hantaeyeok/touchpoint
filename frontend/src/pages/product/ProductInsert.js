@@ -37,7 +37,7 @@ function ProductInsert() {
         console.log(e.target.value);
     }
    
-    
+    /*
     const [obj, setObj] = useState({
         productName: '',
         productCategory: '',
@@ -46,7 +46,7 @@ function ProductInsert() {
         thumbnailImage: '',
 
     });
-
+    */
     
     const onChangeButton = e => {
         const updatedObj = {
@@ -55,10 +55,10 @@ function ProductInsert() {
             shortDescription: shortDesc,
             detailedDescription: details,
             thumbnailImage: mainImg.name, // 파일 이름 설정
-            //imageUrl : imgList.map(img => img.originFile.name) 
+            imageUrl : imgList.map(img => img.originFile.name) 
         };
     
-        setObj(updatedObj);
+        //setObj(updatedObj);
     
         const updatedList =
             kind === 'kiosk'
@@ -76,7 +76,7 @@ function ProductInsert() {
         post(updatedObj, mainImg, imgList); // 파일 객체를 전달
     };
     
-    const post = (data, file, imageFiles) => {
+    const post = (data, file, imageFiles) => {  //Q. 위에서 객체를 만들때 이미지들도 넣었는데 왜 또 따로 보냄?
         const formData = new FormData();
         formData.append('product', JSON.stringify(data)); // JSON 데이터를 추가
         formData.append('upfile', file); // 파일 추가 (업로드할 파일 객체 전달)
@@ -111,7 +111,6 @@ function ProductInsert() {
     const onMainImgSelected = (e) => {
         const file = e.target.files[0]; // 선택한 파일
         
-    
         if (!file) return; // 파일이 없는 경우 종료
     
         setMainImg(file); // 파일 객체로 저장
@@ -267,7 +266,7 @@ function ProductInsert() {
 
                             <div className="buttons">
                                 <button type="button" className="square-button">취소하기</button>
-                                <button onClick={onChangeButton} type="button" className="square-button-fa">수정하기</button>
+                                <button onClick={onChangeButton} type="button" className="square-button-fa">등록하기</button>
                             </div>
                         </form>
                     </div>
