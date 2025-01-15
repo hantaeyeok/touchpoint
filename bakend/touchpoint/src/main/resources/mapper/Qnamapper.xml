@@ -21,7 +21,7 @@
 			    Q.QNA_NO DESC;
    </select>
 
-	<select id="qnaDetail">
+   <select id="qnaDetail">
 		SELECT
 			    U.USER_ID,
 			    U.PHONE_NO,
@@ -43,5 +43,5 @@
 			    Q.QNA_NO = F.QNA_NO
 		 WHERE
 			    Q.QNA_NO = #{QNA_NO};
-	</select>
+   </select>
 </mapper>
