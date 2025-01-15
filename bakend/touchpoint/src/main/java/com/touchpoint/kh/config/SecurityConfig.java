@@ -108,6 +108,7 @@ public class SecurityConfig {
 		
 		
 		// OAuth2 로그인 설정
+
         http.
         		oauth2Login((oauth2) -> oauth2
 	                .loginPage("/login")                                   // OAuth2 로그인 페이지 경로
@@ -117,6 +118,7 @@ public class SecurityConfig {
 	                        .userService(oath2Service())    // 사용자 정보를 처리할 서비스 등록
 	                )
 				);
+
         
         
 		
