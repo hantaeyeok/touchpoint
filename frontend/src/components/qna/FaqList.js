@@ -1,7 +1,7 @@
 import "@styles/Qna.css";
 import React, {useContext, useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { FaqContext } from "../../context/FaqContext";
+import { FaqContext } from "@context/FaqContext";
 
 function FaqList() {
 

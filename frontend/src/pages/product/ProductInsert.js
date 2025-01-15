@@ -65,10 +65,7 @@ function ProductInsert() {
         } else{
             setOtherList([...otherList, obj]);
         }
-            
     }
-
-
 
     const [mainImg, setMainImg] = useState('');  // 썸네일 이미지 한장만 저장장
     const [imgList, setImgList] = useState([]);  // 상세 이미지 여러장 저장

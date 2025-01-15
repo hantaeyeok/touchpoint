@@ -1,14 +1,18 @@
 import React from "react";
-import qnaImg from "@img/qna.avif";
+
 import "@styles/Qna.css";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
+
+
+
 
 function Qna() {
+    const imageUrl = `${process.env.PUBLIC_URL}/images/qna.avif`;
     return(
         <div>
             <h1>시작해볼까</h1>
             <div className="imgBox"> 
-                <img src={qnaImg}/>
+                <img src={imageUrl}/>
             </div>
             <div className="qnaList">
                 <Link to="/qna">질문하기</Link>

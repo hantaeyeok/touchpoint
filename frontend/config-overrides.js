@@ -7,6 +7,8 @@ module.exports = override(
         '@styles': path.resolve(__dirname, 'src/styles'),
         '@pages': path.resolve(__dirname, 'src/pages'),
         '@src': path.resolve(__dirname, 'src/'),
-        '@img': path.resolve(__dirname, 'src/img')
+        '@img': path.resolve(__dirname, 'src/img'),
+        '@context': path.resolve(__dirname, 'src/context'),
+        '@images': path.resolve(__dirname, 'process.env.PUBLIC_URL/images')
     })
 );

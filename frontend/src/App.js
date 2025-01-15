@@ -2,17 +2,19 @@ import React, { useState, useEffect } from "react";
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import Login from '@pages/login/Login'; 
 import SignUp from '@pages/login/SignUp'; 
+
 import SocalSignUp from '@pages/login/SocalSignUp'; 
 import SignUpForm from '@pages/login/SignUpForm'; 
 import Menubar from '@components/indexcomponents/Menubar';
-import Product from '@src/page/Product';
-import ProductInsert from '@src/page/ProductInsert';
-import Qna from '@components/qna/Qna';
-import Faq from '@components/qna/Faq';
+import Product from '@pages/product/Product';
+import ProductInsert from '@pages/product/ProductInsert';
+import Qna from '@pages/Qna/Qna';
+import Faq from '@pages/Qna/Faq';
 import AddFaq from '@components/qna/AddFaq';
 import { FaqProvider } from 'context/FaqContext';
 import axios from 'axios';
 import './App.css'
+import HistoryMain from "@pages/history/HistoryMain";
 
 
     
@@ -49,6 +51,8 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signupform" element={<SignUpForm />} /> 
             <Route path="/socalsignup" element={<SocalSignUp />} /> 
+            <Route path="/history" element={<HistoryMain/>} />
+            
         
           </Routes>
         </div>
