@@ -1,4 +1,4 @@
-package com.touchpoint.kh.config;
+package com.touchpoint.kh.user.model.service.oath2;
 
 
 import org.springframework.security.core.Authentication;
