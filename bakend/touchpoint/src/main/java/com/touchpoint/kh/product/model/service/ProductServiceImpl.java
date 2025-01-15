@@ -42,4 +42,12 @@ public class ProductServiceImpl implements ProductService {
             productRepository.save(image);
         }
     }
+    @Override
+    public Product findByProductId(Long productId) {
+    	return productRepository.findByProductId(productId);
+    }
+    @Override
+    public List<ProductImage> findImagesByProductId(Long productId) {
+    	return productRepository.findImagesByProductId(productId);
+    }
 }

@@ -12,4 +12,6 @@ public interface ProductService {
     List<Product> findAll();
     List<Product> findByProductCategory(String category);
 	void saveProductWithImages(Product product, List<ProductImage> productImages);
+	Product findByProductId(Long productId);
+	List<ProductImage> findImagesByProductId(Long productId);
 }
