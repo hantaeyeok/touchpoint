@@ -40,6 +40,7 @@ public class UserServiceImple implements UserService{
 		return userRepository.findByEmail(email).isEmpty();
 	}
 	
+	//phone 중복 확인
 	@Override
 	public Boolean userPhoneChecked(String phone) {
 		String replacePhone = phone.replaceAll("-", "");
