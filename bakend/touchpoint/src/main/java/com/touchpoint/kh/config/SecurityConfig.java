@@ -55,6 +55,17 @@ public class SecurityConfig {
 		            return corsConfiguration;	
 				}));
 		
+		//cors 허용
+		http
+				.cors(cors -> cors.configurationSource(request -> {
+					var corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
+		            corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000")); // React 서버 주소
+		            corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		            corsConfiguration.setAllowedHeaders(List.of("*")); // 모든 헤더 허용
+		            corsConfiguration.setAllowCredentials(true); // 쿠키 허용
+		            return corsConfiguration;	
+				}));
+		
 		//권한 설정
 		http
 				.authorizeHttpRequests((auth) -> auth
@@ -109,15 +120,10 @@ public class SecurityConfig {
         
         
 		
+
 		// CSRF 비활성화
 		http
 				.csrf((auth) -> auth.disable());
-		
-		
 		return http.build();
 	}
-	
-	
-	
-    
 }

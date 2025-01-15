@@ -19,25 +19,13 @@ import HistoryMain from "@pages/history/HistoryMain";
 
     
 function App() {
-  const [data, setData] = useState("");
 
-  useEffect(() => {
-    // Spring Boot API 호출
-    axios
-        .get("http://localhost:8989/api/test")
-        .then((response) => {
-          console.log("Response from server:", response.data);
-          setData(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-        });
-    }, []);
+  
 
   return (
     <FaqProvider>
         <Menubar/>
-        <p>받은 데이터: {data}</p> 
+
         <div>
           {/* 라우트 설정 */}
           <Routes>
