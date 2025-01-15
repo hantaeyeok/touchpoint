@@ -27,9 +27,12 @@ const Product = () => {
         });
     };
 
+    
+
      // clickCategory 변경될 때마다 axios실행후 데이터를 가져옴
     useEffect(() => {
         fetchData();
+        //여기에 버튼 색 고정 시켜놓으면 될듯
     }, [clickCategory]); // clickCategory 상태가 변경될 때 실행
 
     const onClick_kioskButton = () => {
@@ -42,11 +45,14 @@ const Product = () => {
         setParam('부가상품');
     };
 
+    
+
     const ResponseProduct = (props) => {
         const data = props.data; // props 구조 분해
         return (
           <div className="product-component">
-            <img className="proImg" src={process.env.PUBLIC_URL + data.thumbnailImage} alt={data.productName} />  {/*이미지를 동적으로 불러오고싶으면 publid폴더에 넣어야함*/}
+            {/*<img className="proImg" src={process.env.PUBLIC_URL + data.thumbnailImage} alt={data.productName} />  */}{/*이미지를 동적으로 불러오고싶으면 publid폴더에 넣어야함*/}
+            <img src={`http://localhost:8989${data.thumbnailImage}`} alt={data.productName} />
             <h4>{data.productName}</h4>
             <p className="proP">{data.shortDescription}</p>
           </div>
@@ -86,7 +92,7 @@ const Product = () => {
 
         <div>
           <button className="insert-button">
-            <Link to="/ProductInsert" style={{ textDecoration: "none"}}>상품 추가</Link>
+            <Link to="/productInsert" style={{ textDecoration: "none"}}>상품 추가</Link>
           </button>
         </div>
       </div>

@@ -13,12 +13,12 @@
   border: none;
   color: rgb(0, 0, 0);
   font-weight: bold;
-  background-color: #ffffff; /* 버튼 배경색 추가 /
-  cursor: pointer; / 마우스 커서 추가 /
+  background-color: #ffffff; /* 버튼 배경색 추가 */
+  cursor: pointer; /* 마우스 커서 추가 */
 }
 
 .style-button1:hover {
-  color: #E72681; / 호버 시 색상 변경 */
+  color: #E72681; /* 호버 시 색상 변경 */
 }
 
 

@@ -21,6 +21,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class LoginAttempt {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "LOGIN_ATTEMPT_SEQ_GEN")
     @SequenceGenerator(name = "LOGIN_ATTEMPT_SEQ_GEN", sequenceName = "LOGIN_ATTEMPT_SEQ", allocationSize = 1)
