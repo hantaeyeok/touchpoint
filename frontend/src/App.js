@@ -25,6 +25,7 @@ function App() {
   return (
     <FaqProvider>
         <Menubar/>
+
         <div>
           {/* 라우트 설정 */}
           <Routes>

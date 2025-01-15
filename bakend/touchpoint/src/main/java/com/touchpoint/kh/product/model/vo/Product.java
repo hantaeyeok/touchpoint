@@ -19,8 +19,10 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "TB_PRODUCT")
 public class Product {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
+
     private Long productId; 
 
     private String productName;

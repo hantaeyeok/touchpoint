@@ -1,7 +1,5 @@
 package com.touchpoint.kh.user.model.vo;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,7 +22,7 @@ import lombok.Setter;
 @Builder
 public class LoginAttempt {
 
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "LOGIN_ATTEMPT_SEQ_GEN")
     @SequenceGenerator(name = "LOGIN_ATTEMPT_SEQ_GEN", sequenceName = "LOGIN_ATTEMPT_SEQ", allocationSize = 1)
     @Column(name = "ATTEMPT_ID", nullable = false)
