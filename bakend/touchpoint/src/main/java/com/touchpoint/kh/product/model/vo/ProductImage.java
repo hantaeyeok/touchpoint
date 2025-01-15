@@ -1,7 +1,6 @@
 package com.touchpoint.kh.product.model.vo;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,25 +17,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "TB_PRODUCT")
-public class Product {
+@Table(name = "TB_PRODUCT_IMAGES")
+public class ProductImage {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
+	private Long imageId;
 
-    private Long productId; 
-
-    private String productName;
-
-    private String productCategory;
-
-    private String shortDescription;
-
-    private String detailedDescription; 
-
-    private String thumbnailImage;
-
-    private LocalDateTime createdDate;
+    private int displayOrder;
     
-    //private List<ProductImage> productImages;
+    private String imageUrl;
+    
+    private Long productId; 
 }

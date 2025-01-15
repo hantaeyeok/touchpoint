@@ -1,11 +1,14 @@
 package com.touchpoint.kh.product.model.service;
 
-import org.springframework.stereotype.Service;
 import java.util.List;
+
+import org.springframework.stereotype.Service;
 
 import com.touchpoint.kh.product.model.dao.ProductRepository;
 import com.touchpoint.kh.product.model.vo.Product;
+import com.touchpoint.kh.product.model.vo.ProductImage;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -26,5 +29,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> findByProductCategory(String category){
         return productRepository.findByProductCategory(category);
+    }
+    
+    @Transactional
+    public void saveProductWithImages(Product product, List<ProductImage> productImages) {
+        // 1. 상품 저장
+        productRepository.save(product);
+
+        // 2. 상세 이미지 저장
+        for (ProductImage image : productImages) {
+            //image.setProductId(product.getProductId()); // 외래 키 설정
+            productRepository.save(image);
+        }
     }
 }

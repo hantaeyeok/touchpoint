@@ -9,9 +9,7 @@ const onChangeTitle = (e) => {
 
 function ProductInsert() {
 
-
     const [type, setType] = useState(''); 
-
 
     const [kioskList, setKioskList] = useState(''); 
     const [cctvList, setCctvList] = useState(''); 
@@ -57,6 +55,7 @@ function ProductInsert() {
             shortDescription: shortDesc,
             detailedDescription: details,
             thumbnailImage: mainImg.name, // 파일 이름 설정
+            //imageUrl : imgList.map(img => img.originFile.name) 
         };
     
         setObj(updatedObj);
@@ -74,14 +73,22 @@ function ProductInsert() {
             ? setCctvList(updatedList)
             : setOtherList(updatedList);
     
-        post(updatedObj, mainImg); // 파일 객체를 전달
+        post(updatedObj, mainImg, imgList); // 파일 객체를 전달
     };
     
-    const post = (data, file) => {
+    const post = (data, file, imageFiles) => {
         const formData = new FormData();
         formData.append('product', JSON.stringify(data)); // JSON 데이터를 추가
         formData.append('upfile', file); // 파일 추가 (업로드할 파일 객체 전달)
-    
+        //formData.append('images', file);
+
+        // 상세 이미지 파일을 반복문으로 추가
+        imageFiles.forEach((imageFile) => {
+            if (imageFile.originFile) {
+                formData.append('images', imageFile.originFile); // 각 파일을 'images' 키로 추가
+            }
+        });
+
         axios
             .post('http://localhost:8989/product/save', formData, {
                 headers: {
@@ -103,6 +110,7 @@ function ProductInsert() {
     // 썸네일 이미지 추가 함수
     const onMainImgSelected = (e) => {
         const file = e.target.files[0]; // 선택한 파일
+        
     
         if (!file) return; // 파일이 없는 경우 종료
     

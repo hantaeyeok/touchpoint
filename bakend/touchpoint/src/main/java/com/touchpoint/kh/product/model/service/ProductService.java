@@ -1,6 +1,8 @@
 package com.touchpoint.kh.product.model.service;
 
 import com.touchpoint.kh.product.model.vo.Product;
+import com.touchpoint.kh.product.model.vo.ProductImage;
+
 import java.util.List;
 
 
@@ -9,4 +11,5 @@ public interface ProductService {
     Product save(Product responseProduct);
     List<Product> findAll();
     List<Product> findByProductCategory(String category);
+	void saveProductWithImages(Product product, List<ProductImage> productImages);
 }

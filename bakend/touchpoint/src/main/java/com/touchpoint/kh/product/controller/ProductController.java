@@ -1,6 +1,7 @@
 package com.touchpoint.kh.product.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.io.File;
@@ -27,6 +28,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.touchpoint.kh.product.model.service.ProductService;
 import com.touchpoint.kh.product.model.vo.Product;
+import com.touchpoint.kh.product.model.vo.ProductImage;
 import com.touchpoint.kh.product.resposnse.ResponseData;
 
 import ch.qos.logback.core.model.Model;
@@ -66,27 +68,39 @@ public class ProductController {
 
 	    return ResponseEntity.ok(rd);
 	}
-	*/
+*/
 	
 	
 	@PostMapping("save")
-	public ResponseEntity<ResponseData> save(@RequestParam("product") String productJson, 
-	                                          @RequestParam("upfile") MultipartFile upfile, 
-	                                          HttpServletRequest request) throws IOException {
+	public ResponseEntity<ResponseData> save(
+										    @RequestParam("product") String productJson, 
+										    @RequestParam("upfile") MultipartFile upfile, 
+										    @RequestParam("images") List<MultipartFile> images,
+										    HttpServletRequest request ) throws IOException {
 	    log.info("받은 상품 데이터: {}", productJson);
+	    log.info("받은 상품 데이터: {}", upfile);
+	    log.info("받은 상품 데이터: {}", images);
 	    
-	    // 1. JSON 데이터를 객체로 변환
+	    // 상품 데이터 파싱, createDate
 	    Product product = new ObjectMapper().readValue(productJson, Product.class);
+	    product.setCreatedDate(LocalDateTime.now());
 	    
-	    // 2. 파일 처리 (파일 경로 저장)
-	    String filePath = saveFile(upfile, request);
-	    product.setThumbnailImage(filePath);  // 파일 경로 저장
+	    // 썸네일 저장
+	    product.setThumbnailImage(saveFile(upfile, request));
 
-	    // 3. 데이터베이스 저장 및 응답 반환
+	    //productId얻기 위해 product먼저 저장함
 	    Product savedProduct = productService.save(product);
+	    
+	    // 상세 이미지 저장
+	    List<ProductImage> productImages = saveImages(images, request, savedProduct.getProductId());
+	    
+	    // 저장 처리
+	    productService.saveProductWithImages(product, productImages);
+	    
+	    // 응답 생성 및 반환
 	    ResponseData rd = ResponseData.builder()
 	                                   .message("상품 추가 성공!")
-	                                   .responseData(savedProduct)
+	                                   .responseData(product)
 	                                   .build();
 	    return ResponseEntity.ok(rd);
 	}
@@ -116,6 +130,17 @@ public class ProductController {
 	    
 	    return "/resources/uploadFiles/" + fileName;  // 저장된 파일 경로 반환
 	}
+	
+	private List<ProductImage> saveImages(List<MultipartFile> images, HttpServletRequest request, Long productId) throws IOException {
+	    List<ProductImage> productImages = new ArrayList<>();
+	    for (int i = 0; i < images.size(); i++) { // 인덱스를 가져오는 반복문
+	        MultipartFile image = images.get(i); // 현재 이미지
+	        String imagePath = saveFile(image, request); // 이미지 저장
+	        productImages.add(new ProductImage(null, i, imagePath, productId)); // i를 displayOrder로 설정
+	    }
+	    return productImages;
+	}
+
 
 
 
