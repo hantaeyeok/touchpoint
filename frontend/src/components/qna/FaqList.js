@@ -19,7 +19,7 @@ function FaqList() {
     useEffect(() => {
         const fetchFaqs = async () => {
             try {
-                const response = await axios.get("http://localhost:8989/qna");
+                const response = await axios.get("http://localhost:8989/qna/faqList");
                 setFaqTodoList(response.data); 
             } catch (error) {
                 console.error("FAQ 데이터를 가져오는 중 오류 발생:", error);
@@ -44,7 +44,7 @@ function FaqList() {
         };
 
         try {
-            const response = await axios.put(`http://localhost:8989/qna/update/${selectedFaq.faqNo}`, selectedFaq);
+            const response = await axios.put(`http://localhost:8989/qna/faqUpdate/${selectedFaq.faqNo}`, selectedFaq);
             console.log("서버 응답:", response.data);
             alert("글이 성공적으로 저장되었습니다!");
         } catch (error) {
@@ -71,7 +71,7 @@ function FaqList() {
     const deleteSubmit = async () => {
         console.log("faqNo :", selectedFaq.faqNo );
         try {
-            const response = await axios.delete(`http://localhost:8989/qna/delete/${selectedFaq.faqNo}`);
+            const response = await axios.delete(`http://localhost:8989/qna/faqDelete/${selectedFaq.faqNo}`);
             console.log("서버 응답:", response.data);
             alert("글이 성공적으로 삭제되었습니다!");
         } catch (error) {

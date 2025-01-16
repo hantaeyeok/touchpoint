@@ -14,13 +14,14 @@
 
 .formField {
     display: flex;
-    
     flex: 1;
     margin-right: 10px;
 }
 
-.formField:last-child {
-    margin-right: 0;
+.formContainer span {
+    display: block;
+    width: 100%; 
+    margin-bottom: 5px;
 }
 
 .formContainer label {

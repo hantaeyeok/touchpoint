@@ -28,6 +28,7 @@
 			    Q.QNA_DATE,
 			    Q.QNA_TITLE,
 			    Q.QNA_CONTENT,
+			    Q_QNA_NO,
 			    F.ORIGIN_NAME,
 			    F.CHANGE_NAME,
 			    F.PATH
@@ -44,4 +45,24 @@
 		 WHERE
 			    Q.QNA_NO = #{QNA_NO};
    </select>
+   
+   <select id="answerFind">
+	   	SELECT
+	            A.ANSWER_NO,
+	            A.ANSWER_TITLE,
+	            A.ANSWER_CONTENT,
+	            A.ANSWER_DATE,
+	            A.QNA_NO,
+	            F.ORIGIN_NAME,
+	            F.CHANGE_NAME,
+	            F.PATH
+	    FROM        
+	            ANSWER A
+	INNER JOIN        
+	            FILE_ADD F
+	        ON
+	            A.ANSWER_NO = F.ANSWER_NO;
+   </select>
+   
+   
 </mapper>

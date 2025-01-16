@@ -26,10 +26,10 @@ import lombok.RequiredArgsConstructor;
 public class QnaController {
 	
 	private final FaqService faqService;
-	private final QnaService QnaService;
+	//private final QnaService QnaService;
 	
 	//jpa
-	@GetMapping
+	@GetMapping("/faqList")
 	public List<Faq> getAllFaqs(){
 		return faqService.getAllFaqs();
 	}
@@ -40,14 +40,14 @@ public class QnaController {
 		return ResponseEntity.ok(createFaq);
 	}
 	
-	@PutMapping("/update/{faqNo}")
+	@PutMapping("/faqUpdate/{faqNo}")
 	public ResponseEntity<Faq> updateFaq(@RequestBody Faq faqDetails,
 										 @PathVariable("faqNo") int faqNo){
 		Faq updateFaq = faqService.updateFaq(faqDetails, faqNo);
 		return ResponseEntity.ok(updateFaq);
 	}
 	
-	@DeleteMapping("/delete/{faqNo}")
+	@DeleteMapping("/faqDelete/{faqNo}")
 	public ResponseEntity<Faq> deleteFaq(@PathVariable("faqNo") int faqNo){
 		faqService.deleteFaq(faqNo);
 		return ResponseEntity.noContent().build(); // 204 no content만 응답
@@ -55,9 +55,13 @@ public class QnaController {
 	//mybatis
 	
 	//select
+	//@GetMapping("/qnaList")
+	//public ResponseEntity<Qna> getQnaAll(){
+		
+	}
 	//insert
 	//update
 	//delete
 		
-	}
+	
 }

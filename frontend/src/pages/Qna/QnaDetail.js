@@ -22,22 +22,28 @@ function QnaDetail() {
         <div className="formContainer">
             <div className="formRow">
                 <div className="formField">
-                <label>작성자</label>
-                <span className="fieldValue">작성자</span>
+                    <label>작성자</label>
+                    <span className="fieldValue">작성자</span>
                 </div>
                 <div className="formField">
-                <label>연락처</label>
-                <input type="text" placeholder="연락처를 입력하세요" />
+                    <label>연락처</label>
+                    <span className="fieldValue">연락처</span>
                 </div>
                 <div className="formField">
-                <label>작성일</label>
-                <input type="date" />
+                    <label>작성일</label>
+                    <span className="fieldValue">작성일</span>
                 </div>
             </div>
             <div className="formRow">
                 <div className="formField fullWidth">
-                <label>제목</label>
-                <input type="text" placeholder="제목을 입력하세요" />
+                    <label>제목</label>
+                    <span className="fieldValue">제 목</span>
+                </div>
+            </div>
+            <div className="formRow">
+                <div className="formField fullWidth">
+                    <label>파일첨부</label>
+                    <span className="fieldValue">파일명</span>
                 </div>
             </div>
             <div className="formTextarea">
@@ -49,6 +55,7 @@ function QnaDetail() {
             </div>
 
             <h1>답변</h1>
+            
             <div className="formContainer" style={{ marginTop : "20px" }}>
                 <div className="formRow">
                     <div className="formField">
