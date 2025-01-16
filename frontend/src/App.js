@@ -36,7 +36,7 @@ function App() {
             <Route path="/" element={<h1>메인</h1>} />
             <Route path="/product" element={<Product/>}/>
             <Route path="/productInsert" element={<ProductInsert/>}/>
-            <Route path="/detailProduct/:id" element={<DetailProduct/>}/>
+            <Route path="/detailProduct/:productId" element={<DetailProduct/>}/>
             <Route path="/login" element={<Login />} /> 
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signupform" element={<SignUpForm />} /> 

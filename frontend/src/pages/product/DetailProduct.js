@@ -5,14 +5,19 @@ import axios from 'axios';
 
 const DetailProduct = () => {
     const { productId } = useParams(); // URL에서 id 가져오기
+   
     const [product, setProduct] = useState(null); // 상품 정보 상태
+    console.log(product);
     const [images, setImages] = useState([]);
-
+    console.log(images);
+    
     useEffect(() => {
         // 상품 상세 정보 API 호출
         axios.get(`http://localhost:8989/product/${productId}`)
             .then(response => {
-                setProduct(response.data.responseData); // 응답 데이터 설정
+                console.log("response:",response);
+                setProduct(response.data.responseData.product); 
+                setImages(response.data.responseData.images);
             })
             .catch(error => {
                 console.error('Error fetching product details:', error);
