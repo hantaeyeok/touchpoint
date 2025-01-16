@@ -1,4 +1,4 @@
-package com.touchpoint.kh.jwt;
+package com.touchpoint.kh.user.jwt;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;

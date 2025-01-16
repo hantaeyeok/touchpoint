@@ -1,4 +1,4 @@
-package com.touchpoint.kh.jwt;
+package com.touchpoint.kh.user.jwt;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.touchpoint.kh.user.model.dao.UserMapper;
 import com.touchpoint.kh.user.model.dao.UserRepository;
 import com.touchpoint.kh.user.model.vo.User;
 
@@ -29,9 +30,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter{
 
-	private final UserRepository userRepository;
 	private final JwtProvider jwtProvider;
-
+	private final UserRepository userRepository;
+	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
@@ -50,19 +51,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 				return;
 			}
 			
-			Optional<User> user = userRepository.findByUserId(userId);
-			//String role = user.getRole(); // role : REOL_USER, ROLE_ADMIN
-			
+			User user = userRepository.findByUserId(userId);
+			String role = user.getUserRole();
+	
 			List<GrantedAuthority> authorities = new ArrayList<>();
-			authorities.add(new SimpleGrantedAuthority(null));// role 들어가야함. 
+			authorities.add(new SimpleGrantedAuthority(role));
 			
 			SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
 			AbstractAuthenticationToken authenticationToken = 
-					new UsernamePasswordAuthenticationToken(userId, null,authorities);
-			authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+					new UsernamePasswordAuthenticationToken(userId, null, authorities);
 			
-			authenticationToken.setAuthentication(authenticationToken);
+			authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+			securityContext.setAuthentication(authenticationToken);
 			SecurityContextHolder.setContext(securityContext);
+			
+			
+			
+			
+			
+			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
