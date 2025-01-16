@@ -11,6 +11,12 @@ function AddQna() {
     const [userId,setUserId] = useState('');
     const [phoneNo,setPhoneNo] = useState('');
     const [OriginName,setOriginName] = useState('');
+    const [qnaTitle,setQnaTitle] = useState('');
+    const [qnaContent,setQnaContent] = useState('');
+    const [addQna, setAddQna] = useState([]);
+
+    const newQna = {userId, phoneNo, OriginName, qnaTitle, qnaContent};
+    setAddQna([...qnaState, newQna]);
     
     const handleFileChange = (event) => {
         
@@ -37,7 +43,10 @@ function AddQna() {
                 <div className="formRow">
                     <div className="formField fullWidth">
                     <label>제 목</label>
-                    <input type="text" placeholder="제목을 입력하세요" />
+                    <input 
+                        onChange={(event)=>setQnaTitle(event.target.value)}
+                        type="text" 
+                        placeholder="제목을 입력하세요" />
                     </div>
                 </div>
                 <div className="formField">
@@ -60,7 +69,10 @@ function AddQna() {
 
                 </div>
                 <div className="formTextarea">
-                    <textarea placeholder="내용을 입력하세요"></textarea>
+                    <textarea
+                        onChange={(event)=>setQnaContent(event.target.value)}
+                        placeholder="내용을 입력하세요">
+                    </textarea>
                 </div>
                 <div className="qnaAdd_btn">
                     <Link to="/qna"><button>이전으로</button></Link>

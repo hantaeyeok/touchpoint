@@ -1,7 +1,10 @@
 package com.touchpoint.kh.qna.controller;
 
+import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,11 +14,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.touchpoint.kh.common.ResponseData;
+import com.touchpoint.kh.common.ResponseHandler;
 import com.touchpoint.kh.qna.model.service.FaqService;
+import com.touchpoint.kh.qna.model.service.FileService;
 import com.touchpoint.kh.qna.model.service.QnaService;
 import com.touchpoint.kh.qna.model.vo.Faq;
+import com.touchpoint.kh.qna.model.vo.FileDto;
+import com.touchpoint.kh.qna.model.vo.Qna;
+import com.touchpoint.kh.qna.model.vo.QnaDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +37,9 @@ import lombok.RequiredArgsConstructor;
 public class QnaController {
 	
 	private final FaqService faqService;
-	//private final QnaService QnaService;
+	private final QnaService qnaService;
+	private final ResponseHandler responseHandler;
+	private final FileService fileService;
 	
 	//jpa
 	@GetMapping("/faqList")
@@ -51,17 +64,59 @@ public class QnaController {
 	public ResponseEntity<Faq> deleteFaq(@PathVariable("faqNo") int faqNo){
 		faqService.deleteFaq(faqNo);
 		return ResponseEntity.noContent().build(); // 204 no content만 응답
-		
+	}
+	
+	
 	//mybatis
 	
 	//select
-	//@GetMapping("/qnaList")
-	//public ResponseEntity<Qna> getQnaAll(){
-		
+	@GetMapping("/qnaList")
+	public ResponseEntity<ResponseData> getQnaAll(){
+		try {
+			List<Qna> qnaList = qnaService.qnaFindAll();
+			return responseHandler.createResponse("Qna 목록 조회 성공",qnaList, HttpStatus.OK);
+		} catch (Exception e) {
+			return responseHandler.handleException("조회 실패", e);
+		}
 	}
-	//insert
-	//update
-	//delete
-		
 	
+	
+	
+	
+	//insert
+	@PostMapping("/createQna")
+	public ResponseEntity<ResponseData> createQna(@RequestPart("QnaDto") QnaDto qnaDto,
+	        									  @RequestPart(value = "files", required = false) List<MultipartFile> files){
+		
+		try {
+			qnaService.createQna(qnaDto); 
+
+			if (files != null && !files.isEmpty()) {
+	            for (MultipartFile file : files) {
+	                String originName = file.getOriginalFilename();
+	                String changeName = UUID.randomUUID().toString() + "_" + originName;
+	                String filePath = "uploads/qna/" + changeName;
+
+	                File directory = new File("uploads/qna/");
+	                if (!directory.exists()) {
+	                    directory.mkdirs();
+	                }
+	                
+	                File transFile = new File(directory, changeName);
+                	file.transferTo(transFile);
+                	
+                	FileDto fileAdd = new FileDto();
+                    fileAdd.setOriginName(originName);
+                    fileAdd.setChangeName(changeName);
+                    fileAdd.setPath(filePath);
+                    fileAdd.setQnaNo(qnaDto.getQnaNo());
+                	fileService.createFile(fileAdd);
+	            }
+	        }
+	        return responseHandler.createResponse("QnA 등록 및 파일 첨부 성공", null, HttpStatus.OK);
+	    } catch (Exception e) {
+	        return responseHandler.handleException("QnA 등록 실패", e);
+	    }
+	}
+		
 }

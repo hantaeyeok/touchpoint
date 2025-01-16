@@ -62,7 +62,49 @@
 	            FILE_ADD F
 	        ON
 	            A.ANSWER_NO = F.ANSWER_NO;
+         WHERE
+         		A.QNA_NO = #{QNA_NO};
    </select>
+   
+   <insert id="insQna">
+   		INSERT
+		    INTO QNA (
+		                QNA_NO,
+		                QNA_TITLE,
+		                QNA_CONTENT,
+		                QNA_DATE,
+		                USER_ID,
+		                PHONE_NO
+	            )
+	          VALUES (
+		                QNA_SEQ.NEXTVAL,
+		                #{QNA_TITLE},
+		                #{QNA_CONTENT},
+		                SYSDATE,
+		                #{USER_ID},
+		                #{PHONE_NO}
+		        )    
+   </insert>
+   
+   <insert id="insFile">
+   		INSERT
+		    INTO FILE_ADD (
+			                FILE_NO,
+			                ORIGIN_NAME,
+			                CHANGE_NAME,
+			                QNA_NO,
+			                ANSWER_NO
+			                PATH
+	                )
+		           VALUES (
+			                FILE_SEQ.NEXTVAL,
+			                #{ORIGIN_NAME},
+			                #{CHANGE_NAME},
+			                #{QNA_NO}
+			                #{ANSWER_NO}
+			                #{PATH}
+			        )    
+   </insert>
    
    
 </mapper>

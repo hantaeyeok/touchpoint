@@ -5,7 +5,7 @@ export const FaqContext = createContext();
 
 // Provider 컴포넌트
 export const FaqProvider = ({ children }) => {
-  const [FaqTodoList, setFaqTodoList] = useState([]); // FAQ 상태 관리
+    const [FaqTodoList, setFaqTodoList] = useState([]); 
 
     return (
         <FaqContext.Provider value={{ FaqTodoList, setFaqTodoList }}>

@@ -2,7 +2,7 @@ import React from "react";
 import { useRef } from "react";
 import "@styles/Qna.css";
 import { Routes, Route, Link } from "react-router-dom";
-
+import QnaList from "@components/qna/QnaList";
 
 
 
@@ -33,28 +33,7 @@ function Qna() {
             <div className="btn_box">
                 <Link to="/addQna"><button className="qna_btn" >글 등록</button></Link>
             </div>
-            <div className="qnaList">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>NO.</th>
-                            <th>제목</th>
-                            <th>작성자</th>
-                            <th>등록일</th>
-                            <th>상태</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>3.</td>
-                            <td>제목 제목 제목 제목 제목 제목 제목 제목 제목 제목</td>
-                            <td>게스트</td>
-                            <td>25/2/8</td>
-                            <td className="status question">질문중</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <QnaList/>
         </div>
     )
 }

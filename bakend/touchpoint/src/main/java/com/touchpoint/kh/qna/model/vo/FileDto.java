@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class QnaDto {
-
+public class FileDto {
+	
+	private int fileNo;
+	private String originName;
+	private String changeName;
 	private int qnaNo;
-	private String qnaTitle;
-	private String qnaContent;
-	private String qnaDate;
-	private String userId;
-	private int phoneNo;
+	private int answerNo;
+	private String path;
 }
