@@ -51,7 +51,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:8989/login/login", {
+      const response = await axios.post("http://localhost:8989/login/sign-in", {
         userIdOrPhone: formData.usernameOrPhone,
         userType: formData.userType,
         password: formData.password,
