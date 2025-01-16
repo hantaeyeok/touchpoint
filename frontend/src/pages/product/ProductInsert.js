@@ -55,7 +55,7 @@ function ProductInsert() {
             shortDescription: shortDesc,
             detailedDescription: details,
             thumbnailImage: mainImg.name, // 파일 이름 설정
-            imageUrl : imgList.map(img => img.originFile.name) 
+            //imageUrl : imgList.map(img => img.originFile.name) 
         };
     
         //setObj(updatedObj);

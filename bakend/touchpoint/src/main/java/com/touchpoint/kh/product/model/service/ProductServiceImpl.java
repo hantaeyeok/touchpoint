@@ -20,6 +20,18 @@ public class ProductServiceImpl implements ProductService {
     public Product save(Product responseProduct) {
         return productRepository.save(responseProduct);
     }
+    
+    @Transactional
+    public void saveProductWithImages(Product product, List<ProductImage> productImages) {
+        // 1. 상품 저장
+    	productRepository.save(product);
+
+        // 2. 상세 이미지 저장
+        for (ProductImage image : productImages) {
+            image.setProductId(product.getProductId()); // product에 들어있는 productId를 받아옴
+            productRepository.save(image);
+        }
+    }
 
     @Override
     public List<Product> findAll() {
@@ -31,17 +43,7 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findByProductCategory(category);
     }
     
-    @Transactional
-    public void saveProductWithImages(Product product, List<ProductImage> productImages) {
-        // 1. 상품 저장
-        productRepository.save(product);
-
-        // 2. 상세 이미지 저장
-        for (ProductImage image : productImages) {
-            //image.setProductId(product.getProductId()); // 외래 키 설정
-            productRepository.save(image);
-        }
-    }
+    
     @Override
     public Product findByProductId(Long productId) {
     	return productRepository.findByProductId(productId);

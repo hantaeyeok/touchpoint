@@ -50,14 +50,11 @@ public class ProductController {
 	    
 	    // 썸네일 저장
 	    product.setThumbnailImage(saveFile(upfile, request));
-
-	    //상세이미지를 저장하는데 필요한 productId얻기 위해 product먼저 저장함
-	    Product savedProduct = productService.save(product);
 	    
-	    // 상세 이미지 저장
-	    List<ProductImage> productImages = saveImages(images, request, savedProduct.getProductId());
+	    // 상세 이미지 배열에 저장
+	    List<ProductImage> productImages = saveImages(images, request);
 	    
-	    // 저장 처리
+	    // 트렌젝션으로 저장처리
 	    productService.saveProductWithImages(product, productImages);
 	    
 	    // 응답 생성 및 반환
@@ -96,7 +93,7 @@ public class ProductController {
 	}
 	
 	//상세이미지 배열을 저장하기위한 메서드
-	private List<ProductImage> saveImages(List<MultipartFile> images, HttpServletRequest request, Long productId) throws IOException {
+	private List<ProductImage> saveImages(List<MultipartFile> images, HttpServletRequest request) throws IOException {
 	    
 		List<ProductImage> productImages = new ArrayList<>();
 		
@@ -104,7 +101,7 @@ public class ProductController {
 	    for (int i = 0; i < images.size(); i++) { 
 	        MultipartFile image = images.get(i); // 현재 이미지
 	        String imagePath = saveFile(image, request); // 이미지 저장
-	        productImages.add(new ProductImage(null, i, imagePath, productId)); // i를 displayOrder로 설정
+	        productImages.add(new ProductImage(null, imagePath, i, null)); 
 	    }
 	    return productImages;
 	}
@@ -143,15 +140,16 @@ public class ProductController {
 
 	    // 상품 정보 조회 (예: Service에서 가져오기)
 	    Product product = productService.findByProductId(productId);
+	    log.info("반환받은 product :{}" , product);
 
 	    // 상세 이미지 조회 (예: Service에서 가져오기)
 	    List<ProductImage> images = productService.findImagesByProductId(productId);
-
+	    log.info("반환받은 images :{}" , images);
 	    // 응답 데이터 생성
 	    Map<String, Object> responseData = new HashMap<>();
 	    responseData.put("product", product);
 	    responseData.put("images", images);
-	    log.info("반환받은 responseData :{}" , responseData);
+
 	    ResponseData rd = ResponseData.builder()
 	                                  .message("상품상세보기 조회 성공!")
 	                                  .responseData(responseData)
