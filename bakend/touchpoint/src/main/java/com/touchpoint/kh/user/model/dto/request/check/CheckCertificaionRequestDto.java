@@ -1,4 +1,4 @@
-package com.touchpoint.kh.user.model.dto.request;
+package com.touchpoint.kh.user.model.dto.request.check;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -12,13 +12,13 @@ import lombok.Setter;
 public class CheckCertificaionRequestDto {
 
 	@NotBlank
-	private String id;
+	private String userId;
 	
 	@Email
 	@NotBlank
 	private String email;
 	
 	@NotBlank
-	private String certificaionNumber;
+	private String certificationNumber;
 	
 }

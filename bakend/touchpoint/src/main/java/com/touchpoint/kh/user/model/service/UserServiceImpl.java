@@ -6,30 +6,29 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.touchpoint.kh.common.ResponseData;
 import com.touchpoint.kh.user.common.CertificationNumber;
-import com.touchpoint.kh.user.email.EmailProvider;
-import com.touchpoint.kh.user.jwt.JwtProvider;
-import com.touchpoint.kh.user.model.dao.CertificaionRepository;
-import com.touchpoint.kh.user.model.dao.LoginAttemptRepository;
+import com.touchpoint.kh.user.model.dao.CertificationRepository;
 import com.touchpoint.kh.user.model.dao.UserMapper;
 import com.touchpoint.kh.user.model.dao.UserRepository;
-import com.touchpoint.kh.user.model.dao.UserSessionRepository;
-import com.touchpoint.kh.user.model.dto.request.CheckCertificaionRequestDto;
 import com.touchpoint.kh.user.model.dto.request.EmailCertificaionRequsetDto;
-import com.touchpoint.kh.user.model.dto.request.IdCheckRequestDto;
 import com.touchpoint.kh.user.model.dto.request.SignInRequestDto;
-import com.touchpoint.kh.user.model.dto.response.CheckCertificaionResponseDto;
+import com.touchpoint.kh.user.model.dto.request.SignUpRequestDto;
+import com.touchpoint.kh.user.model.dto.request.check.CheckCertificaionRequestDto;
+import com.touchpoint.kh.user.model.dto.request.check.EmailCheckRequestDto;
+import com.touchpoint.kh.user.model.dto.request.check.IdCheckRequestDto;
+import com.touchpoint.kh.user.model.dto.request.check.PhoneCheckRequestDto;
 import com.touchpoint.kh.user.model.dto.response.EmailCertificaionResponseDto;
-import com.touchpoint.kh.user.model.dto.response.IdCheckResponseDto;
 import com.touchpoint.kh.user.model.dto.response.ResponseDto;
 import com.touchpoint.kh.user.model.dto.response.SignInResponseDto;
-import com.touchpoint.kh.user.model.dto.response.SignUpRequestDto;
 import com.touchpoint.kh.user.model.dto.response.SignUpResponseDto;
-import com.touchpoint.kh.user.model.vo.Certificaion;
-import com.touchpoint.kh.user.model.vo.LoginRequest;
+import com.touchpoint.kh.user.model.dto.response.check.CheckCertificaionResponseDto;
+import com.touchpoint.kh.user.model.dto.response.check.EmailCheckResponseDto;
+import com.touchpoint.kh.user.model.dto.response.check.IdCheckResponseDto;
+import com.touchpoint.kh.user.model.dto.response.check.PhoneCheckResponsetDto;
+import com.touchpoint.kh.user.model.vo.Certification;
 import com.touchpoint.kh.user.model.vo.User;
-import com.touchpoint.kh.user.model.vo.UserDto;
+import com.touchpoint.kh.user.provider.EmailProvider;
+import com.touchpoint.kh.user.provider.JwtProvider;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,98 +39,63 @@ import lombok.extern.slf4j.Slf4j;
 public class UserServiceImpl implements UserService{
 
 	private final UserRepository userRepository;
-	private final BCryptPasswordEncoder bCryptPasswordEncoder;
-	private final LoginAttemptRepository loginAttemptRepository;
-	private final UserSessionRepository userSessionRepository;
-	private final LoginValidationService loginValidationService;
 	private final UserMapper userMapper;
-	
 	private final EmailProvider emailProvider;
-	private final CertificaionRepository certificaionRepository;
+	private final CertificationRepository certificationRepository;
 	private final JwtProvider jwtProvider;
 	
 	
 	private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	
-	//user id 중복확인
+	//check
 	@Override
-	public Boolean userIdChecked(String userId) {
-		return userRepository.findByUserId(userId).isEmpty();
-	}
-	
-	//Email 중복 확인
-	@Override
-	public Boolean userEmailChecked(String email) {
-		return userRepository.findByEmail(email).isEmpty();
-	}
-	
-	//phone 중복 확인
-	@Override
-	public Boolean userPhoneChecked(String phone) {
-		String replacePhone = phone.replaceAll("-", "");
-		return userRepository.findByPhoneNo(replacePhone).isEmpty();
-	}
-	
-	
-	
-	// 일반 사용자 회원가입
-	@Override
-	public User signupGeneralUser(UserDto userDto) {		    
-	    String encodePassword = bCryptPasswordEncoder.encode(userDto.getPassword());
-		User user = User.builder() //Dto -> Vo -> save
-		                .userId(userDto.getUserId())
-		                .password(encodePassword) 
-		                .email(userDto.getEmail())           
-		                .phoneNo(userDto.getPhone().replaceAll("-", "")) //전화번호 front에서 010-1234-1234 or 01012341234              
-		                .name(userDto.getUsername())
-		                .adAgreed(userDto.isAdAgreed() ? "Y" : "N")
-		                .joinDt(java.time.LocalDate.now())
-		                .userSt("Y")
-		                .socialUser("N")
-		                .build();
-		
-		return userRepository.save(user);
-	}
-	
-	//로그인 검증
-	@Override
-	public ResponseData validateLogin(LoginRequest lgoinRequest) {
-		User user = userMapper.findByUserIdOrPhone(lgoinRequest.getUserIdOrPhone())
-						.orElseThrow(() -> new RuntimeException("사용자id phone둘다 실패임"));
-
-				//		.orElseThrow(() -> new RuntimeException("사용자id phone둘다 실패임"));
-		//User user = userRepository.findByUserIdOrPhone(lgoinRequest.getUserIdOrPhone())
-		//		.orElseThrow(() -> new RuntimeException("사용자id phone둘다 실패임"));
-
-		return loginValidationService.validateLogin(user, lgoinRequest);
-	}
-
-
-	
-
-	
-	@Override
-	public ResponseEntity<? super IdCheckResponseDto> idcheck(IdCheckRequestDto dto) {
+	public ResponseEntity<? super IdCheckResponseDto> idCheck(IdCheckRequestDto dto) {
 		try {
-			String userId = dto.getId();
-			boolean isExisId = userRepository.existByUserId(userId);
-			if(isExisId) return IdCheckResponseDto.duplicatId();
-				
+			String userId = dto.getUserId();
+			boolean isExisId = userRepository.existsByUserId(userId);
+			if(isExisId) return IdCheckResponseDto.duplicatId();		
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseDto.databaseError();
 		}
 		return IdCheckResponseDto.success();
 	}
+	
+	@Override
+	public ResponseEntity<? super PhoneCheckResponsetDto> phoneCheck(PhoneCheckRequestDto dto) {
+		try {
+			String phone = dto.getPhone().replace("-", "");
+			boolean isExisId = userRepository.existsByPhoneNo(phone); 
+			if(isExisId) return PhoneCheckResponsetDto.duplicatPhone();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseDto.databaseError();
+		}
+		return PhoneCheckResponsetDto.success();
+	}
 
+	@Override
+	public ResponseEntity<? super EmailCheckResponseDto> emailCheck(EmailCheckRequestDto dto) {
+		try {
+			String email = dto.getEmail();
+			boolean isExisId = userRepository.existsByEmail(email);
+			if(isExisId) return EmailCheckResponseDto.duplicatEmail();
+				
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseDto.databaseError();
+		}
+		return EmailCheckResponseDto.success();
+	}
+	
 	@Override
 	public ResponseEntity<? super EmailCertificaionResponseDto> emailCertification(EmailCertificaionRequsetDto dto) {
 		try {
 			
-			String userId = dto.getId();
+			String userId = dto.getUserId();
 			String email = dto.getEmail();
 			
-			boolean isExisId = userRepository.existByUserId(userId);
+			boolean isExisId = userRepository.existsByUserId(userId);
 			if(isExisId) return EmailCertificaionResponseDto.dublicateId();
 			
 			String certificaionNumber = CertificationNumber.getCertificationNumber();
@@ -139,8 +103,8 @@ public class UserServiceImpl implements UserService{
 			boolean isSuccessed = emailProvider.sendCerttificaionMail(email, certificaionNumber);
 			if(!isSuccessed) return EmailCertificaionResponseDto.mailSendFail();
 			
-			Certificaion certificaion = new Certificaion(userId, email, certificaionNumber);
-			certificaionRepository.save(certificaion);
+			Certification certification = new Certification(userId, email, certificaionNumber);
+			certificationRepository.save(certification);
 				
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -155,14 +119,14 @@ public class UserServiceImpl implements UserService{
 	public ResponseEntity<? super CheckCertificaionResponseDto> checkCertificaion(CheckCertificaionRequestDto dto) {
 
 		try {
-			String userId = dto.getId();
+			String userId = dto.getUserId();
 			String email = dto.getEmail();
-			String certificaionNumber = dto.getCertificaionNumber();
+			String certificaionNumber = dto.getCertificationNumber();
 			
-			Certificaion certificaion = certificaionRepository.findByUserId(userId);
-			if(certificaion == null) return CheckCertificaionResponseDto.certificaionFail();
+			Certification certification = certificationRepository.findByUserId(userId);
+			if(certification == null) return CheckCertificaionResponseDto.certificaionFail();
 			
-			boolean isMatch = certificaion.getEmail().equals(email) && certificaion.getCertificationNumber().equals(certificaionNumber);
+			boolean isMatch = certification.getEmail().equals(email) && certification.getCertificationNumber().equals(certificaionNumber);
 			if(!isMatch) return CheckCertificaionResponseDto.certificaionFail();
 			
 			
@@ -180,16 +144,16 @@ public class UserServiceImpl implements UserService{
 
 		try {
 			
-			String userId = dto.getId();
-			boolean isExistId = userRepository.existByUserId(userId);
+			String userId = dto.getUserId();
+			boolean isExistId = userRepository.existsByUserId(userId);
 			if(isExistId) return SignUpResponseDto.duplicateId();
 			
 			String email = dto.getEmail();
 			String certificationNumber = dto.getCertificationNumber();
 			
-			Certificaion certificaion = certificaionRepository.findByUserId(userId);
+			Certification certification = certificationRepository.findByUserId(userId);
 			
-			boolean isMatched = certificaion.getEmail().equals(email) && certificaion.getCertificationNumber().equals(certificaionNumber);
+			boolean isMatched = certification.getEmail().equals(email) && certification.getCertificationNumber().equals(certificationNumber);
 			if(!isMatched) return SignUpResponseDto.certificaionFail();
 			
 			String password = dto.getPassword();
@@ -199,8 +163,7 @@ public class UserServiceImpl implements UserService{
 			User user = new User(dto);
 			userRepository.save(user);
 		
-			//certificaionRepository.delete(certificaion);
-			certificaionRepository.deleteByUserId(userId);
+			certificationRepository.deleteByUserId(userId);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -209,6 +172,8 @@ public class UserServiceImpl implements UserService{
 		
 		return SignUpResponseDto.success();
 	}
+	
+	
 
 	@Override
 	public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
@@ -241,6 +206,14 @@ public class UserServiceImpl implements UserService{
 		
 		return SignInResponseDto.success(token);
 	}
+
+
+
+
+
+
+
+
 	
 	
 	

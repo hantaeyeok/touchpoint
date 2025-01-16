@@ -1,4 +1,4 @@
-package com.touchpoint.kh.user.model.dto.response;
+package com.touchpoint.kh.user.model.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -13,7 +13,8 @@ import lombok.Setter;
 public class SignUpRequestDto {
 
 	@NotBlank
-	private String id;
+	@Pattern(regexp="^[a-zA-Z0-9]{5,20}$")
+	private String userId;
 	
 	@NotBlank
 	@Pattern(regexp="^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")
@@ -25,6 +26,15 @@ public class SignUpRequestDto {
 	
 	@NotBlank
 	private String certificationNumber;
+	
+	@NotBlank
+	private String userName;
+	
+	@NotBlank
+	private String phone;
+	
+	@NotBlank
+	private String adAgreed;
 	
 	
 }

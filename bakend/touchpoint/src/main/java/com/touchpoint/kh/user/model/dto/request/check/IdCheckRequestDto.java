@@ -1,4 +1,4 @@
-package com.touchpoint.kh.user.model.dto.request;
+package com.touchpoint.kh.user.model.dto.request.check;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -11,6 +11,6 @@ import lombok.Setter;
 public class IdCheckRequestDto {
 
 	@NotBlank
-	private String id;
+	private String userId;
 	
 }

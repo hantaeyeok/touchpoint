@@ -10,5 +10,4 @@ import com.touchpoint.kh.user.model.vo.User;
 @Mapper
 public interface UserMapper {
 	Optional<User> findByUserIdOrPhone(@Param("userIdOrPhone")String userIdOrPhone);
-	
 }

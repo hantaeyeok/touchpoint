@@ -157,7 +157,6 @@ const Login = () => {
         {/* 로그인 및 회원가입 버튼 */}
         <div className="button-group">
           <ButtonLogin text="로그인" type="submit" />
-          <ButtonLogin text="회원가입" url="/signup" type="link" variant="outline" />
           <ButtonLogin text="소셜임시회원가입" url="/socalsignup" type="link" variant="outline" />
           <ButtonLogin text="일반회원가입 테스트" url="/signupform" type="link" variant="outline" />
         </div>

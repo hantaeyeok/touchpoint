@@ -1,7 +1,9 @@
-package com.touchpoint.kh.user.model.dto.response;
+package com.touchpoint.kh.user.model.dto.response.check;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import com.touchpoint.kh.user.model.dto.response.ResponseDto;
 
 import lombok.Getter;
 

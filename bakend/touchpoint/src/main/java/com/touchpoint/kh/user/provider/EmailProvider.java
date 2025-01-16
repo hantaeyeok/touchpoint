@@ -1,4 +1,4 @@
-package com.touchpoint.kh.user.email;
+package com.touchpoint.kh.user.provider;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;

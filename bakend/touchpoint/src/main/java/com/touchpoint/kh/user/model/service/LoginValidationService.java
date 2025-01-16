@@ -9,7 +9,6 @@ import com.touchpoint.kh.common.ResponseData;
 import com.touchpoint.kh.user.model.dao.LoginAttemptRepository;
 import com.touchpoint.kh.user.model.dao.UserRepository;
 import com.touchpoint.kh.user.model.vo.LoginAttempt;
-import com.touchpoint.kh.user.model.vo.LoginRequest;
 import com.touchpoint.kh.user.model.vo.User;
 
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class LoginValidationService {
-
+/*
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	private final LoginAttemptRepository loginAttemptRepository;
 	private final GoogleRecaptchaService googleRecaptchaService;
@@ -145,5 +144,5 @@ public class LoginValidationService {
         attempt.setCaptchaActive("N");
         loginAttemptRepository.save(attempt);
 	}
-
+*/
 }

@@ -13,8 +13,9 @@ import com.touchpoint.kh.user.model.vo.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>{
 
-	boolean existByUserId(String userId);
-	
+	boolean existsByUserId(String userId); 
+	boolean existsByPhoneNo(String phone);
+	boolean existsByEmail(String email);
 	
 	//사용자 id 중복 쳌
 	User findByUserId(String userId);

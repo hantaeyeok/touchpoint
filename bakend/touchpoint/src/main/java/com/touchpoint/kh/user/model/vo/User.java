@@ -2,7 +2,7 @@ package com.touchpoint.kh.user.model.vo;
 
 import java.time.LocalDate;
 
-import com.touchpoint.kh.user.model.dto.response.SignUpRequestDto;
+import com.touchpoint.kh.user.model.dto.request.SignUpRequestDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -65,13 +65,16 @@ public class User {
     private String userRole; // 사용자 역할 (기본값: ROLE_USER)
     
     public User(SignUpRequestDto dto) {
-    	this.userId = dto.getId();
+    	this.userId = dto.getUserId();
     	this.password = dto.getPassword();
     	this.email = dto.getEmail();
-    	//this.type = "app";
+    	this.phoneNo = dto.getPhone().replace("-", "");
+    	this.name = dto.getUserName();
+    	this.joinDt = LocalDate.now();
+    	this.userSt = "Y";
+    	this.socialUser ="N";
+    	this.adAgreed = dto.getAdAgreed();
     	this.userRole = "ROLE_USER";
-    	
-    	
     }
     
 }
