@@ -25,9 +25,23 @@ const DetailProduct = () => {
         return <div>Loading...</div>; // 로딩 상태
     }
 
-
+    //삭제함수
     const productDelete =  () => {
-        axios.delete(`http://localhost:8989/product/${productId}`)
+        if (window.confirm("정말 삭제하시겠습니까?")) {
+            axios.delete(`http://localhost:8989/product/${productId}`)
+            .then(response =>{
+                console.log(response);
+                alert("상품 삭제 완료!");
+            })
+            .catch(error => {
+                console.error('Error fetching product details:', error);
+            });
+        }
+    }
+    
+    //수정함수
+    const productChange = () => {
+        axios.post(`http://localhost:8989/product/${productId}`)
         .then(response =>{
             console.log(response);
         })
@@ -38,11 +52,10 @@ const DetailProduct = () => {
 
 
 
-
     return (
         <div className="product-detail">
             <div className="buttonsDetail">
-                <button type="button" className="change-button">수정하기</button>
+                <button onClick={productChange} type="button" className="change-button">수정하기</button>
                 <button onClick={productDelete} type="button" className="delete-button">삭제하기</button>
             </div>
             <h1>{product.productName}</h1>

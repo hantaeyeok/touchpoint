@@ -3,13 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from "axios";
 
 
-const onChangeTitle = (e) => {
-    console.log(e.target.value); // 입력값 출력 (추후 상태 관리 가능)
-};
-
 function ProductInsert() {
-
-    const [type, setType] = useState(''); 
 
     const [kioskList, setKioskList] = useState(''); 
     const [cctvList, setCctvList] = useState(''); 
@@ -37,29 +31,19 @@ function ProductInsert() {
         console.log(e.target.value);
     }
    
-    /*
-    const [obj, setObj] = useState({
-        productName: '',
-        productCategory: '',
-        shortDescription: '',
-        detailedDescription: '',
-        thumbnailImage: '',
-
-    });
-    */
     
+
     const onChangeButton = e => {
         const updatedObj = {
             productName: title,
             productCategory: kind,
             shortDescription: shortDesc,
             detailedDescription: details,
-            thumbnailImage: mainImg.name, // 파일 이름 설정
-            //imageUrl : imgList.map(img => img.originFile.name) 
+            thumbnailImage: mainImg.name // 파일 이름 설정
         };
-    
-        //setObj(updatedObj);
-    
+
+
+
         const updatedList =
             kind === 'kiosk'
                 ? [...kioskList, updatedObj]
@@ -123,13 +107,12 @@ function ProductInsert() {
             // 미리보기 이미지 설정
             console.log(reader.result); // 이미지 데이터 URI 출력
         };
-    
+
         reader.onerror = (error) => {
             console.error("File reading error:", error);
         };
     };
     
-
     // 상세 이미지 추가 함수
     const onDetailImgSelected = (e) => {
         const now = new Date();
@@ -144,20 +127,7 @@ function ProductInsert() {
             ]); // 상세 이미지 리스트에 추가(url이랑 오리진 파일이랑 뭔차이)
         };
     };
-
     
-    const [button, setButton] = useState('');
-
-
-    const onChangeHandler = e =>{
-        console.log(e.target.name);
-        console.log(e.target.value);
-    }
-
-    
-    
-    
-
     return (
         <>
             <div className="insertPage">
@@ -272,8 +242,6 @@ function ProductInsert() {
                     </div>
                 </div>
             </div>
-
-     
         </>
     );
 }
