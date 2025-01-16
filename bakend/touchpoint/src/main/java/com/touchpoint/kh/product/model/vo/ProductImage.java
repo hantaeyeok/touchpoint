@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 public class ProductImage {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long imageId;
 	
 	private String imageUrl;

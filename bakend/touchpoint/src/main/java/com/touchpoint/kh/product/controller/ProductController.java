@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +23,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.touchpoint.kh.product.model.service.ProductService;
 import com.touchpoint.kh.product.model.vo.Product;
 import com.touchpoint.kh.product.model.vo.ProductImage;
-import com.touchpoint.kh.product.resposnse.ResponseData;
+import com.touchpoint.kh.common.ResponseData;
+import com.touchpoint.kh.common.ResponseHandler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ProductController {
 	private final ProductService productService;
-
+	private final ResponseHandler responseHandler;
 
 	@PostMapping("save")
 	public ResponseEntity<ResponseData> save(
@@ -58,11 +60,7 @@ public class ProductController {
 	    productService.saveProductWithImages(product, productImages);
 	    
 	    // 응답 생성 및 반환
-	    ResponseData rd = ResponseData.builder()
-	                                   .message("상품 추가 성공!")
-	                                   .responseData(product)
-	                                   .build();
-	    return ResponseEntity.ok(rd);
+	    return responseHandler.createResponse("상품추가 성공!", true, HttpStatus.OK);
 	}
 
 	
@@ -112,28 +110,19 @@ public class ProductController {
 		
 		List<Product> all_products = productService.findAll();
 		
-		ResponseData rd = ResponseData.builder()
-									  .message("전체상품 조회 성공!")
-									  .responseData(all_products)
-									  .build();
-		
 		log.info("반환받은 product :{}" , all_products);
 		
-		return ResponseEntity.ok(rd);
+	    return responseHandler.createResponse("전체상품 조회 성공!", all_products, HttpStatus.OK);
 	}
 	
 	@GetMapping()
 	public ResponseEntity<ResponseData> findByProductCategory (@RequestParam("category") String category){
 		
 		List<Product> productCategory = productService.findByProductCategory(category);
-		
-		ResponseData rd = ResponseData.builder()
-									  .message("카테고리별 조회 성공!")
-									  .responseData(productCategory)
-									  .build();
-		
-		return ResponseEntity.ok(rd);
+	
+		return responseHandler.createResponse("카테고리별 조회 성공!", productCategory, HttpStatus.OK);
 	}
+	
 	
 	@GetMapping("/{productId}")
 	public ResponseEntity<ResponseData> findByProduct(@PathVariable("productId") Long productId) {
@@ -150,13 +139,10 @@ public class ProductController {
 	    responseData.put("product", product);
 	    responseData.put("images", images);
 
-	    ResponseData rd = ResponseData.builder()
-	                                  .message("상품상세보기 조회 성공!")
-	                                  .responseData(responseData)
-	                                  .build();
-
-	    return ResponseEntity.ok(rd);
+		return responseHandler.createResponse("상품상세보기 조회 성공!", responseData, HttpStatus.OK);
 	}
+	
+	
 
 
 }

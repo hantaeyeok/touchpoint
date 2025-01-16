@@ -49,6 +49,8 @@ justify-content: center;
 .proImg{
   width: 200px;
   height:200px;
+  object-fit: cover;
+
 }
 .proP{
   text-align: center;
