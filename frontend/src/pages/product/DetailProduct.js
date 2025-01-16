@@ -8,7 +8,7 @@ const DetailProduct = () => {
     const [product, setProduct] = useState(null); 
     const [images, setImages] = useState([]);
     
-    useEffect(() => {  //렌더링 될때마다 실행행
+    useEffect(() => {  //렌더링 될때마다 실행
         // 상품 상세 정보 API 호출
         axios.get(`http://localhost:8989/product/${productId}`)
             .then(response => {
@@ -27,7 +27,7 @@ const DetailProduct = () => {
 
 
     const productDelete =  () => {
-        axios.post('http://localhost:8989/product/${productId}')
+        axios.delete(`http://localhost:8989/product/${productId}`)
         .then(response =>{
             console.log(response);
         })
@@ -43,7 +43,7 @@ const DetailProduct = () => {
         <div className="product-detail">
             <div className="buttonsDetail">
                 <button type="button" className="change-button">수정하기</button>
-                <button onChange={productDelete} type="button" className="delete-button">삭제하기</button>
+                <button onClick={productDelete} type="button" className="delete-button">삭제하기</button>
             </div>
             <h1>{product.productName}</h1>
             <p>카테고리: {product.productCategory}</p>

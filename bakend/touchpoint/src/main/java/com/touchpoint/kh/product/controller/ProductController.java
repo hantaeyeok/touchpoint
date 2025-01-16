@@ -11,6 +11,7 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,11 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.touchpoint.kh.common.ResponseData;
+import com.touchpoint.kh.common.ResponseHandler;
 import com.touchpoint.kh.product.model.service.ProductService;
 import com.touchpoint.kh.product.model.vo.Product;
 import com.touchpoint.kh.product.model.vo.ProductImage;
-import com.touchpoint.kh.common.ResponseData;
-import com.touchpoint.kh.common.ResponseHandler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -129,11 +130,10 @@ public class ProductController {
 
 	    // 상품 정보 조회 (예: Service에서 가져오기)
 	    Product product = productService.findByProductId(productId);
-	    log.info("반환받은 product :{}" , product);
 
 	    // 상세 이미지 조회 (예: Service에서 가져오기)
 	    List<ProductImage> images = productService.findImagesByProductId(productId);
-	    log.info("반환받은 images :{}" , images);
+	    
 	    // 응답 데이터 생성
 	    Map<String, Object> responseData = new HashMap<>();
 	    responseData.put("product", product);
@@ -143,6 +143,16 @@ public class ProductController {
 	}
 	
 	
+	@DeleteMapping("/{productId}")
+	public ResponseEntity<ResponseData>deletelById(@PathVariable("productId")Long productId ){
+		
+		productService.deleteProductWithImages(productId);
+		
+		
+		
+		return responseHandler.createResponse("상품삭제 성공!", null, HttpStatus.OK);
+
+	}
 
 
 }

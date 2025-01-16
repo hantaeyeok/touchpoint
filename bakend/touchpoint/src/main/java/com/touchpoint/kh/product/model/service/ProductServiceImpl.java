@@ -8,6 +8,7 @@ import com.touchpoint.kh.product.model.dao.ProductRepository;
 import com.touchpoint.kh.product.model.vo.Product;
 import com.touchpoint.kh.product.model.vo.ProductImage;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -52,4 +53,24 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductImage> findImagesByProductId(Long productId) {
     	return productRepository.findImagesByProductId(productId);
     }
+
+	@Override
+	public Product deleteById(Long productId) {
+        Product product = productRepository.findById(productId)
+            .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + productId));
+        
+        productRepository.delete(product);
+        return product;
+    }
+
+	@Transactional
+	public void deleteProductWithImages(Long productId) {
+	    // Product 조회
+	    Product product = productRepository.findById(productId)
+	        .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + productId));
+	    
+	    // Product 삭제 (연관된 ProductImage도 자동 삭제)
+	    productRepository.delete(product);
+	}
+
 }

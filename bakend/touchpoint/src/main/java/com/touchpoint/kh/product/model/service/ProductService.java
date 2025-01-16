@@ -14,4 +14,6 @@ public interface ProductService {
 	void saveProductWithImages(Product product, List<ProductImage> productImages);
 	Product findByProductId(Long productId);
 	List<ProductImage> findImagesByProductId(Long productId);
+	Product deleteById(Long productId);
+	void deleteProductWithImages(Long productId);
 }
