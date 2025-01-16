@@ -12,4 +12,7 @@ public interface ResponseMessage {
 	String CERTIFICATION_FALI = "Cretification failed";
 	String MAIL_FAIL = "Mail send failed";
 	String DATABASE_ERROR = "Database error";
+	 // Login specific
+    String ACCOUNT_LOCKED = "Account has been locked. Contact administrator.";
+    String CAPTCHA_FAIL = "Captcha validation failed. Please try again.";
 }

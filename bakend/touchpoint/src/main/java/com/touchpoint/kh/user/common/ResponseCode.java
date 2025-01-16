@@ -14,4 +14,7 @@ public interface ResponseCode {
 	String MAIL_FAIL = "MF";
 	String DATABASE_ERROR = "DBE";
 	
+	// Login specific
+    String ACCOUNT_LOCKED = "AL";
+    String CAPTCHA_FAIL = "CF";
 }

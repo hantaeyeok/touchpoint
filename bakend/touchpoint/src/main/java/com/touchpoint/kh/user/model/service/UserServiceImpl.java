@@ -1,6 +1,8 @@
 package com.touchpoint.kh.user.model.service;
 
 
+import java.util.Optional;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,7 +45,7 @@ public class UserServiceImpl implements UserService{
 	private final EmailProvider emailProvider;
 	private final CertificationRepository certificationRepository;
 	private final JwtProvider jwtProvider;
-	
+	private final LoginValidationService loginValidationService;
 	
 	private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	
@@ -182,21 +184,15 @@ public class UserServiceImpl implements UserService{
 		
 		try {
 			
-			String userId = dto.getId();
-			User user = userRepository.findByUserId(userId);
+			String userIdOrPhone = dto.getUserIdOrPhone().replace("-", "");
+			User user = userMapper.findByUserIdOrPhone(userIdOrPhone);
 			if(user == null) return SignInResponseDto.signInFail();
-			
-			String password = dto.getPassword();
-			String encodedPassword = user.getPassword();
-			
-			boolean isMatched = passwordEncoder.matches(password, encodedPassword);
-			if(!isMatched) return SignInResponseDto.signInFail();
-			
-			token = jwtProvider.create(userId);
-			
-			
-			
-			
+
+			ResponseEntity<ResponseDto> response = loginValidationService.validateLogin(user, dto);
+
+	
+			token = jwtProvider.create(user.getUserId());
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseDto.databaseError();
@@ -207,8 +203,38 @@ public class UserServiceImpl implements UserService{
 		return SignInResponseDto.success(token);
 	}
 
+	
+	/*
+	@Override
+	public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
+		
+		String token = null;
+		
+		try {
+			
+			String userIdOrPhone = dto.getUserIdOrPhone();
+			User user = userRepository.findByUserId(userId);
+			if(user == null) return SignInResponseDto.signInFail();
+			
+			String password = dto.getPassword();
+			String encodedPassword = user.getPassword();
+			
+			boolean isMatched = passwordEncoder.matches(password, encodedPassword);
+			if(!isMatched) return SignInResponseDto.signInFail();
+			
+			token = jwtProvider.create(userId);
 
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseDto.databaseError();
+		
+		}
+		
+		
+		return SignInResponseDto.success(token);
+	}
 
+*/
 
 
 
