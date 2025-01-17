@@ -14,6 +14,7 @@ const Login = () => {
   const [failedLoginCnt, setFailedLoginCnt] = useState(0);
   const [captchaRequired, setCaptchaRequired] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const loadCaptchaScript = () => {
@@ -29,50 +30,55 @@ const Login = () => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value.replace(/-/g, ""), // 전화번호 입력 시 '-' 제거
+      [name]: value.replace(/-/g, ""),
     });
   };
 
   const handleSubmit = async (e) => {
-    console.log("Form submitted: ", formData);
-    e.preventDefault();
-
-    if (isSubmitting) return; // Prevent multiple submissions
-
+    console.log("버튼 눌림");
+    console.log("")
+    if (isSubmitting) return;
     setIsSubmitting(true);
+    setErrorMessage("");
+
     try {
       const response = await axios.post("http://localhost:8989/login/sign-in", {
         userIdOrPhone: formData.userIdOrPhone,
         password: formData.password,
         captchaToken: captchaRequired ? formData.captchaToken : null,
       });
+      console.log("response{}",response);
 
-      handleLoginResponse(response);
-    } catch (error) {
-      console.error("로그인 요청 실패:", error);
-      alert("로그인 요청 중 오류가 발생했습니다. 다시 시도해주세요.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleLoginResponse = async (response) => {
-    const { status, data } = response;
-
-    if (status === 200) {
-      alert("로그인 성공!");
-      localStorage.setItem("userToken", data?.data?.token || "");
-      window.location.href = "/";
-    } else if (status === 401 || status === 403) {
-      setFailedLoginCnt(data?.data?.loginFailCount || 0);
-      setCaptchaRequired(data?.data?.captchaRequired === "Y");
-
-      if (data?.data?.captchaRequired === "Y") {
-        alert("캡차가 활성화되었습니다. 캡차를 완료해주세요.");
-        executeCaptcha();
-      } else {
-        alert(data?.message || "로그인 실패. 다시 시도해주세요.");
+      if (response.data.code === "SU") {
+        alert("로그인 성공");
+        window.location.href = "/";
       }
+    } catch (error) {
+      if (error.response) {
+        console.log("responsedd{}", error.response);
+        const { data } = error.response;
+
+        if (data.code === "AL") {
+          alert("아이디 잠금: 관리자에게 문의하세요");
+        } else if (data.captchaActive === "Y") {
+          setCaptchaRequired(true);
+          alert("캡차가 활성화되었습니다. 캡차를 완료해주세요.");
+          executeCaptcha();
+        } else if (data.code === "SF") {
+          alert("아이디와 비밀번호가 일치하지 않습니다.");
+        } else if (data.code === "CF") {
+          alert("캡차를 다시 진행해주세요.");
+        }
+
+        setFailedLoginCnt(data.loginFailCount || 0);
+      } else {
+        console.error("로그인 요청 실패:", error);
+        setErrorMessage("로그인 요청 중 오류가 발생했습니다. 다시 시도해주세요.");
+      }
+    } finally {
+      setTimeout(() => {
+        setIsSubmitting(false);
+      }, 3000);
     }
   };
 
@@ -85,6 +91,7 @@ const Login = () => {
       setFormData((prev) => ({ ...prev, captchaToken: token }));
     } catch (error) {
       console.error("캡차 실행 실패:", error);
+      setErrorMessage("캡차를 실행하는 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -128,27 +135,37 @@ const Login = () => {
           </div>
         )}
 
-        <div className="button-group">
-          <ButtonLogin 
-          text="로그인" 
-          type="submit" 
-          onClick={handleSubmit}
-          disabled={isSubmitting}
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
 
+        <div className="button-group">
+          <ButtonLogin
+            className="signup-button"
+            text="로그인"
+            type="submit"
+            disabled={isSubmitting}
+            onSubmit={handleSubmit}
           />
-          <ButtonLogin text="소셜임시회원가입" url="/socalsignup" type="link" variant="outline" />
-          <ButtonLogin text="일반회원가입 테스트" url="/signupform" type="link" variant="outline" />
+          <ButtonLogin
+            text="소셜임시회원가입"
+            url="/socalsignup"
+            type="link"
+            variant="outline"
+          />
+          <ButtonLogin
+            text="일반회원가입 테스트"
+            url="/signupform"
+            type="link"
+            variant="outline"
+          />
         </div>
 
         <div className="login-or">or</div>
         <div className="social-login">
-          <button type="button" className="social-button naver" onClick={handleNaverLogin}>
-            <img src={naverIcon} alt="Naver" className="icon" />
-          </button>
-          <button type="button" className="social-button naver" onClick={handleNaverLogin}>
-            <img src={naverIcon} alt="Naver" className="icon" />
-          </button>
-          <button type="button" className="social-button naver" onClick={handleNaverLogin}>
+          <button
+            type="button"
+            className="social-button naver"
+            onClick={handleNaverLogin}
+          >
             <img src={naverIcon} alt="Naver" className="icon" />
           </button>
         </div>
