@@ -15,7 +15,7 @@ import './App.css'
 import HistoryMain from "@pages/history/HistoryMain";
 
 
-    
+
 function App() {
 
   
@@ -37,8 +37,6 @@ function App() {
             <Route path="/signupform" element={<SignUpForm />} /> 
             <Route path="/socalsignup" element={<SocalSignUp />} /> 
             <Route path="/history" element={<HistoryMain/>} />
-            
-        
           </Routes>
         </div>
     </FaqProvider>
