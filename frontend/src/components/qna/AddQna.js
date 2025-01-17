@@ -16,7 +16,7 @@ function AddQna() {
     const [addQna, setAddQna] = useState([]);
 
     const newQna = {userId, phoneNo, OriginName, qnaTitle, qnaContent};
-    setAddQna([...qnaState, newQna]);
+    setAddQna([...addQna, newQna]);
     
     const handleFileChange = (event) => {
         
