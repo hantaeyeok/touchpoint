@@ -2,10 +2,15 @@ import "@styles/ProductDetail.css";
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { Link, useNaviState } from "react-router-dom";
+
 
 const DetailProduct = () => {
     const { productId } = useParams(); // URL에서 id 가져오기
     const [product, setProduct] = useState(null); 
+
+    
+    
     const [images, setImages] = useState([]);
     
     useEffect(() => {  //렌더링 될때마다 실행
@@ -39,23 +44,18 @@ const DetailProduct = () => {
         }
     }
     
-    //수정함수
+   //수정폼으로 넘기는 함수
     const productChange = () => {
-        axios.post(`http://localhost:8989/product/${productId}`)
-        .then(response =>{
-            console.log(response);
-        })
-        .catch(error => {
-            console.error('Error fetching product details:', error);
-        });
+       
     }
-
 
 
     return (
         <div className="product-detail">
             <div className="buttonsDetail">
-                <button onClick={productChange} type="button" className="change-button">수정하기</button>
+                <button type="button" className="change-button">
+                    <Link to={`/productChange/${productId}`} style={{ textDecoration: "none"}}>수정하기</Link>
+                </button>
                 <button onClick={productDelete} type="button" className="delete-button">삭제하기</button>
             </div>
             <h1>{product.productName}</h1>

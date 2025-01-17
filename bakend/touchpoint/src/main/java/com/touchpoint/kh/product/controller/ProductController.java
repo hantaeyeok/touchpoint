@@ -68,6 +68,7 @@ public class ProductController {
 	public String saveFile(MultipartFile upfile, HttpServletRequest request) throws IOException {
 	    // getRealPath()로 실제 경로 가져오기
 	    String savePath = request.getServletContext().getRealPath("/resources/uploadFiles/");
+	    //System.out.println("File Save Path: " + savePath);
 	    
 	    // 만약 getRealPath()가 null을 반환하면 다른 경로를 사용
 	    if (savePath == null) {
@@ -91,7 +92,7 @@ public class ProductController {
 	    return "/resources/uploadFiles/" + fileName;  // 저장된 파일 경로 반환
 	}
 	
-	//상세이미지 배열을 저장하기위한 메서드
+	//상세이미지 저장하기위한 메서드
 	private List<ProductImage> saveImages(List<MultipartFile> images, HttpServletRequest request) throws IOException {
 	    
 		List<ProductImage> productImages = new ArrayList<>();

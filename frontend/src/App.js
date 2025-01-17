@@ -9,6 +9,7 @@ import Menubar from '@components/indexcomponents/Menubar';
 import Product from '@pages/product/Product';
 import ProductInsert from '@pages/product/ProductInsert';
 import DetailProduct from "@pages/product/DetailProduct";
+import ProductChange from "@pages/product/ProductChange";
 import Qna from '@pages/Qna/Qna';
 import Faq from '@pages/Qna/Faq';
 import AddFaq from '@components/qna/AddFaq';
@@ -37,6 +38,7 @@ function App() {
             <Route path="/product" element={<Product/>}/>
             <Route path="/productInsert" element={<ProductInsert/>}/>
             <Route path="/detailProduct/:productId" element={<DetailProduct/>}/>
+            <Route path="/productChange/:productId" element={<ProductChange/>}/>
             <Route path="/login" element={<Login />} /> 
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signupform" element={<SignUpForm />} /> 
