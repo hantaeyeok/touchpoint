@@ -11,6 +11,8 @@ const ButtonLogin = ({ text, url, onSubmit, type = "button", variant = "default"
       window.location.href = url;
     } else if (onSubmit) {
       // onSubmit 함수 실행
+      e.preventDefault();
+
       onSubmit(e);
     }
   };

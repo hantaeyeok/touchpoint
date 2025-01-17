@@ -5,6 +5,7 @@ import com.touchpoint.kh.history.model.vo.HistoryImage;
 import com.touchpoint.kh.history.model.vo.SetupHistory;
 import com.touchpoint.kh.history.model.vo.SetupHistoryDto;
 
+import jakarta.servlet.http.HttpServlet;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -94,6 +95,7 @@ public class SetupHistoryServiceImpl implements SetupHistoryService {
 
     // 파일 저장 메서드
     private String saveFile(MultipartFile upfile) {
+    	
         String uploadDir = "src/main/resources/static/uploadHistoryFiles/";
         String fileName = upfile.getOriginalFilename();
 

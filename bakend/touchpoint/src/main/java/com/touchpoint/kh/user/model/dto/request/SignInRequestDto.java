@@ -17,8 +17,5 @@ public class SignInRequestDto {
 	private String password;
 	
 	@NotBlank
-	private String userType;
-	
-	@NotBlank
 	private String captchaToken;
 }

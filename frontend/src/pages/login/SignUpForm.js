@@ -213,7 +213,6 @@ const SignUpForm = () => {
           iconName="person"
           errorMessage={errors.userId}
         />
-        {userIdAvailable === false && <p className="error-message">이미 사용 중인 아이디입니다.</p>}
 
         <PasswordField
           name="password"
@@ -257,7 +256,6 @@ const SignUpForm = () => {
             )
           }
         />
-        {phoneAvailable === false && <p className="error-message">이미 사용 중인 전화번호입니다.</p>}
 
         <EmailField
           name="email"
@@ -280,7 +278,6 @@ const SignUpForm = () => {
           iconName="mail"
           errorMessage={errors.email}
         />
-        {emailAvailable === false && <p className="error-message">이미 사용 중인 이메일입니다.</p>}
         <ButtonLogin
           text="인증번호 받기"
           type="button"

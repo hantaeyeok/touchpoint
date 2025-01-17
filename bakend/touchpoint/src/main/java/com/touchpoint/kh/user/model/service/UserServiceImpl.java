@@ -1,8 +1,6 @@
 package com.touchpoint.kh.user.model.service;
 
 
-import java.util.Optional;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -188,9 +186,13 @@ public class UserServiceImpl implements UserService{
 			User user = userMapper.findByUserIdOrPhone(userIdOrPhone);
 			if(user == null) return SignInResponseDto.signInFail();
 
-			ResponseEntity<ResponseDto> response = loginValidationService.validateLogin(user, dto);
-
-	
+			ResponseEntity<SignInResponseDto> validationResponse = 
+					loginValidationService.validateLogin(user, dto);
+			
+			 if (!validationResponse.getStatusCode().is2xxSuccessful()) {
+		            return validationResponse;
+		        }
+	        
 			token = jwtProvider.create(user.getUserId());
 
 		} catch (Exception e) {
