@@ -5,7 +5,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.touchpoint.kh.history.model.dao")
 public class TouchpointApplication {
 
 	public static void main(String[] args) {

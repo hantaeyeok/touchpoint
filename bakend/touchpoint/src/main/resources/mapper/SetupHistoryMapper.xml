@@ -36,7 +36,43 @@
         <result property="historyContent" column="HISTORY_CONTENT" />
         <result property="historyDate" column="HISTORY_DATE" />
         <result property="userId" column="USER_ID" />
-        <result property="mainImage" column="IMAGE_NAME" />
+        <result property="mainImage" column="HISTORY_IMAGE_NAME" />
     </resultMap>
+	
+	 <insert id="insertSetupHistory" parameterType="SetupHistory" useGeneratedKeys="false">
+    <!-- Insert 쿼리 -->
+    INSERT INTO TB_SETUP_HISTORY (
+        HISTORY_NO,
+        STORE_NAME,
+        STORE_ADDRESS,
+        MODEL_NAME,
+        HISTORY_CONTENT,
+        USER_ID
+    ) VALUES (
+        SEQ_HISTORY.NEXTVAL, 
+        #{storeName}, 
+        #{storeAddress}, 
+        #{modelName}, 
+        #{historyContent}, 
+        #{userId}
+    )
+    <!-- 시퀀스 생성된 ID 가져오기 -->
+    <selectKey resultType="int" keyProperty="historyNo" order="AFTER">
+        SELECT SEQ_HISTORY_NO.CURRVAL FROM DUAL
+    </selectKey>
+</insert>
+
+    <!-- 3. 설치사례 이미지 추가 -->
+    <insert id="insertHistoryImage">
+        INSERT INTO TB_HISTORY_IMAGES (
+            HISTORY_NO, 
+            HISTORY_IMAGE_NAME, 
+            HISTORY_IMAGE_ORDER
+        ) VALUES (
+            #{historyNo},
+            #{historyImageName},
+            #{historyImageOrder}
+        )
+    </insert>
 
 </mapper>

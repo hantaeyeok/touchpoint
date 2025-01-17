@@ -122,9 +122,6 @@ public class ProductController {
 
 
 	
-	
-	
-
 	@GetMapping("/category")
 	public ResponseEntity<ResponseData> findAll() {
 		
