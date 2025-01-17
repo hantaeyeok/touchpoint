@@ -65,10 +65,12 @@
     <!-- 3. 설치사례 이미지 추가 -->
     <insert id="insertHistoryImage">
         INSERT INTO TB_HISTORY_IMAGES (
+			IMAGE_NO,
             HISTORY_NO, 
             HISTORY_IMAGE_NAME, 
             HISTORY_IMAGE_ORDER
         ) VALUES (
+			SEQ_HISTORY_IMAGE.NEXTVAL,
             #{historyNo},
             #{historyImageName},
             #{historyImageOrder}
