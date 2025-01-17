@@ -13,9 +13,12 @@ import com.touchpoint.kh.user.model.vo.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>{
 
+	boolean existsByUserId(String userId); 
+	boolean existsByPhoneNo(String phone);
+	boolean existsByEmail(String email);
 	
 	//사용자 id 중복 쳌
-	Optional<User> findByUserId(String userId);
+	User findByUserId(String userId);
 	
 	//사용자 email 중복쳌
 	Optional<User> findByEmail(String email);
@@ -23,6 +26,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	//
 	Optional<User> findByPhoneNo(String phoneNo);
 	
+	//아래 코드 동작 안해서 mapper에함
 	@Query("SELECT u FROM User u WHERE u.userId = :userIdOrPhone OR u.phoneNo = :userIdOrPhone")
     Optional<User> findByUserIdOrPhone(@Param("userIdOrPhone") String userIdOrPhone);
 	

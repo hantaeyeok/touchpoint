@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import Login from '@pages/login/Login'; 
-import SignUp from '@pages/login/SignUp'; 
-
 import SocalSignUp from '@pages/login/SocalSignUp'; 
 import SignUpForm from '@pages/login/SignUpForm'; 
 import Menubar from '@components/indexcomponents/Menubar';
@@ -17,7 +15,7 @@ import './App.css'
 import HistoryMain from "@pages/history/HistoryMain";
 
 
-    
+
 function App() {
 
   
@@ -36,12 +34,9 @@ function App() {
             <Route path="/product" element={<Product/>}/>
             <Route path="/productInsert" element={<ProductInsert/>}/>
             <Route path="/login" element={<Login />} /> 
-            <Route path="/signup" element={<SignUp />} />
             <Route path="/signupform" element={<SignUpForm />} /> 
             <Route path="/socalsignup" element={<SocalSignUp />} /> 
             <Route path="/history" element={<HistoryMain/>} />
-            
-        
           </Routes>
         </div>
     </FaqProvider>
