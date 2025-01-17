@@ -8,7 +8,6 @@ function Faq() {
     const imageUrl = `${process.env.PUBLIC_URL}/images/qna.avif`;
     return(
                 <div>
-                    <h1>시작해볼까</h1>
                     <div className="imgBox"> 
                         <img src={imageUrl}/>
                     </div>

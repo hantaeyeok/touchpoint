@@ -15,8 +15,7 @@ function AddQna() {
     const [qnaContent,setQnaContent] = useState('');
     const [addQna, setAddQna] = useState([]);
 
-    const newQna = {userId, phoneNo, OriginName, qnaTitle, qnaContent};
-    setAddQna([...addQna, newQna]);
+    
     
     const handleFileChange = (event) => {
         
@@ -24,6 +23,25 @@ function AddQna() {
         const fileNames = fileList.map((file)=> file.name);
         setOriginName(fileNames);
     };
+    
+    const qnaSubmit = async () => {
+        if(!qnaTitle || !qnaContent){
+            alert("제목과 내용을 입력해주세요")
+            return;
+        };
+
+        const newQna = {userId, phoneNo, OriginName, qnaTitle, qnaContent};
+        setAddQna([...addQna, newQna]);
+
+        try {
+            const response = await axios.post("http://localhost:8989/qna/createQna", newQna);
+            console.log("서버 응답:", response.data);
+            alert("글이 성공적으로 저장되었습니다!");
+        } catch (error) {
+        console.error("데이터 저장 중 오류 발생:", error.message);
+        alert("글 저장 중 문제가 발생했습니다. 다시 시도해주세요.");
+        }
+    }
 
     return(
         <div>
@@ -76,7 +94,7 @@ function AddQna() {
                 </div>
                 <div className="qnaAdd_btn">
                     <Link to="/qna"><button>이전으로</button></Link>
-                    <button>글 등록</button>
+                    <button onClick={qnaSubmit}>글 등록</button>
                 </div>
             </div>
         </div>
