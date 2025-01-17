@@ -1,13 +1,28 @@
 package com.touchpoint.kh.history.controller;
 
+import com.touchpoint.kh.history.model.vo.HistoryImage;
 import com.touchpoint.kh.history.model.vo.SetupHistory;
+import com.touchpoint.kh.history.model.vo.SetupHistoryDto;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import com.touchpoint.kh.common.ResponseData;
+import com.touchpoint.kh.common.ResponseHandler;
+import com.touchpoint.kh.common.message.HistoryMessage;
 import com.touchpoint.kh.history.model.service.SetupHistoryService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -17,7 +32,9 @@ public class SetupHistoryController {
 
     @Autowired
     private SetupHistoryService setupHistoryService;
-
+    @Autowired
+    private ResponseHandler responseHandler;
+    
     /*
     // 생성자 주입 (현재 미사용)
     private final SetupHistoryService setupHistoryService;
@@ -30,42 +47,51 @@ public class SetupHistoryController {
     // 기존 GET 메서드: 설치 이력 조회
     @GetMapping
     public List<SetupHistory> getSetupHistory() {
-        return setupHistoryService.getSetupHistory();
+        List<SetupHistory> setupHistories = setupHistoryService.getSetupHistory();
+        log.info("setupHistory 로그찍기: {}", setupHistories);
+        return setupHistories;
     }
 
     // POST 메서드: 설치 이력 데이터 추가
     @PostMapping("/add")
-    public String addSetupHistory(
-            @RequestParam("storeName") String storeName,
-            @RequestParam("storeAddress") String storeAddress,
-            @RequestParam("modelName") String modelName,
-            @RequestParam("historyContent") String historyContent,
-            @RequestParam(value = "mainImage", required = false) MultipartFile mainImage,
-            @RequestParam(value = "subImages", required = false) List<MultipartFile> subImages) {
+    public ResponseEntity<ResponseData> addSetupHistory(
+            @RequestPart("data") SetupHistoryDto setupHistoryDto,
+            @RequestPart(value = "mainImage", required = false) MultipartFile mainImage, 
+            @RequestPart(value = "subImages", required = false) List<MultipartFile> subImages) { 
+    	
+        try {
+        	 log.info("Received SetupHistoryDto: {}", setupHistoryDto);
+             log.info("Main Image: {}", mainImage != null ? mainImage.getOriginalFilename() : "No main image provided");
+             if (subImages != null && !subImages.isEmpty()) {
+                 for (int i = 0; i < subImages.size(); i++) {
+                     log.info("Sub Image [{}]: {}", i, subImages.get(i).getOriginalFilename());
+                 }
+             } else {
+                 log.info("No sub images provided");
+             }
+        	
+        	
+            // DTO에 파일 데이터 추가 파일데이터는 MultipartFile 객체로 자동으로 Dto에 매핑되지 않음
+            setupHistoryDto.setMainImage(mainImage);
+            setupHistoryDto.setSubImages(subImages);
 
-        // 로그로 입력 데이터 확인
-        log.info("Store Name: {}", storeName);
-        log.info("Store Address: {}", storeAddress);
-        log.info("Model Name: {}", modelName);
-        log.info("History Content: {}", historyContent);
+            log.info("DTO: {}", setupHistoryDto);
 
-        // 메인이미지 로그 출력
-        if (mainImage != null) {
-            log.info("Main Image: {}", mainImage.getOriginalFilename());
-        } else {
-            log.info("No Main Image provided.");
+            // 서비스 계층 호출
+            int result = setupHistoryService.insertSetupHistory(setupHistoryDto);
+
+            if (result == 1) {
+                // 성공 응답
+                return responseHandler.createResponse(
+                    HistoryMessage.HISTORY_INSERT_SUCCESS, true, HttpStatus.OK);
+            } else {
+                // 실패 응답
+                return responseHandler.createResponse(
+                    HistoryMessage.GENERAL_FAILURE, false, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            // 예외 발생 처리
+            return responseHandler.handleException(HistoryMessage.SERVER_ERROR, e);
         }
-
-        // 서브이미지 로그 출력
-        if (subImages != null && !subImages.isEmpty()) {
-            subImages.forEach(image -> log.info("Sub Image: {}", image.getOriginalFilename()));
-        } else {
-            log.info("No Sub Images provided.");
-        }
-
-        // 서비스 계층으로 데이터 전달 (예: DB 저장)
-        // setupHistoryService.saveSetupHistory(storeName, storeAddress, modelName, historyContent, mainImage, subImages);
-
-        return "Data received successfully";
     }
 }
