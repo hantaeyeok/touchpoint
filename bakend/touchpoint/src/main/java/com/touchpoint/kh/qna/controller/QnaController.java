@@ -23,6 +23,7 @@ import com.touchpoint.kh.common.ResponseHandler;
 import com.touchpoint.kh.qna.model.service.FaqService;
 import com.touchpoint.kh.qna.model.service.FileService;
 import com.touchpoint.kh.qna.model.service.QnaService;
+import com.touchpoint.kh.qna.model.vo.AnswerDto;
 import com.touchpoint.kh.qna.model.vo.Faq;
 import com.touchpoint.kh.qna.model.vo.FileDto;
 import com.touchpoint.kh.qna.model.vo.Qna;
@@ -81,6 +82,25 @@ public class QnaController {
 	}
 	
 	
+	@GetMapping("/qnaDetail/{qnaNo}")
+	public ResponseEntity<ResponseData> getQnaDetail(@PathVariable("qnaNo") int qnaNo){
+		try {
+			qnaService.qnaDetail(qnaNo);
+			return responseHandler.createResponse("Qna 조회 성공", null, HttpStatus.OK);
+		} catch (Exception e) {
+			return responseHandler.handleException("조회 실패", e);
+		}
+	}
+	
+	@GetMapping("/answer/{qnaNo}")
+	public ResponseEntity<ResponseData> getAnswer(@PathVariable int qnaNo){
+		try {
+			qnaService.answerFind(qnaNo);
+			return responseHandler.createResponse("답변 조회 성공", null, HttpStatus.OK);
+		} catch (Exception e) {
+			return responseHandler.handleException("조회 실패", e);
+		}
+	}
 	
 	
 	//insert
@@ -113,10 +133,55 @@ public class QnaController {
                 	fileService.createFile(fileAdd);
 	            }
 	        }
-	        return responseHandler.createResponse("QnA 등록 및 파일 첨부 성공", null, HttpStatus.OK);
+	        return responseHandler.createResponse("QnA 등록 및 파일 첨부 성공", qnaDto, HttpStatus.OK);
 	    } catch (Exception e) {
 	        return responseHandler.handleException("QnA 등록 실패", e);
 	    }
 	}
 		
+	
+	@PostMapping("/createAnswer/{qnaNo}")
+	public ResponseEntity<ResponseData> createAnswer(@PathVariable int qnaNo,
+													 @RequestPart("Answer") AnswerDto answer ,
+													 @RequestPart(value="files", required = false) List<MultipartFile> files){
+		
+		try {
+			qnaService.createAnswer(answer);
+			
+			if (files != null && !files.isEmpty()) {
+	            for (MultipartFile file : files) {
+	                String originName = file.getOriginalFilename();
+	                String changeName = UUID.randomUUID().toString() + "_" + originName;
+	                String filePath = "uploads/qna/" + changeName;
+
+	                File directory = new File("uploads/qna/");
+	                if (!directory.exists()) {
+	                    directory.mkdirs();
+	                }
+	                
+	                File transFile = new File(directory, changeName);
+                	file.transferTo(transFile);
+                	
+                	FileDto fileAdd = new FileDto();
+                    fileAdd.setOriginName(originName);
+                    fileAdd.setChangeName(changeName);
+                    fileAdd.setPath(filePath);
+                    fileAdd.setQnaNo(qnaNo);
+                    fileAdd.setAnswerNo(answer.getAnswerNo());
+                	fileService.createFile(fileAdd);
+	            }
+	        }
+	        return responseHandler.createResponse("답변 등록 및 파일 첨부 성공", answer, HttpStatus.OK);
+			
+		} catch (Exception e) {
+			return responseHandler.handleException("답변 등록 실패", e);
+		}
+	}
+	
+	
+	
+	//update
+	
+	
+	
 }

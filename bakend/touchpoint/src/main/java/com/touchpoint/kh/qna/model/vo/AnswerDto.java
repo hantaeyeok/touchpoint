@@ -3,24 +3,24 @@ package com.touchpoint.kh.qna.model.vo;
 
 import java.util.List;
 
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Entity
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class QnaDto {
+public class AnswerDto {
 
-	private int qnaNo;
-	private String qnaTitle;
-	private String qnaContent;
-	private String qnaDate;
-	private String userId;
-	private int phoneNo;
-	
+	private int answerNo;
+	private String answerTitle;
+	private String answerContent;
+	private String answerDate;
 	private String answerStatus;
+	
 	private List<FileDto> files;
 }

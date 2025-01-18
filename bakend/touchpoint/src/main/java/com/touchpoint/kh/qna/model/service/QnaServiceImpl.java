@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.touchpoint.kh.qna.model.dao.QnaMapper;
+import com.touchpoint.kh.qna.model.vo.AnswerDto;
 import com.touchpoint.kh.qna.model.vo.FileDto;
 import com.touchpoint.kh.qna.model.vo.Qna;
 import com.touchpoint.kh.qna.model.vo.QnaDto;
@@ -31,4 +32,20 @@ public class QnaServiceImpl implements QnaService, FileService {
 	public void createFile(FileDto fileAdd) {
 		qnaMapper.insFile(fileAdd);
 	}
+
+	@Override
+	public void qnaDetail(int qnaNo) {
+		qnaMapper.qnaDetail(qnaNo);
+	}
+
+	@Override
+	public void answerFind(int qnaNo) {
+		qnaMapper.answerFind(qnaNo);
+	}
+
+	@Override
+	public void createAnswer(AnswerDto answer) {
+		qnaMapper.insAnswer(answer);
+	}
+
 }

@@ -8,6 +8,7 @@ import axios from "axios";
 function QnaList() {
     
     const [qnaList, setQnaList] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchQnas = async () => {
@@ -19,6 +20,7 @@ function QnaList() {
             }
         };
         fetchQnas();
+        navigate("/qna");
     }, [setQnaList]);
     
     return(
@@ -38,7 +40,7 @@ function QnaList() {
                         {qnaList.map((item,index)=>(
                             <tr>
                                 <td>{item.qnaNo}</td>
-                                <td>{item.qnaTitle}</td>
+                                <td><Link to={`/qnaDetail/${item.qnaNo}`}>{item.qnaTitle}</Link></td>
                                 <td>{item.userId}</td>
                                 <td>{item.qnaDate}</td>
                                 <td className="status question">{item.answerStatus}</td>

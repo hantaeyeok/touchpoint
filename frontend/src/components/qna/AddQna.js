@@ -13,7 +13,6 @@ function AddQna() {
     const [OriginName,setOriginName] = useState('');
     const [qnaTitle,setQnaTitle] = useState('');
     const [qnaContent,setQnaContent] = useState('');
-    const [addQna, setAddQna] = useState([]);
 
     
     
@@ -31,7 +30,6 @@ function AddQna() {
         };
 
         const newQna = {userId, phoneNo, OriginName, qnaTitle, qnaContent};
-        setAddQna([...addQna, newQna]);
 
         try {
             const response = await axios.post("http://localhost:8989/qna/createQna", newQna);
@@ -49,11 +47,11 @@ function AddQna() {
                 <div className="formRow">
                     <div className="formField">
                     <input
-                        value={userId}
+                        value={'usertId'}
                         type="text" 
                         style={{ display: "none" }}/>
                     <input 
-                        value={phoneNo}
+                        value={'phoneNo'}
                         type="text" 
                         style={{ display: "none" }}/>
                     </div>
@@ -84,7 +82,6 @@ function AddQna() {
                         multiple="multiple" 
                         className="fileAdd" />
                 </label>
-
                 </div>
                 <div className="formTextarea">
                     <textarea

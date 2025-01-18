@@ -4,7 +4,7 @@
 
 <mapper namespace="com.touchpoint.kh.qna.model.dao.QnaMapper">
 	
-   <select id="qnaFindAll">
+   <select id="qnaFindAll" resultType="com.touchpoint.kh.qna.model.vo.QnaDto" >
    		SELECT 
 			    Q.QNA_NO,
 			    Q.QNA_TITLE,
@@ -21,10 +21,10 @@
 			    Q.QNA_NO DESC;
    </select>
 
-   <select id="qnaDetail">
+   <select id="qnaDetail" resultMap="QnaResultMap">
 		SELECT
-			    U.USER_ID,
-			    U.PHONE_NO,
+			    Q.USER_ID,
+			    Q.PHONE_NO,
 			    Q.QNA_DATE,
 			    Q.QNA_TITLE,
 			    Q.QNA_CONTENT,
@@ -33,20 +33,16 @@
 			    F.CHANGE_NAME,
 			    F.PATH
 		  FROM
-			    MEMBER U
-	INNER JOIN    
 			    QNA Q
-			ON
-			    U.USER_ID = Q.USER_ID
-	INNER JOIN
+	 LFET JOIN
 			    FILE_ADD F
 			ON
 			    Q.QNA_NO = F.QNA_NO
 		 WHERE
-			    Q.QNA_NO = #{QNA_NO};
+			    Q.QNA_NO = #{qnaNo};
    </select>
    
-   <select id="answerFind">
+   <select id="answerFind" resultMap="AnswerResultMap">
 	   	SELECT
 	            A.ANSWER_NO,
 	            A.ANSWER_TITLE,
@@ -56,17 +52,18 @@
 	            F.ORIGIN_NAME,
 	            F.CHANGE_NAME,
 	            F.PATH
-	    FROM        
+	      FROM        
 	            ANSWER A
-	INNER JOIN        
+	 LEFT JOIN        
 	            FILE_ADD F
 	        ON
 	            A.ANSWER_NO = F.ANSWER_NO;
          WHERE
-         		A.QNA_NO = #{QNA_NO};
+         		A.QNA_NO = #{qnaNo};
    </select>
    
-   <insert id="insQna">
+   <insert id="insQna" parameterType="com.touchpoint.kh.qna.model.vo.QnaDto"
+   			useGeneratedKeys="true" keyProperty="qnaNo">
    		INSERT
 		    INTO QNA (
 		                QNA_NO,
@@ -78,15 +75,34 @@
 	            )
 	          VALUES (
 		                QNA_SEQ.NEXTVAL,
-		                #{QNA_TITLE},
-		                #{QNA_CONTENT},
-		                SYSDATE,
-		                #{USER_ID},
-		                #{PHONE_NO}
+		                #{qnaTitle},
+				        #{qnaContent},
+				        SYSDATE,
+				        #{userId},
+				        #{phoneNo}
 		        )    
    </insert>
    
-   <insert id="insFile">
+   <insert id="insAnswer" parameterType="com.touchpoint.kh.qna.model.vo.AnswerDto"
+   			useGeneratedKeys="true" keyProperty="answerNo">
+   		INSERT
+			INTO ANSWER (
+							ANSWER_NO,
+							ANSWER_TITLE,
+							ANSWER_CONTENT,
+							ANSWER_DATE,
+							QNA_NO		
+			)
+				 VALUES	(
+							ANSWER_SEQ.NEXTVAL,
+							#{answerTitle},
+					        #{answerContent},
+					        SYSDATE,
+					        #{qnaNo}
+				 )
+   </insert>
+   
+   <insert id="insFile" parameterType="com.touchpoint.kh.qna.model.vo.FileDto">
    		INSERT
 		    INTO FILE_ADD (
 			                FILE_NO,
@@ -95,16 +111,44 @@
 			                QNA_NO,
 			                ANSWER_NO
 			                PATH
-	                )
+            )
 		           VALUES (
 			                FILE_SEQ.NEXTVAL,
-			                #{ORIGIN_NAME},
-			                #{CHANGE_NAME},
-			                #{QNA_NO}
-			                #{ANSWER_NO}
-			                #{PATH}
+			                #{originName},
+			                #{changeName},
+			                #{qnaNo}
+			                #{answerNo}
+			                #{path}
 			        )    
    </insert>
    
+   <resultMap id="AnswerResultMap" type="com.touchpoint.kh.qna.model.vo.AnswerDto">
+	    <id property="answerNo" column="ANSWER_NO"/>
+	    <result property="answerTitle" column="ANSWER_TITLE"/>
+	    <result property="answerContent" column="ANSWER_CONTENT"/>
+	    <result property="answerDate" column="ANSWER_DATE"/>
+	    <result property="qnaNo" column="QNA_NO"/>
+	
+	    <collection property="files" ofType="com.touchpoint.kh.qna.model.vo.FileDto">
+	        <result property="originName" column="ORIGIN_NAME"/>
+	        <result property="changeName" column="CHANGE_NAME"/>
+	        <result property="path" column="PATH"/>
+	    </collection>
+	</resultMap>
+   
+   <resultMap id="QnaResultMap" type="com.touchpoint.kh.qna.model.vo.QnaDto">
+	    <id property="qnaNo" column="QNA_NO" />
+	    <result property="qnaTitle" column="QNA_TITLE" />
+	    <result property="qnaContent" column="QNA_CONTENT" />
+	    <result property="qnaDate" column="QNA_DATE" />
+	    <result property="userId" column="USER_ID" />
+	    <result property="phoneNo" column="PHONE_NO" />
+	
+	    <collection property="files" ofType="com.touchpoint.kh.qna.model.vo.FileDto">
+	        <result property="originName" column="ORIGIN_NAME"/>
+	        <result property="changeName" column="CHANGE_NAME"/>
+	        <result property="path" column="PATH"/>
+	    </collection>
+	</resultMap>
    
 </mapper>
