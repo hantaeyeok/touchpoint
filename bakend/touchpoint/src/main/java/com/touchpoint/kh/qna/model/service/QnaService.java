@@ -10,12 +10,12 @@ public interface QnaService {
 
 	public List<Qna> qnaFindAll();
 
-	public void createQna(QnaDto qnaDto);
+	public QnaDto createQna(QnaDto qnaDto);
 
-	public void qnaDetail(int qnaNo);
+	public QnaDto qnaDetail(int qnaNo);
 
-	public void answerFind(int qnaNo);
+	public AnswerDto answerFind(int qnaNo);
 
-	public void createAnswer(AnswerDto answer);
+	public AnswerDto createAnswer(AnswerDto answer);
 
 }

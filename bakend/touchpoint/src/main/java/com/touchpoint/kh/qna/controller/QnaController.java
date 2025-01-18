@@ -85,8 +85,21 @@ public class QnaController {
 	@GetMapping("/qnaDetail/{qnaNo}")
 	public ResponseEntity<ResponseData> getQnaDetail(@PathVariable("qnaNo") int qnaNo){
 		try {
-			qnaService.qnaDetail(qnaNo);
-			return responseHandler.createResponse("Qna 조회 성공", null, HttpStatus.OK);
+			QnaDto qnaDto = qnaService.qnaDetail(qnaNo);
+			
+			if(qnaDto.getFiles() != null && !qnaDto.getFiles().isEmpty()) {
+				for(FileDto file : qnaDto.getFiles()) {
+					String realPath = file.getPath();
+					File absoluteFile = new File(realPath);
+			        String absolutePath = absoluteFile.getAbsolutePath();
+			        
+			        // FileDto에 절대 경로 추가
+	                file.setAbsolutePath(absolutePath);
+				};
+				
+			}
+			
+			return responseHandler.createResponse("Qna 조회 성공", qnaDto, HttpStatus.OK);
 		} catch (Exception e) {
 			return responseHandler.handleException("조회 실패", e);
 		}
@@ -95,8 +108,8 @@ public class QnaController {
 	@GetMapping("/answer/{qnaNo}")
 	public ResponseEntity<ResponseData> getAnswer(@PathVariable int qnaNo){
 		try {
-			qnaService.answerFind(qnaNo);
-			return responseHandler.createResponse("답변 조회 성공", null, HttpStatus.OK);
+			AnswerDto answerDto = qnaService.answerFind(qnaNo);
+			return responseHandler.createResponse("답변 조회 성공", answerDto, HttpStatus.OK);
 		} catch (Exception e) {
 			return responseHandler.handleException("조회 실패", e);
 		}
@@ -109,7 +122,7 @@ public class QnaController {
 	        									  @RequestPart(value = "files", required = false) List<MultipartFile> files){
 		
 		try {
-			qnaService.createQna(qnaDto); 
+			QnaDto savedQna  = qnaService.createQna(qnaDto); 
 
 			if (files != null && !files.isEmpty()) {
 	            for (MultipartFile file : files) {
@@ -122,8 +135,12 @@ public class QnaController {
 	                    directory.mkdirs();
 	                }
 	                
-	                File transFile = new File(directory, changeName);
-                	file.transferTo(transFile);
+	                try {
+	                	file.transferTo(new File(directory, changeName));
+	                } catch (Exception fileException) {
+	                    System.err.println("파일 업로드 실패: " + file.getOriginalFilename());
+	                    fileException.printStackTrace();
+	                }
                 	
                 	FileDto fileAdd = new FileDto();
                     fileAdd.setOriginName(originName);
@@ -133,7 +150,7 @@ public class QnaController {
                 	fileService.createFile(fileAdd);
 	            }
 	        }
-	        return responseHandler.createResponse("QnA 등록 및 파일 첨부 성공", qnaDto, HttpStatus.OK);
+	        return responseHandler.createResponse("QnA 등록 및 파일 첨부 성공", savedQna , HttpStatus.OK);
 	    } catch (Exception e) {
 	        return responseHandler.handleException("QnA 등록 실패", e);
 	    }
@@ -146,7 +163,7 @@ public class QnaController {
 													 @RequestPart(value="files", required = false) List<MultipartFile> files){
 		
 		try {
-			qnaService.createAnswer(answer);
+			AnswerDto answerSave = qnaService.createAnswer(answer);
 			
 			if (files != null && !files.isEmpty()) {
 	            for (MultipartFile file : files) {
@@ -159,8 +176,12 @@ public class QnaController {
 	                    directory.mkdirs();
 	                }
 	                
-	                File transFile = new File(directory, changeName);
-                	file.transferTo(transFile);
+	                try {
+	                	file.transferTo(new File(directory, changeName));
+	                } catch (Exception fileException) {
+	                    System.err.println("파일 업로드 실패: " + file.getOriginalFilename());
+	                    fileException.printStackTrace();
+	                }
                 	
                 	FileDto fileAdd = new FileDto();
                     fileAdd.setOriginName(originName);
@@ -171,7 +192,7 @@ public class QnaController {
                 	fileService.createFile(fileAdd);
 	            }
 	        }
-	        return responseHandler.createResponse("답변 등록 및 파일 첨부 성공", answer, HttpStatus.OK);
+	        return responseHandler.createResponse("답변 등록 및 파일 첨부 성공", answerSave, HttpStatus.OK);
 			
 		} catch (Exception e) {
 			return responseHandler.handleException("답변 등록 실패", e);

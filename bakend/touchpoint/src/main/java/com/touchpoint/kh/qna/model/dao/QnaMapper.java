@@ -14,14 +14,14 @@ public interface QnaMapper {
 
 	List<Qna> qnaFindAll();
 
-	void insQna(QnaDto qnaDto);
+	QnaDto insQna(QnaDto qnaDto);
 
 	void insFile(FileDto fileAdd);
 
-	void qnaDetail(int qnaNo);
+	AnswerDto answerFind(int qnaNo);
 
-	void answerFind(int qnaNo);
+	AnswerDto insAnswer(AnswerDto answer);
 
-	void insAnswer(AnswerDto answer);
+	QnaDto qnaDetail(int qnaNo);
 
 }

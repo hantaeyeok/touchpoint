@@ -24,8 +24,8 @@ public class QnaServiceImpl implements QnaService, FileService {
 	}
 
 	@Override
-	public void createQna(QnaDto qnaDto) {
-		qnaMapper.insQna(qnaDto);
+	public QnaDto createQna(QnaDto qnaDto) {
+		return qnaMapper.insQna(qnaDto);
 	}
 
 	@Override
@@ -34,18 +34,18 @@ public class QnaServiceImpl implements QnaService, FileService {
 	}
 
 	@Override
-	public void qnaDetail(int qnaNo) {
-		qnaMapper.qnaDetail(qnaNo);
+	public QnaDto qnaDetail(int qnaNo) {
+		return qnaMapper.qnaDetail(qnaNo);
 	}
 
 	@Override
-	public void answerFind(int qnaNo) {
-		qnaMapper.answerFind(qnaNo);
+	public AnswerDto answerFind(int qnaNo) {
+		return qnaMapper.answerFind(qnaNo);
 	}
 
 	@Override
-	public void createAnswer(AnswerDto answer) {
-		qnaMapper.insAnswer(answer);
+	public AnswerDto createAnswer(AnswerDto answer) {
+		return qnaMapper.insAnswer(answer);
 	}
 
 }

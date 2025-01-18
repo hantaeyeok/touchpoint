@@ -122,6 +122,8 @@
 			        )    
    </insert>
    
+   
+   
    <resultMap id="AnswerResultMap" type="com.touchpoint.kh.qna.model.vo.AnswerDto">
 	    <id property="answerNo" column="ANSWER_NO"/>
 	    <result property="answerTitle" column="ANSWER_TITLE"/>

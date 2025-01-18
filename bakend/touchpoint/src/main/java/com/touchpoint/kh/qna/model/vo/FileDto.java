@@ -18,4 +18,7 @@ public class FileDto {
 	private int qnaNo;
 	private int answerNo;
 	private String path;
+	
+	private String absolutePath;  // 절대 경로 추가
+	
 }
