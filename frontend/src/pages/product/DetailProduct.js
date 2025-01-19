@@ -54,7 +54,7 @@ const DetailProduct = () => {
         <div className="product-detail">
             <div className="buttonsDetail">
                 <button type="button" className="change-button">
-                    <Link to={`/productChange/${productId}`} style={{ textDecoration: "none"}}>수정하기</Link>
+                    <Link to={`/productEdit/${productId}`} style={{ textDecoration: "none"}}>수정하기</Link>
                 </button>
                 <button onClick={productDelete} type="button" className="delete-button">삭제하기</button>
             </div>

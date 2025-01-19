@@ -6,6 +6,8 @@ import SignUp from '@pages/login/SignUp';
 import SocalSignUp from '@pages/login/SocalSignUp'; 
 import SignUpForm from '@pages/login/SignUpForm'; 
 import Menubar from '@components/indexcomponents/Menubar';
+import ProductRegister from '@components/productcomponents/ProductRegister';
+import ProductEdit from '@components/productcomponents/ProductEdit';
 import Product from '@pages/product/Product';
 import ProductInsert from '@pages/product/ProductInsert';
 import DetailProduct from "@pages/product/DetailProduct";
@@ -39,6 +41,8 @@ function App() {
             <Route path="/productInsert" element={<ProductInsert/>}/>
             <Route path="/detailProduct/:productId" element={<DetailProduct/>}/>
             <Route path="/productChange/:productId" element={<ProductChange/>}/>
+            <Route path="/productRegister" element={<ProductRegister/>}/>
+            <Route path="/productEdit/:productId" element={<ProductEdit/>}/>
             <Route path="/login" element={<Login />} /> 
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signupform" element={<SignUpForm />} /> 

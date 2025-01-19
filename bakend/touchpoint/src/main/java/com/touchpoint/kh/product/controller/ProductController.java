@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,6 +51,8 @@ public class ProductController {
 	    // 상품 데이터 파싱, createDate
 	    Product product = new ObjectMapper().readValue(productJson, Product.class);
 	    product.setCreatedDate(LocalDateTime.now());
+	    
+	    log.info("반환받은 upfile :{}" , upfile);
 	    
 	    // 썸네일 저장
 	    product.setThumbnailImage(saveFile(upfile, request));
@@ -139,8 +142,9 @@ public class ProductController {
 	    Map<String, Object> responseData = new HashMap<>();
 	    responseData.put("product", product);
 	    responseData.put("images", images);
+	    log.info("반환받은 images :{}" , images);
 
-		return responseHandler.createResponse("상품상세보기 조회 성공!", responseData, HttpStatus.OK);
+		return responseHandler.createResponse("상품 상세보기 조회 성공!", responseData, HttpStatus.OK);
 	}
 	
 	
@@ -149,10 +153,33 @@ public class ProductController {
 		
 		productService.deleteProductWithImages(productId);
 		
-		
-		
-		return responseHandler.createResponse("상품삭제 성공!", null, HttpStatus.OK);
+		return responseHandler.createResponse("상품 삭제 성공!", null, HttpStatus.OK);
 
+	}
+	
+	@PutMapping("/productId")
+	public ResponseEntity<ResponseData>update(@RequestParam("product") String productJson, 
+											    @RequestParam("upfile") MultipartFile upfile, 
+											    @RequestParam("images") List<MultipartFile> images,
+											    HttpServletRequest request ) throws IOException {
+		
+		 // 상품 데이터 파싱, createDate
+	    Product product = new ObjectMapper().readValue(productJson, Product.class);
+	    product.setCreatedDate(LocalDateTime.now());
+	    
+	    log.info("수정 반환받은 product :{}" , product);
+	    
+	    // 썸네일 저장
+	    product.setThumbnailImage(saveFile(upfile, request));
+	    
+	    // 상세 이미지 배열에 저장
+	    List<ProductImage> productImages = saveImages(images, request);
+	    
+	    // 트렌젝션으로 저장처리
+	    productService.updateProductWithImages(product, productImages);
+		
+		return responseHandler.createResponse("상품 수정 성공!", null, HttpStatus.OK);
+		
 	}
 
 

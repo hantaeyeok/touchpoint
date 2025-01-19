@@ -73,4 +73,19 @@ public class ProductServiceImpl implements ProductService {
 	    productRepository.delete(product);
 	}
 
+	@Override
+	public void updateProductWithImages(Product product, List<ProductImage> productImages) {
+		productRepository.save(product);
+
+        // 2. 상세 이미지 저장
+        for (ProductImage image : productImages) {
+            image.setProductId(product.getProductId()); // product에 들어있는 productId를 받아옴
+            productRepository.save(image);
+        }
+		
+	}
+
+	
+	
+
 }

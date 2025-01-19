@@ -16,4 +16,6 @@ public interface ProductService {
 	List<ProductImage> findImagesByProductId(Long productId);
 	Product deleteById(Long productId);
 	void deleteProductWithImages(Long productId);
+
+	void updateProductWithImages(Product product, List<ProductImage> productImages);
 }

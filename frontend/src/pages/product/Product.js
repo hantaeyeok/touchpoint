@@ -93,7 +93,8 @@ const Product = () => {
 
         <div>
           <button className="insert-button">
-            <Link to="/productInsert" style={{ textDecoration: "none"}}>상품 추가</Link>
+            {/*<Link to="/productInsert" style={{ textDecoration: "none"}}>상품 추가</Link>*/}
+            <Link to="/productRegister" style={{ textDecoration: "none"}}>상품 추가</Link>
           </button>
         </div>
       </div>
