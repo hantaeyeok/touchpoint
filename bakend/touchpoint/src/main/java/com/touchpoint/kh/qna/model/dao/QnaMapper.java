@@ -6,15 +6,14 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.touchpoint.kh.qna.model.vo.AnswerDto;
 import com.touchpoint.kh.qna.model.vo.FileDto;
-import com.touchpoint.kh.qna.model.vo.Qna;
 import com.touchpoint.kh.qna.model.vo.QnaDto;
 
 @Mapper
 public interface QnaMapper {
 
-	List<Qna> qnaFindAll();
+	List<QnaDto> qnaFindAll();
 
-	QnaDto insQna(QnaDto qnaDto);
+	int insQna(QnaDto qnaDto);
 
 	void insFile(FileDto fileAdd);
 
@@ -23,5 +22,7 @@ public interface QnaMapper {
 	AnswerDto insAnswer(AnswerDto answer);
 
 	QnaDto qnaDetail(int qnaNo);
+
+	void updateStatus(int qnaNo);
 
 }

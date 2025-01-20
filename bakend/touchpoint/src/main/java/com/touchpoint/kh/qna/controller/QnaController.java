@@ -2,8 +2,8 @@ package com.touchpoint.kh.qna.controller;
 
 import java.io.File;
 import java.util.List;
-import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,11 +26,13 @@ import com.touchpoint.kh.qna.model.service.QnaService;
 import com.touchpoint.kh.qna.model.vo.AnswerDto;
 import com.touchpoint.kh.qna.model.vo.Faq;
 import com.touchpoint.kh.qna.model.vo.FileDto;
-import com.touchpoint.kh.qna.model.vo.Qna;
 import com.touchpoint.kh.qna.model.vo.QnaDto;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/qna")
 @RequiredArgsConstructor
@@ -41,6 +43,9 @@ public class QnaController {
 	private final QnaService qnaService;
 	private final ResponseHandler responseHandler;
 	private final FileService fileService;
+	
+	@Value("${file.base-url}")
+	private String baseUrl;
 	
 	//jpa
 	@GetMapping("/faqList")
@@ -74,7 +79,7 @@ public class QnaController {
 	@GetMapping("/qnaList")
 	public ResponseEntity<ResponseData> getQnaAll(){
 		try {
-			List<Qna> qnaList = qnaService.qnaFindAll();
+			List<QnaDto> qnaList = qnaService.qnaFindAll();
 			return responseHandler.createResponse("Qna 목록 조회 성공",qnaList, HttpStatus.OK);
 		} catch (Exception e) {
 			return responseHandler.handleException("조회 실패", e);
@@ -86,19 +91,6 @@ public class QnaController {
 	public ResponseEntity<ResponseData> getQnaDetail(@PathVariable("qnaNo") int qnaNo){
 		try {
 			QnaDto qnaDto = qnaService.qnaDetail(qnaNo);
-			
-			if(qnaDto.getFiles() != null && !qnaDto.getFiles().isEmpty()) {
-				for(FileDto file : qnaDto.getFiles()) {
-					String realPath = file.getPath();
-					File absoluteFile = new File(realPath);
-			        String absolutePath = absoluteFile.getAbsolutePath();
-			        
-			        // FileDto에 절대 경로 추가
-	                file.setAbsolutePath(absolutePath);
-				};
-				
-			}
-			
 			return responseHandler.createResponse("Qna 조회 성공", qnaDto, HttpStatus.OK);
 		} catch (Exception e) {
 			return responseHandler.handleException("조회 실패", e);
@@ -118,36 +110,45 @@ public class QnaController {
 	
 	//insert
 	@PostMapping("/createQna")
-	public ResponseEntity<ResponseData> createQna(@RequestPart("QnaDto") QnaDto qnaDto,
+	public ResponseEntity<ResponseData> createQna(HttpServletRequest request,
+												  @RequestPart("QnaDto") QnaDto qnaDto,
 	        									  @RequestPart(value = "files", required = false) List<MultipartFile> files){
 		
 		try {
-			QnaDto savedQna  = qnaService.createQna(qnaDto); 
-
+			int savedQna  = qnaService.createQna(qnaDto); 
+			System.out.println("files: " + files);
+			
+			String uploadPath = request.getServletContext().getRealPath("/resources/qnaUpload/");
+			File directory = new File(uploadPath);
+			if (!directory.exists()) {
+				directory.mkdirs();
+			}
+				
 			if (files != null && !files.isEmpty()) {
 	            for (MultipartFile file : files) {
 	                String originName = file.getOriginalFilename();
-	                String changeName = UUID.randomUUID().toString() + "_" + originName;
-	                String filePath = "uploads/qna/" + changeName;
+	                String changeName =  System.currentTimeMillis() + "_" + originName;
+	                String filePath = baseUrl+"uploads/qna/" + changeName;
 
-	                File directory = new File("uploads/qna/");
-	                if (!directory.exists()) {
-	                    directory.mkdirs();
-	                }
 	                
 	                try {
 	                	file.transferTo(new File(directory, changeName));
-	                } catch (Exception fileException) {
-	                    System.err.println("파일 업로드 실패: " + file.getOriginalFilename());
-	                    fileException.printStackTrace();
+	                } catch (Exception e) {
+	                	log.error("파일 저장 실패 - 경로: {}, 파일명: {}, 이유: {}", directory.getAbsolutePath(), originName, e.getMessage(), e);
+	                	throw new RuntimeException("파일 저장 중 오류 발생: " + originName, e);
 	                }
                 	
                 	FileDto fileAdd = new FileDto();
                     fileAdd.setOriginName(originName);
                     fileAdd.setChangeName(changeName);
                     fileAdd.setPath(filePath);
-                    fileAdd.setQnaNo(qnaDto.getQnaNo());
-                	fileService.createFile(fileAdd);
+                    
+                    try {
+                        fileService.createFile(fileAdd);
+                    } catch (Exception e) {
+                    	log.error("파일 DB 저장 중 오류 발생: {}, 이유: {}", originName, e.getMessage(), e);
+                        throw new RuntimeException("파일 DB 저장 중 오류 발생: " + originName, e);
+                    }
 	            }
 	        }
 	        return responseHandler.createResponse("QnA 등록 및 파일 첨부 성공", savedQna , HttpStatus.OK);
@@ -158,29 +159,31 @@ public class QnaController {
 		
 	
 	@PostMapping("/createAnswer/{qnaNo}")
-	public ResponseEntity<ResponseData> createAnswer(@PathVariable int qnaNo,
+	public ResponseEntity<ResponseData> createAnswer(HttpServletRequest request,
+													 @PathVariable int qnaNo,
 													 @RequestPart("Answer") AnswerDto answer ,
 													 @RequestPart(value="files", required = false) List<MultipartFile> files){
 		
 		try {
 			AnswerDto answerSave = qnaService.createAnswer(answer);
 			
+			String uploadPath = request.getServletContext().getRealPath("/resources/qnaUpload/");
+			File directory = new File(uploadPath);
+			if (!directory.exists()) {
+				directory.mkdirs();
+			}
+			
 			if (files != null && !files.isEmpty()) {
 	            for (MultipartFile file : files) {
 	                String originName = file.getOriginalFilename();
-	                String changeName = UUID.randomUUID().toString() + "_" + originName;
-	                String filePath = "uploads/qna/" + changeName;
+	                String changeName =  System.currentTimeMillis() + "_" + originName;
+	                String filePath = baseUrl+"uploads/qna/" + changeName;
 
-	                File directory = new File("uploads/qna/");
-	                if (!directory.exists()) {
-	                    directory.mkdirs();
-	                }
-	                
 	                try {
 	                	file.transferTo(new File(directory, changeName));
-	                } catch (Exception fileException) {
-	                    System.err.println("파일 업로드 실패: " + file.getOriginalFilename());
-	                    fileException.printStackTrace();
+	                } catch (Exception e) {
+	                	log.error("파일 저장 실패 - 경로: {}, 파일명: {}, 이유: {}", directory.getAbsolutePath(), originName, e.getMessage(), e);
+	                	throw new RuntimeException("파일 저장 중 오류 발생: " + originName, e);
 	                }
                 	
                 	FileDto fileAdd = new FileDto();
@@ -189,7 +192,13 @@ public class QnaController {
                     fileAdd.setPath(filePath);
                     fileAdd.setQnaNo(qnaNo);
                     fileAdd.setAnswerNo(answer.getAnswerNo());
-                	fileService.createFile(fileAdd);
+                    
+                    try {
+                        fileService.createFile(fileAdd);
+                    } catch (Exception e) {
+                    	log.error("파일 DB 저장 중 오류 발생: {}, 이유: {}", originName, e.getMessage(), e);
+                        throw new RuntimeException("파일 DB 저장 중 오류 발생: " + originName, e);
+                    }
 	            }
 	        }
 	        return responseHandler.createResponse("답변 등록 및 파일 첨부 성공", answerSave, HttpStatus.OK);

@@ -12,6 +12,7 @@ import Faq from '@pages/Qna/Faq';
 import QnaDetail from '@pages/Qna/QnaDetail';
 import AddFaq from '@components/qna/AddFaq';
 import AddQna from '@components/qna/AddQna';
+import QnaEdit from "@pages/Qna/QnaEdit";
 import { FaqProvider } from 'context/FaqContext';
 import axios from 'axios';
 import './App.css'
@@ -34,6 +35,7 @@ function App() {
             <Route path="/faq/*" element={<Faq />} />
             <Route path="/addFaq/*" element={<AddFaq />} />
             <Route path="/addQna/*" element={<AddQna />} />
+            <Route path="/qnaEdit/*" element={<QnaEdit />} />
             {/*<Route path="/qnaDetail/:qnaNo" element={<QnaDetail />} />*/}
             <Route path="/qnaDetail/*" element={<QnaDetail />} />
             <Route path="/" element={<h1>메인</h1>} />

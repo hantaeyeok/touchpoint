@@ -6,19 +6,15 @@
 	
    <select id="qnaFindAll" resultType="com.touchpoint.kh.qna.model.vo.QnaDto" >
    		SELECT 
-			    Q.QNA_NO,
-			    Q.QNA_TITLE,
-			    Q.USER_ID,
-			    Q.QNA_DATE,
-			    A.ANSWER_STATUS
+			    QNA_NO,
+			    QNA_TITLE,
+			    USER_ID,
+			    QNA_DATE,
+			    STATUS
 		  FROM
-			    QNA Q
-	 LEFT JOIN
-			    ANSWER A
-			ON
-			    Q.QNA_NO = A.QNA_NO
+			    QNA 
 	  ORDER BY
-			    Q.QNA_NO DESC;
+			    QNA_NO DESC
    </select>
 
    <select id="qnaDetail" resultMap="QnaResultMap">
@@ -34,12 +30,12 @@
 			    F.PATH
 		  FROM
 			    QNA Q
-	 LFET JOIN
+	 LEFT JOIN
 			    FILE_ADD F
 			ON
 			    Q.QNA_NO = F.QNA_NO
 		 WHERE
-			    Q.QNA_NO = #{qnaNo};
+			    Q.QNA_NO = #{qnaNo}
    </select>
    
    <select id="answerFind" resultMap="AnswerResultMap">
@@ -59,11 +55,10 @@
 	        ON
 	            A.ANSWER_NO = F.ANSWER_NO;
          WHERE
-         		A.QNA_NO = #{qnaNo};
+         		A.QNA_NO = #{qnaNo}
    </select>
    
-   <insert id="insQna" parameterType="com.touchpoint.kh.qna.model.vo.QnaDto"
-   			useGeneratedKeys="true" keyProperty="qnaNo">
+   <insert id="insQna" parameterType="com.touchpoint.kh.qna.model.vo.QnaDto">
    		INSERT
 		    INTO QNA (
 		                QNA_NO,
@@ -83,8 +78,7 @@
 		        )    
    </insert>
    
-   <insert id="insAnswer" parameterType="com.touchpoint.kh.qna.model.vo.AnswerDto"
-   			useGeneratedKeys="true" keyProperty="answerNo">
+   <insert id="insAnswer" parameterType="com.touchpoint.kh.qna.model.vo.AnswerDto">
    		INSERT
 			INTO ANSWER (
 							ANSWER_NO,
@@ -109,20 +103,28 @@
 			                ORIGIN_NAME,
 			                CHANGE_NAME,
 			                QNA_NO,
-			                ANSWER_NO
+			                ANSWER_NO,
 			                PATH
             )
 		           VALUES (
 			                FILE_SEQ.NEXTVAL,
 			                #{originName},
 			                #{changeName},
-			                #{qnaNo}
-			                #{answerNo}
+			                QNA_SEQ.CURRVAL,
+			                NVL(ANSWER_SEQ.CURRVAL, NULL),
 			                #{path}
 			        )    
    </insert>
    
-   
+   <update id="updateStatus" parameterType="com.touchpoint.kh.qna.model.vo.QnaDto">
+	    UPDATE 
+	    		QNA
+	       SET 
+        STATUS 
+        		= '답변완료'
+	     WHERE 
+	     		QNA_NO = #{qnaNo}
+	</update>
    
    <resultMap id="AnswerResultMap" type="com.touchpoint.kh.qna.model.vo.AnswerDto">
 	    <id property="answerNo" column="ANSWER_NO"/>

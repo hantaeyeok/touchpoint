@@ -104,7 +104,7 @@ function FaqList() {
                         </div>
                     </div>
                 </div>
-            ))};
+            ))}
             <div className="modalBox">
                 <Modal className="editModal"
                     isOpen={modalIsOpen}

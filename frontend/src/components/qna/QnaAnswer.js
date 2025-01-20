@@ -3,11 +3,31 @@ import { useRef } from "react";
 import "@styles/Qna2.css";
 import { Routes, Route, Link } from "react-router-dom";
 import axios from "axios";
-
+import { useParams } from "react-router-dom";
 
 
 function QnaAnswer() {
 
+    const { qnaNo } = useParams();
+    const [answer, setAnswer] = useState({
+            answerNo: 0,
+            answerTitle: '',
+            answerContent: '',
+            answerDate: '',
+            files: []
+        });
+
+    useEffect(()=> {
+        const fetchQnas = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8989/qna/answer/${qnaNo}`);
+                setAnswer(response.data);
+            } catch (error) {
+                console.error("QNA 데이터를 가져오는 중 오류 발생:", error);
+            }
+        };
+        fetchQnas();
+    },[]);
 
     return(
         <div className="formContainer">
@@ -15,18 +35,29 @@ function QnaAnswer() {
             <div className="formRow">
                 <div className="formField">
                     <label>제 목</label>
-                    <span className="fieldValue">제 목</span>
+                    <span className="fieldValue">{answer.answerTitle}</span>
                 </div>
                 <div className="formField">
                     <label>작성일</label>
-                    <span className="fieldValue">작성일</span>
+                    <span className="fieldValue">{answer.answerDate}</span>
                 </div>
             </div>
             <div className="formRow">
                 <div className="formField fullWidth">
                     <label>파일첨부</label>
-                    <span className="fieldValue">파일명</span>
+                    {answer.files.map((file,index)=>(
+                        <a key={index} href={file.path} download={file.originName}>
+                            {file.OriginName}
+                        </a>
+                    ))}
                 </div>
+            </div>
+            <div className="answerContent">
+                <span className="fieldValue">{answer.answerContent}</span>
+            </div>
+            <div className="qnaAdd_btn">
+                <Link to="/qna"><button>이전으로</button></Link>
+                <button>수정하기</button>
             </div>
         </div>
     )

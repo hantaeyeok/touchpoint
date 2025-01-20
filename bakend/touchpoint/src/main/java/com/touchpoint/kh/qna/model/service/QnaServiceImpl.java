@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 import com.touchpoint.kh.qna.model.dao.QnaMapper;
 import com.touchpoint.kh.qna.model.vo.AnswerDto;
 import com.touchpoint.kh.qna.model.vo.FileDto;
-import com.touchpoint.kh.qna.model.vo.Qna;
 import com.touchpoint.kh.qna.model.vo.QnaDto;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -19,12 +19,12 @@ public class QnaServiceImpl implements QnaService, FileService {
 	private final QnaMapper qnaMapper;
 
 	@Override
-	public List<Qna> qnaFindAll() {
+	public List<QnaDto> qnaFindAll() {
 		return qnaMapper.qnaFindAll();
 	}
 
 	@Override
-	public QnaDto createQna(QnaDto qnaDto) {
+	public int  createQna(QnaDto qnaDto) {
 		return qnaMapper.insQna(qnaDto);
 	}
 
@@ -44,8 +44,11 @@ public class QnaServiceImpl implements QnaService, FileService {
 	}
 
 	@Override
+	@Transactional
 	public AnswerDto createAnswer(AnswerDto answer) {
-		return qnaMapper.insAnswer(answer);
+		qnaMapper.insAnswer(answer);
+	    qnaMapper.updateStatus(answer.getQnaNo());
+	    return answer; 
 	}
 
 }

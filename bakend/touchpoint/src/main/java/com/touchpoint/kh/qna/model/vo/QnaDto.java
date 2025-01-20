@@ -20,7 +20,7 @@ public class QnaDto {
 	private String qnaDate;
 	private String userId;
 	private int phoneNo;
+	private String status;
 	
-	private String answerStatus;
 	private List<FileDto> files;
 }

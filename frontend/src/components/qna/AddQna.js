@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import "@styles/Qna2.css";
 import { useNavigate } from "react-router-dom";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
@@ -8,19 +8,20 @@ import axios from "axios";
 function AddQna() {
 
     const fileImg = `${process.env.PUBLIC_URL}/images/fileAdd.JPG`;
-    const [userId,setUserId] = useState('');
-    const [phoneNo,setPhoneNo] = useState('');
-    const [OriginName,setOriginName] = useState('');
+    const navigate = useNavigate();
+    const [userId,setUserId] = useState('sampleUser');
+    const [phoneNo,setPhoneNo] = useState('01012345678');
+    const [originName,setOriginName] = useState('');
     const [qnaTitle,setQnaTitle] = useState('');
     const [qnaContent,setQnaContent] = useState('');
-
+    
+    const fileInputRef = useRef(null);
     
     
     const handleFileChange = (event) => {
         
         const fileList = Array.from(event.target.files);
-        const fileNames = fileList.map((file)=> file.name);
-        setOriginName(fileNames);
+        setOriginName(fileList.map((file)=> file.name).join(", "));
     };
     
     const qnaSubmit = async () => {
@@ -29,16 +30,33 @@ function AddQna() {
             return;
         };
 
-        const newQna = {userId, phoneNo, OriginName, qnaTitle, qnaContent};
+        const formData = new FormData();
+        const qnaDto = {
+            userId: userId,
+            phoneNo: phoneNo,
+            qnaTitle: qnaTitle,
+            qnaContent: qnaContent
+        };
+
+        formData.append("QnaDto", new Blob([JSON.stringify(qnaDto)], { type: "application/json" }));
+
+        if (fileInputRef.current.files.length > 0) {
+            Array.from(fileInputRef.current.files).forEach((file) => {
+                formData.append("files", file);
+            });
+        }
 
         try {
-            const response = await axios.post("http://localhost:8989/qna/createQna", newQna);
+            const response = await axios.post("http://localhost:8989/qna/createQna", formData, {
+                headers: {"Content-Type": "multipart/form-data"}
+            });
             console.log("서버 응답:", response.data);
             alert("글이 성공적으로 저장되었습니다!");
+            navigate("/qna");
         } catch (error) {
         console.error("데이터 저장 중 오류 발생:", error.message);
         alert("글 저장 중 문제가 발생했습니다. 다시 시도해주세요.");
-        }
+        };
     }
 
     return(
@@ -68,7 +86,7 @@ function AddQna() {
                 <div className="formField">
                 <label>파일첨부</label>
                 <input 
-                    value={OriginName} 
+                    value={originName} 
                     readOnly
                     type="text" 
                     id="fileName" 
@@ -78,6 +96,7 @@ function AddQna() {
                     <img src={fileImg} className="fileImg"/>
                     <input 
                         type="file" 
+                        ref={fileInputRef}
                         onChange={handleFileChange}
                         multiple="multiple" 
                         className="fileAdd" />
