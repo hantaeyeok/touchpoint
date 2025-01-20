@@ -42,6 +42,16 @@ public class Product {
     private String thumbnailImage;
 
     private LocalDateTime createdDate;
+
+	public void updateFromProduct(Product product) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setMainImage(String mainImageUrl) {
+		// TODO Auto-generated method stub
+		
+	}
     
     //private List<ProductImage> productImages;
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.touchpoint.kh.common.ResponseData;
 import com.touchpoint.kh.common.ResponseHandler;
 import com.touchpoint.kh.product.model.service.ProductService;
@@ -58,7 +60,7 @@ public class ProductController {
 	    product.setThumbnailImage(saveFile(upfile, request));
 	    
 	    // 상세 이미지 배열에 저장
-	    List<ProductImage> productImages = saveImages(images, request);
+	    List<ProductImage> productImages = saveImages(images, null, request);
 	    
 	    // 트렌젝션으로 저장처리
 	    productService.saveProductWithImages(product, productImages);
@@ -96,15 +98,18 @@ public class ProductController {
 	}
 	
 	//상세이미지 저장하기위한 메서드
-	private List<ProductImage> saveImages(List<MultipartFile> images, HttpServletRequest request) throws IOException {
+	private List<ProductImage> saveImages(List<MultipartFile> images, List<Long> imageIds, HttpServletRequest request) throws IOException {
 	    
 		List<ProductImage> productImages = new ArrayList<>();
 		
 		// 인덱스를 가져오는 반복문
 	    for (int i = 0; i < images.size(); i++) { 
 	        MultipartFile image = images.get(i); // 현재 이미지
+	        Long id = imageIds.get(i);  
+	        
 	        String imagePath = saveFile(image, request); // 이미지 저장
-	        productImages.add(new ProductImage(null, imagePath, i, null)); 
+	        
+	        productImages.add(new ProductImage(imagePath, i, null, id)); //imageUrl, displayOrder, productId, imageId
 	    }
 	    return productImages;
 	}
@@ -134,6 +139,7 @@ public class ProductController {
 
 	    // 상품 정보 조회 (예: Service에서 가져오기)
 	    Product product = productService.findByProductId(productId);
+	    log.info("반환받은 product :{}" , product); //상세이미지들도 같이 들어옴
 
 	    // 상세 이미지 조회 (예: Service에서 가져오기)
 	    List<ProductImage> images = productService.findImagesByProductId(productId);
@@ -157,30 +163,37 @@ public class ProductController {
 
 	}
 	
-	@PutMapping("/productId")
-	public ResponseEntity<ResponseData>update(@RequestParam("product") String productJson, 
-											    @RequestParam("upfile") MultipartFile upfile, 
-											    @RequestParam("images") List<MultipartFile> images,
-											    HttpServletRequest request ) throws IOException {
+	@PutMapping("/{productId}")
+	public ResponseEntity<ResponseData> update(@PathVariable("productId") Long productId,
+																@RequestParam("product") String productJson, 
+															    @RequestParam("upfile") MultipartFile upfile, 
+															    @RequestParam("images") List<MultipartFile> images,
+															    //@RequestParam("imageIds") List<Long> imageIds, 
+															    HttpServletRequest request ) throws IOException {
 		
-		 // 상품 데이터 파싱, createDate
-	    Product product = new ObjectMapper().readValue(productJson, Product.class);
-	    product.setCreatedDate(LocalDateTime.now());
+		ObjectMapper objectMapper = new ObjectMapper();
+	    Product product = objectMapper.readValue(productJson, Product.class);
 	    
-	    log.info("수정 반환받은 product :{}" , product);
+	    product = productService.findByProductId(productId);  //imageId받기위해서 갔다옴
 	    
-	    // 썸네일 저장
+	    List<ProductImage> productImage =product.getProductImages();
+	    List<Long> imageIds = new ArrayList<>(); 
+	    
+	    for (ProductImage image : productImage) {
+	        imageIds.add(image.getImageId());
+	        
+	    }
+		// 썸네일 저장
 	    product.setThumbnailImage(saveFile(upfile, request));
 	    
 	    // 상세 이미지 배열에 저장
-	    List<ProductImage> productImages = saveImages(images, request);
+	    List<ProductImage> productImages = saveImages(images, imageIds, request);  //여기 갔다오면 인덱스 배정
+	    log.info("아이디 저장 상세이미지  :{}" , productImages);
 	    
 	    // 트렌젝션으로 저장처리
 	    productService.updateProductWithImages(product, productImages);
-		
-		return responseHandler.createResponse("상품 수정 성공!", null, HttpStatus.OK);
-		
+	    log.info("저장된 상세이미지 productImages :{}" , productImages);
+	    
+	    return responseHandler.createResponse("상품 수정 성공!", productImages, HttpStatus.OK);
 	}
-
-
 }

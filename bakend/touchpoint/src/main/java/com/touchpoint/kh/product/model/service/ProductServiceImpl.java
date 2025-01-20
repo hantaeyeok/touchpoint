@@ -1,9 +1,13 @@
 package com.touchpoint.kh.product.model.service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.touchpoint.kh.product.model.dao.ProductMapper;
 import com.touchpoint.kh.product.model.dao.ProductRepository;
 import com.touchpoint.kh.product.model.vo.Product;
 import com.touchpoint.kh.product.model.vo.ProductImage;
@@ -11,11 +15,13 @@ import com.touchpoint.kh.product.model.vo.ProductImage;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
 
     @Override
     public Product save(Product responseProduct) {
@@ -73,19 +79,30 @@ public class ProductServiceImpl implements ProductService {
 	    productRepository.delete(product);
 	}
 
-	@Override
+	@Transactional
 	public void updateProductWithImages(Product product, List<ProductImage> productImages) {
-		productRepository.save(product);
+		productMapper.setProduct(product);
 
         // 2. 상세 이미지 저장
         for (ProductImage image : productImages) {
             image.setProductId(product.getProductId()); // product에 들어있는 productId를 받아옴
-            productRepository.save(image);
+            productMapper.updateProductImage(image);
+            System.out.println("매퍼 갔다옴: " + image);
         }
 		
 	}
 
-	
-	
+	public Product update(Product existingProduct) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
+	@Override
+	public void setProduct(Product product) {
+	    productMapper.setProduct(product);
+	}
+
+	
+	
+	
 }

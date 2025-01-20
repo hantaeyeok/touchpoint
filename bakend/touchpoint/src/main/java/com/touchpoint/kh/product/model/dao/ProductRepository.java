@@ -1,6 +1,7 @@
 package com.touchpoint.kh.product.model.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -24,6 +25,12 @@ public interface ProductRepository extends JpaRepository<Product, Long>{
 
 	@Query("SELECT pi FROM ProductImage pi WHERE pi.productId = :productId ORDER BY pi.displayOrder")
 	List<ProductImage> findImagesByProductId(@Param("productId") Long productId);
+
+	
+	//void setProduct(Long productId);
+	
+
+	//Optional findById(Long productId);
 
 
 	

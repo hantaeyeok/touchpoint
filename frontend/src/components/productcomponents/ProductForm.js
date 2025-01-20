@@ -11,26 +11,46 @@ const ProductForm = ({ images, initialData, onSubmit }) => {
       
     const [mainImg, setMainImg] = useState(''); 
     const [imgList, setImgList] = useState([]); 
+    console.log("imgList0:",imgList);
+    
+    
+    const convertUrlToFile = async (url, fileName) => {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const file = new File([blob], fileName, { type: blob.type });
+        return file;
+      }; 
 
-      
-    useEffect(() => {  //images가 변경될때마다 실행
-        if (initialData) {     //initialData(초기데이터)가 있다면
-            setProductData((prevState) => ({    //productData 상태를 업데이트
-              ...prevState,                   //기존 상태를 유지
-              thumbnailImage: initialData.thumbnailImage || '',  //thumbnailImage를 initialData의 썸네일으로 설정
-            }));
-          }
-
-        if (images && images.length > 0) {   //images가 유효한지 검사후 
-          const formattedImages = images.map((img) => ({    // images 를 새로운 배열로 변환
-            id: img.imageId,
-            previewUrl: `http://localhost:8989${img.imageUrl}`,  //서버에서 제공된 imageUrl에 http://localhost:8989을 앞에 붙여서 이미지의 전체 URL을 생성
-            originFile: null, // 서버에서 가져온 이미지는 파일이 아니므로 null
+    useEffect(() => {
+        if (initialData) {
+          setProductData((prevState) => ({
+            ...prevState,
+            thumbnailImage: initialData.thumbnailImage || '',
           }));
-          setImgList(formattedImages);      //formattedImages로 변환된 배열을 imgList에 저장
+      
+          if (initialData.thumbnailImage) {
+            convertUrlToFile(`http://localhost:8989${initialData.thumbnailImage}`, 'thumbnailImage.jpg')
+              .then(file => {
+                setMainImg(file);  // file을 mainImg 상태에 저장
+              })
+              .catch((error) => {
+                console.error('Error converting URL to file:', error);
+              });
+          }
+      
+          // imgList 처리
+    if (initialData.productImages && initialData.productImages.length > 0) {
+        const formattedImages = initialData.productImages.map((img) => {
+          return {
+            id: img.imageId,
+            previewUrl: `http://localhost:8989${img.imageUrl}`, // 서버에서 제공된 imageUrl
+            originFile: null, // 원래 파일 객체는 null로 설정
+          };
+        });
+            setImgList(formattedImages); // 이미지 목록 설정
+          }
         }
-      }, [images]);  //images가 변경될때마다 실행하셈
-
+      }, [initialData]);
 
     // 썸네일 이미지 추가 함수
     const onMainImgSelected = (e) => {
@@ -44,7 +64,7 @@ const ProductForm = ({ images, initialData, onSubmit }) => {
         setMainImg(file); // 파일 객체로 저장
         setProductData((prevState) => ({
             ...prevState,
-            thumbnailImage: file, // 파일 객체로 저장
+            //thumbnailImage: file, // 파일 객체로 저장
         }));
     
         const reader = new FileReader();
@@ -59,14 +79,14 @@ const ProductForm = ({ images, initialData, onSubmit }) => {
         };
     };
     
-
+    //새로운 이미지 추가될때 기존의 이미지를 지우고 선택한 이미지를 배열에 추가
     const onDetailImgSelected = (e) => {
         const now = new Date();
         const id = now.toString(); // 고유 ID 생성
         const reader = new FileReader();
         reader.readAsDataURL(e.target.files[0]);
 
-        reader.onload = () => {
+        reader.onload = () => {   //새로 선택한 이미지를 ImgList배열에 추가해준다. 
             setImgList((prev) => [
                 ...prev,
                 { id, previewUrl: reader.result, originFile: e.target.files[0] },
@@ -79,12 +99,39 @@ const ProductForm = ({ images, initialData, onSubmit }) => {
     setProductData((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const handleImageChange = (e) => {
-    setProductData((prevState) => ({
-      ...prevState,
-      thumbnailImage: e.target.files[0],
-    }));
-  };
+//상세이미지가 바뀔때
+  const onImgChanged = (id, e) => {  //id : 원래 저장된 이미지 아이디
+    
+    let cpy = JSON.parse(JSON.stringify(imgList)); //문자열로 바꾸고 다시 객체로 바꾸면 복제본이 생성된다.
+
+    console.log('e.id:', e.id);
+    console.log('id:', id);
+    console.log('e.target.files:', e.target);
+    console.log('imgList.id:', imgList.id);
+
+    // id가 동일한 요소 찾기
+    let target = cpy.find((img) => img.id === id);
+    if (!target) {
+        console.error('Target not found for id:', id);
+        return;
+    }
+    const file = e.target.files[0];
+    if (!file) {
+        console.error('No file selected');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]); //미리보기 url. 어떤url을 미리보기할건지()안에 넣어줘야한다. 그래서, e.target.files[0] --> 사용자가 업로드한 이미지 파일
+    reader.onload = () => { //다 읽어지면(완료가되면) 실행되는 함수
+        target.previewUrl = reader.result; //previewUrl -> 미리보기 바꾸고,
+        target.originFile =file; //origin -> 원본파일도 바꾸고
+        setImgList(cpy); //setImgList에서, cpy원본으로 바꿔줘
+    }
+}
+
+
+
 
   const handleSubmit = (e) => {
     console.log('Submitting data:', productData);
@@ -92,6 +139,10 @@ const ProductForm = ({ images, initialData, onSubmit }) => {
     e.preventDefault();
     onSubmit(productData, mainImg, imgList); 
   };
+
+
+  
+
 
   return (
     <>
@@ -195,7 +246,7 @@ const ProductForm = ({ images, initialData, onSubmit }) => {
                                 <div className="ImgInputWrap">
                                 {
                                     imgList.map((img) =>
-                                        <label key={img.id}>
+                                        <label key={img.id}>{/* 이건 원래 들어있던 이미지의 id*/}
                                             <img
                                                 src={img.previewUrl}
                                                 alt="Detail"
@@ -206,7 +257,7 @@ const ProductForm = ({ images, initialData, onSubmit }) => {
                                                     objectPosition: 'center'
                                                 }}
                                                  />
-                                            <input onChange={onDetailImgSelected} accept="image/*" type="file" />
+                                            <input onChange={(e) => onImgChanged(img.id, e)}  accept="image/*" type="file" />
                                         </label>
                                     )
                                 }

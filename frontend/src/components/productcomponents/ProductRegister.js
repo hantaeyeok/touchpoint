@@ -14,6 +14,7 @@ const ProductRegister = () => {
             thumbnailImage: thumbnailImagePath, // 경로로 처리
           }));
           
+          
           formData.append('upfile', mainImg); // 이미지 파일 자체를 전송
       
         
@@ -23,9 +24,16 @@ const ProductRegister = () => {
             }
         });
 
+
+        console.log("productData",productData);
+        console.log("mainImg",mainImg);
+        console.log("imgList",imgList);
+    
+/*
         for (let [key, value] of formData.entries()) {
             console.log(key, value);
         }
+            */
 
         axios
         .post('http://localhost:8989/product/save', formData, {

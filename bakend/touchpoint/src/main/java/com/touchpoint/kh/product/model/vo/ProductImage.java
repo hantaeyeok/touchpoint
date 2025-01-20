@@ -20,13 +20,15 @@ import lombok.NoArgsConstructor;
 @Table(name = "TB_PRODUCT_IMAGES")
 public class ProductImage {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long imageId;
+	
 	
 	private String imageUrl;
 
     private int displayOrder;
     
     private Long productId; 
+    
+    @Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long imageId;
 }
