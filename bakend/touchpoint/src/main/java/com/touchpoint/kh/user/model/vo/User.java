@@ -2,6 +2,8 @@ package com.touchpoint.kh.user.model.vo;
 
 import java.time.LocalDate;
 
+import com.touchpoint.kh.user.model.dto.request.SignUpRequestDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -58,4 +60,21 @@ public class User {
 
     @Column(name = "AD_AGREED", length = 1, nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N' CHECK (AD_AGREED IN ('Y', 'N'))")
     private String adAgreed; // 광고 동의 여부 (Y/N)
+    
+    @Column(name = "USER_ROLE", length = 20, nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'ROLE_USER'")
+    private String userRole; // 사용자 역할 (기본값: ROLE_USER)
+    
+    public User(SignUpRequestDto dto) {
+    	this.userId = dto.getUserId();
+    	this.password = dto.getPassword();
+    	this.email = dto.getEmail();
+    	this.phoneNo = dto.getPhone().replace("-", "");
+    	this.name = dto.getUserName();
+    	this.joinDt = LocalDate.now();
+    	this.userSt = "Y";
+    	this.socialUser ="N";
+    	this.adAgreed = dto.getAdAgreed();
+    	this.userRole = "ROLE_USER";
+    }
+    
 }

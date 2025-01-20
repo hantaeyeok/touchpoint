@@ -19,5 +19,6 @@ SELECT
     FROM users
     WHERE USER_ID = #{userIdOrPhone} OR PHONE_NO = #{userIdOrPhone}
     </select>
+    
 
 </mapper>

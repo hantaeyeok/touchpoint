@@ -9,6 +9,7 @@ public class TouchpointApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TouchpointApplication.class, args);
+	
 	}
 
 }
