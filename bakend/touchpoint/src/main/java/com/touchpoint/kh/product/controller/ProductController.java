@@ -97,22 +97,27 @@ public class ProductController {
 	    return "/resources/uploadFiles/" + fileName;  // 저장된 파일 경로 반환
 	}
 	
-	//상세이미지 저장하기위한 메서드
+	// 상세 이미지를 저장하기 위한 메서드
 	private List<ProductImage> saveImages(List<MultipartFile> images, List<Long> imageIds, HttpServletRequest request) throws IOException {
+	    List<ProductImage> productImages = new ArrayList<>();
 	    
-		List<ProductImage> productImages = new ArrayList<>();
-		
-		// 인덱스를 가져오는 반복문
+	    // 인덱스를 가져오는 반복문
 	    for (int i = 0; i < images.size(); i++) { 
 	        MultipartFile image = images.get(i); // 현재 이미지
-	        Long id = imageIds.get(i);  
 	        
 	        String imagePath = saveFile(image, request); // 이미지 저장
+	        Long id = (imageIds != null && i < imageIds.size()) ? imageIds.get(i) : null; // imageIds에서 값 가져오기
 	        
-	        productImages.add(new ProductImage(imagePath, i, null, id)); //imageUrl, displayOrder, productId, imageId
+	        // imageIds가 null이거나 값이 없으면 기본 ProductImage 생성, 아니면 id를 포함하여 생성
+	        if (id == null) {
+	            productImages.add(new ProductImage(imagePath, i, null, null)); // imageUrl, displayOrder, productId, imageId
+	        } else {
+	            productImages.add(new ProductImage(imagePath, i, null, id)); // imageUrl, displayOrder, productId, imageId
+	        }
 	    }
 	    return productImages;
 	}
+
 
 
 	@GetMapping("/category")
