@@ -21,7 +21,7 @@ public class SetupHistory {
     private String historyContent;  // 내용
     private LocalDate historyDate;  // 등록일자
     private String userId;          // 게시글 작성자
-    
+
     // HistoryImage 테이블의 필드
     private List<HistoryImage> images; // 이미지 정보 리스트시글 작성자
 }

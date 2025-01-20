@@ -15,7 +15,7 @@
             h.HISTORY_CONTENT,
             h.HISTORY_DATE,
             h.USER_ID,
-            i.HISTORY_IMAGE_NAME AS HISTORY_IMAGE_NAME
+            i.HISTORY_IMAGE_NAME AS IMAGE_NAME
         FROM 
             TB_SETUP_HISTORY h
         LEFT JOIN 
@@ -23,12 +23,12 @@
         ON 
             h.HISTORY_NO = i.HISTORY_NO
         WHERE 
-            i.HISTORY_IMAGE_ORDER = 0
+            i.HISTORY_IMAGER_ORDER = 1
         ORDER BY 
             h.HISTORY_DATE DESC
     </select>
 
-    <resultMap id="SetupHistoryResultMap" type="com.touchpoint.kh.history.model.vo.SelectHistoryDto">
+    <resultMap id="SetupHistoryResultMap" type="com.touchpoint.kh.history.model.vo.SetupHistory">
         <id property="historyNo" column="HISTORY_NO" />
         <result property="storeName" column="STORE_NAME" />
         <result property="storeAddress" column="STORE_ADDRESS" />
@@ -58,13 +58,13 @@
     )
     <!-- 시퀀스 생성된 ID 가져오기 -->
     <selectKey resultType="int" keyProperty="historyNo" order="AFTER">
-        SELECT SEQ_HISTORY.CURRVAL FROM DUAL
+        SELECT SEQ_HISTORY_NO.CURRVAL FROM DUAL
     </selectKey>
 </insert>
 
     <!-- 3. 설치사례 이미지 추가 -->
-    <insert id="insertHistoryImage" parameterType="HistoryImage">
-        INSERT INTO TB_HISTORY_IMAGE(
+    <insert id="insertHistoryImage">
+        INSERT INTO TB_HISTORY_IMAGES (
 			IMAGE_NO,
             HISTORY_NO, 
             HISTORY_IMAGE_NAME, 
@@ -76,5 +76,5 @@
             #{historyImageOrder}
         )
     </insert>
-  
+
 </mapper>

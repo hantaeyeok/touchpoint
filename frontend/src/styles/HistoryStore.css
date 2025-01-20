@@ -1,82 +1,44 @@
+/* 그리드 레이아웃 */
 .store-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: flex-start;
-    margin: 50px auto;
-    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 300px)); /* 최소 200px, 최대 400px */
+    gap: 20px; /* 간격 */
+    margin-top: 100px;
 }
 
-/* 각 상점 항목 전체 컨테이너 */
-.store-item-wrapper {
-    flex: 1 0 calc(25% - 20px);
-    max-width: calc(25% - 20px);
-    margin-bottom: 20px; /* 하단 정보와 이미지 간 간격 */
-}
-
-/* 이미지와 제목만 포함하는 상단 박스 */
+/* 각 항목 스타일 */
 .store-item {
-    position: relative;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
     border-radius: 10px;
-    overflow: hidden;
+    padding: 20px;
+    text-align: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    height: 200px; /* 고정 높이를 지정하여 박스 비율 유지 */
 }
 
-/* 호버 효과는 여기만 적용 */
 .store-item:hover {
-    transform: scale(1.05);
+    transform: scale(1.1);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-/* 상점 이미지 */
+/* 이미지 스타일 */
 .store-image {
-    width: 100%; /* 부모 박스 너비를 완전히 채움 */
-    height: 100%; /* 부모 박스 높이를 완전히 채움 */
-    object-fit: cover; /* 이미지 비율을 유지하면서 박스를 꽉 채움 */
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 15px;
 }
 
 /* 제목 스타일 */
 .store-title {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: white;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: bold;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    z-index: 2;
+    margin-bottom: 10px;
 }
 
-/* 정보 박스 */
-.store-info {
-    margin-top: 10px;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-/* 정보 텍스트 스타일 */
-.store-description,
-.store-model,
-.store-date {
-    margin: 5px 0;
-    font-size: 14px;
-    color: #333;
-}
-/* 체크박스 컨테이너 */
-/* 체크박스 컨테이너 */
-.store-checkbox {
-    margin-top: 10px;
-    text-align: center;
-    font-size: 14px;
-    color: #333;
-}
-
-.store-checkbox input[type="checkbox"] {
-    margin-right: 5px;
-    cursor: pointer;
+/* 설명 스타일 */
+.store-description {
+    font-size: 16px;
+    color: #555;
 }

@@ -1,4 +1,3 @@
-/* 메인 컨테이너 */
 .historyMain {
     padding: 40px;
     max-width: 1200px;
@@ -14,15 +13,7 @@
     margin-bottom: 20px;
 }
 
-/* 버튼 컨테이너 */
-.button-container {
-    display: flex;
-    justify-content: flex-end; /* 버튼 오른쪽 정렬 */
-    gap: 10px; /* 버튼 간격 */
-    margin-bottom: 20px;
-}
-
-/* 추가하기 버튼 스타일 */
+/* 버튼 스타일 */
 .addHistoryButton {
     display: inline-block;
     background-color: #ff007f; /* 기본 핑크색 */
@@ -33,43 +24,13 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    box-sizing: border-box; /* 보더 포함 */
-    border: 1px solid transparent; /* 초기 보더 투명 */
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease; /* 호버 효과 */
+    float: right;    
 }
 
-/* 추가하기 버튼 호버 스타일 */
+/* 호버 시 스타일 변경 */
 .addHistoryButton:hover {
-    background-color: #fff; /* 배경 흰색 */
-    color: #ff007f; /* 텍스트 핑크 */
-    border-color: #ff007f; /* 보더 핑크 */
+    background-color: #fff; 
+    color: #ff007f; 
+    border: 1px solid #ff007f; 
 }
-/*공통 버튼 스타일 */
-.commonButton {
-    display: inline-block;
-    background-color: #ff007f; /* 기본 핑크색 */
-    color: white; /* 기본 글자색 */
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    box-sizing: border-box; /* 보더 포함 */
-    border: 1px solid transparent; /* 초기 보더 투명 */
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
-/* 공통 버튼 호버 스타일 */
-.commonButton:hover {
-    background-color: #fff; /* 배경 흰색 */
-    color: #ff007f; /* 텍스트 핑크 */
-    border-color: #ff007f; /* 보더 핑크 */
-}
-
-/* 개별 버튼 특화 스타일 (필요하면 추가) */
-.addHistoryButton { /* 추가하기 버튼에만 필요한 추가 스타일 */ }
-.deleteHistoryButton { /* 삭제하기 버튼에만 필요한 추가 스타일 */ }
-.cancelDeleteButton { /* 취소하기 버튼에만 필요한 추가 스타일 */ }
-
-
