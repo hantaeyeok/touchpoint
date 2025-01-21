@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configurers.HttpBasicC
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -19,6 +20,8 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import com.touchpoint.kh.user.common.OAuth2SucessHandler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +35,8 @@ import lombok.RequiredArgsConstructor;
 public class WebSecurityConfig {
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
-	
+	private final DefaultOAuth2UserService oAuth2UserService;
+	private final OAuth2SucessHandler oAuth2SucessHandler;
 	  @Bean
 	    protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
 	        httpSecurity
@@ -53,6 +57,12 @@ public class WebSecurityConfig {
 	                .requestMatchers("/admin/**").hasRole("ADMIN")
 	                .anyRequest().permitAll()
 	            )
+	            .oauth2Login(oauth2 -> oauth2
+	            		.authorizationEndpoint(endpoint -> endpoint.baseUri("/api/v1/auth/oauth2"))
+	            		.redirectionEndpoint(endpoint -> endpoint.baseUri("/oauth2/callback/*"))
+	            		.userInfoEndpoint(endpoint -> endpoint.userService(oAuth2UserService))
+	            		.successHandler(oAuth2SucessHandler)
+	            		)
 	            .exceptionHandling(exceptionHandling -> exceptionHandling
 	            		.authenticationEntryPoint(new FailedAuthenticationEntryPoint())		
 	            )

@@ -77,4 +77,13 @@ public class User {
     	this.userRole = "ROLE_USER";
     }
     
+    public User(String userId, String type, String email) {
+    	this.userId = userId;
+    	this.password = "password";
+    	this.email = email;
+    	this.joinDt = LocalDate.now();
+    	this.userSt = "Y";
+    	this.socialUser ="N";
+    	this.userRole = "ROLE_USER";
+    }
 }
