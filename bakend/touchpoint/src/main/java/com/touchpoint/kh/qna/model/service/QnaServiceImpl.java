@@ -47,11 +47,11 @@ public class QnaServiceImpl implements QnaService {
 	}
 
 	@Override
-	@Transactional
-	public int createAnswer(AnswerDto answer) {
-	    int rowsAffected = qnaMapper.insAnswer(answer); 
+	public int createAnswer(AnswerDto answerDto) {
+	    int rowsAffected = qnaMapper.insAnswer(answerDto); 
+	    
 	    if (rowsAffected > 0) {
-	        qnaMapper.updateStatus(answer.getQnaNo()); 
+	        qnaMapper.updateStatus(answerDto.getQnaNo());
 	        return rowsAffected; 
 	    } else {
 	        throw new RuntimeException("답변 저장에 실패했습니다."); 
@@ -63,5 +63,33 @@ public class QnaServiceImpl implements QnaService {
 	public void createAnswerFile(FileDto fileAdd) {
 		qnaMapper.insAnswerFile(fileAdd);
 	}
+
+
+//	@Transactional(rollbackOn = Exception.class) 안되는데 ㅡㅡㅗ
+//	@Override
+//	public int createQna(QnaDto qnaDto, List<FileDto> fileDtos) {
+//	    // 1. 글 저장
+//	    int rowsAffected = qnaMapper.insQna(qnaDto);
+//	    if (rowsAffected <= 0) {
+//	        throw new RuntimeException("글 저장에 실패했습니다.");
+//	    }
+//
+//	    // 2. 파일 첨부 정보 저장
+//	    if (fileDtos != null && !fileDtos.isEmpty()) {
+//	        for (FileDto fileDto : fileDtos) {
+//	            try {
+//	                fileDto.setQnaNo(qnaDto.getQnaNo()); // 글 번호 설정
+//	                int fileRows = qnaMapper.insQnaFile(fileDto);
+//	                if (fileRows <= 0) {
+//	                    throw new RuntimeException("파일 정보 저장에 실패했습니다.");
+//	                }
+//	            } catch (Exception e) {
+//	                throw new RuntimeException("파일 첨부 실패: " + fileDto.getOriginName(), e);
+//	            }
+//	        }
+//	    }
+//
+//	    return qnaDto.getQnaNo(); // 생성된 글 ID 반환
+//	}
 	
 }

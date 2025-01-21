@@ -114,6 +114,10 @@
 			        )    
    </insert>
    
+   <select id="getNextAnswerNo" resultType="int">
+	    SELECT ANSWER_SEQ.NEXTVAL FROM DUAL
+   </select>
+   
    <insert id="insAnswerFile" parameterType="com.touchpoint.kh.qna.model.vo.FileDto">
    		INSERT
 		    INTO FILE_ADD (

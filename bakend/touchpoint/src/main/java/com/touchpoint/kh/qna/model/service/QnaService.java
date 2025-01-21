@@ -14,13 +14,15 @@ public interface QnaService {
 
 	public QnaDto qnaDetail(int qnaNo);
 
-	public int createAnswer(AnswerDto answer);
+	public int createAnswer(AnswerDto answerDto);
 
 	public AnswerDto answerFind(int qnaNo);
 
 	public void createQnaFile(FileDto fileAdd);
 
 	public void createAnswerFile(FileDto fileAdd);
+
+	//public int createQna(QnaDto qnaDto, List<FileDto> fileDtos);
 
 
 }

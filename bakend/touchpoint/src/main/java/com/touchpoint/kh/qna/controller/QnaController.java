@@ -1,6 +1,7 @@
 package com.touchpoint.kh.qna.controller;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -113,7 +114,7 @@ public class QnaController {
 	        									  @RequestPart(value = "files", required = false) List<MultipartFile> files){
 		
 		try {
-			int savedQna  = qnaService.createQna(qnaDto); 
+			int savedQna  = qnaService.createQna(qnaDto);
 			System.out.println("files: " + files);
 			
 			String uploadPath = request.getServletContext().getRealPath("/resources/qnaUpload/");
@@ -122,6 +123,7 @@ public class QnaController {
 				directory.mkdirs();
 			}
 				
+			List<FileDto> fileDtos = new ArrayList<>();
 			if (files != null && !files.isEmpty()) {
 	            for (MultipartFile file : files) {
 	                String originName = file.getOriginalFilename();
@@ -140,7 +142,7 @@ public class QnaController {
                     fileAdd.setOriginName(originName);
                     fileAdd.setChangeName(changeName);
                     fileAdd.setPath(filePath);
-                    
+                    fileDtos.add(fileAdd);
                     try {
                         qnaService.createQnaFile(fileAdd);
                     } catch (Exception e) {
@@ -149,6 +151,9 @@ public class QnaController {
                     }
 	            }
 	        }
+			
+			//int savedQna  = qnaService.createQna(qnaDto,fileDtos);
+			
 	        return responseHandler.createResponse("QnA 등록 및 파일 첨부 성공", savedQna , HttpStatus.OK);
 	    } catch (Exception e) {
 	        return responseHandler.handleException("QnA 등록 실패", e);
@@ -159,13 +164,12 @@ public class QnaController {
 	@PostMapping("/createAnswer/{qnaNo}")
 	public ResponseEntity<ResponseData> createAnswer(HttpServletRequest request,
 													 @PathVariable("qnaNo") int qnaNo,
-													 @RequestPart("Answer") AnswerDto answer ,
+													 @RequestPart("Answer") AnswerDto answerDto ,
 													 @RequestPart(value="files", required = false) List<MultipartFile> files){
 
 		try {
-			answer.setQnaNo(qnaNo);
-			int answerSave = qnaService.createAnswer(answer);
-			System.out.println("files: " + files);
+			answerDto.setQnaNo(qnaNo);
+			int answerSave = qnaService.createAnswer(answerDto);
 			
 			String uploadPath = request.getServletContext().getRealPath("/resources/qnaUpload/");
 			File directory = new File(uploadPath);

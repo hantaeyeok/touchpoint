@@ -4,38 +4,47 @@ import { useRef } from "react";
 import "@styles/Qna2.css";
 import { Routes, Route, Link } from "react-router-dom";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 
 function QnaEdit() {
 
+    const navigate = useNavigate();
     const fileImg = `${process.env.PUBLIC_URL}/images/fileAdd.JPG`;
     const location = useLocation();
     const [editTitle,setEditTitle] = useState('');
     const [editContent,setEditContent] = useState('');
     const [originName,setOriginName] = useState('');
+    const [qnaData, setQnaData] = useState({
+        qnaNo: "",
+        qnaTitle: "",
+        qnaContent: "",
+        files: [],
+    });
 
-    const {
-        qnaNo,
-        qnaTitle,
-        qnaContent,
-        files,
-    } = location.state;
+    useEffect(() => {
+        if (location.state) {
+            setQnaData(location.state);
+        }
+    }, [location.state]);
+    
+    useEffect(() => {
+        if (qnaData.files.length > 0) {
+            const fileNames = qnaData.files.map((file) => file.originName).join(", ");
+            setOriginName(fileNames);
+        }
+    }, [qnaData.files]);
 
     const handleFileChange = (event) => {
-        
         const fileList = Array.from(event.target.files);
-        const fileNames = fileList.map((file)=> file.name);
-        setOriginName(fileNames);
+        setOriginName(fileList.map((file)=> file.name));
     };
 
     const editSubmit = async () => {
-        if(!qnaTitle || !qnaContent){
+        if(!qnaData.qnaTitle || !qnaData.qnaContent){
             alert("제목과 내용을 입력해주세요")
             return;
         };
     };
-
-
 
     return(
         <div className="formContainer">
@@ -43,7 +52,7 @@ function QnaEdit() {
                 <div className="formField fullWidth">
                 <label>제 목</label>
                 <input 
-                    value={qnaTitle}
+                    value={qnaData.qnaTitle}
                     onChange={(event)=>setEditTitle(event.target.value)}
                     type="text" 
                     placeholder="제목을 입력하세요" />
@@ -52,7 +61,7 @@ function QnaEdit() {
             <div className="formField">
             <label>파일첨부</label>
                 <input 
-                    value={files.OriginName}
+                    value={originName}
                     onChange={(event)=>setOriginName(event.target.value)}
                     readOnly
                     type="text" 
@@ -70,13 +79,13 @@ function QnaEdit() {
             </div>
             <div className="formTextarea">
                 <textarea
-                    value={qnaContent}
+                    value={qnaData.qnaContent}
                     onChange={(event)=>setEditContent(event.target.value)}
                     placeholder="내용을 입력하세요">
                 </textarea>
             </div>
             <div className="qnaAdd_btn">
-                <Link to={`/qnaDetail${qnaNo}`}><button>이전으로</button></Link>
+                <button onClick={()=>{navigate(-1)}}>이전으로</button>
                 <button onClick={editSubmit}>수정하기</button>
             </div>
         </div>

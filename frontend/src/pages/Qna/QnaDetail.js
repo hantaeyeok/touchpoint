@@ -96,11 +96,10 @@ function QnaDetail() {
                 <span className="fieldValue">{qnaDetail.qnaContent}</span>
             </div>
             <div className="qnaAdd_btn">
-                <Link to="/qna"><button>이전으로</button></Link>
+                <button onClick={()=>{navigate(-1)}}>이전으로</button>
                 <button onClick={handleEdit}>수정하기</button>
             </div>
-            <QnaAnswerAdd/>
-            {hasAnswer && <QnaAnswer/>}
+            {hasAnswer ? <QnaAnswer/> : <QnaAnswerAdd/> }
         </div>
     )
 }
