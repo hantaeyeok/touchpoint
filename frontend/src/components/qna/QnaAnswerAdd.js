@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useRef } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import "@styles/Qna2.css";
 import { Routes, Route, Link } from "react-router-dom";
 import axios from "axios";
@@ -9,16 +8,16 @@ import { useParams } from "react-router-dom";
 function QnaAnswerAdd() {
 
     const fileImg = `${process.env.PUBLIC_URL}/images/fileAdd.JPG`;
-    const [OriginName,setOriginName] = useState('');
+    const [originName,setOriginName] = useState('');
     const [answerTitle,setAnswerTitle] = useState('');
     const [answerContent,setAnswerContent] = useState('');
     const { qnaNo } = useParams();
+    const fileInputRef = useRef(null);
 
     const handleFileChange = (event) => {
 
         const fileList = Array.from(event.target.files);
-        const fileNames = fileList.map((file)=>file.name);
-        setOriginName(fileNames);
+        setOriginName(fileList.map((file)=> file.name).join(", "));
     };
     
     const answerSubmit = async () => {
@@ -27,10 +26,32 @@ function QnaAnswerAdd() {
             return;
         };
 
-        const newAnswer = {OriginName, answerTitle, answerContent};
+        const formData = new FormData();
+        const answer = {
+            answerTitle: answerTitle,
+            answerContent: answerContent
+        };
+
+        console.log("QnA 번호:", qnaNo);
+        console.log("Answer 객체:", answer);
+
+        formData.append("Answer", new Blob([JSON.stringify(answer)], { type: "application/json" }));
+        
+        if (fileInputRef.current.files.length > 0) {
+            Array.from(fileInputRef.current.files).forEach((file) => {
+                formData.append("files", file);
+            });
+        }
+
+        // FormData 내용 확인
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ": ", pair[1]);
+        }
 
         try {
-            const response = await axios.post(`http://localhost:8989/qna/createAnswer/${qnaNo}`, newAnswer);
+            const response = await axios.post(`http://localhost:8989/qna/createAnswer/${qnaNo}`, formData,{
+                headers: {"Content-Type": "multipart/form-data"}
+            });
             console.log("서버 응답:", response.data);
             alert("글이 성공적으로 저장되었습니다!");
         } catch (error) {
@@ -56,7 +77,7 @@ function QnaAnswerAdd() {
             <div className="formField">
                 <label>파일첨부</label>
                 <input 
-                    value={OriginName}
+                    value={originName}
                     readOnly 
                     ype="text" 
                     id="fileName" 
@@ -64,7 +85,8 @@ function QnaAnswerAdd() {
                 <label className="fileLabel">
                     <img src={fileImg} className="fileImg"/>
                     <input 
-                        type="file" 
+                        type="file"
+                        ref={fileInputRef} 
                         multiple="multiple"
                         onChange={handleFileChange}
                         className="fileAdd" />

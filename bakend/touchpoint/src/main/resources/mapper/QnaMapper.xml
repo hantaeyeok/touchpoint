@@ -24,7 +24,7 @@
 			    Q.QNA_DATE,
 			    Q.QNA_TITLE,
 			    Q.QNA_CONTENT,
-			    Q_QNA_NO,
+			    Q.QNA_NO,
 			    F.ORIGIN_NAME,
 			    F.CHANGE_NAME,
 			    F.PATH
@@ -53,7 +53,7 @@
 	 LEFT JOIN        
 	            FILE_ADD F
 	        ON
-	            A.ANSWER_NO = F.ANSWER_NO;
+	            A.ANSWER_NO = F.ANSWER_NO
          WHERE
          		A.QNA_NO = #{qnaNo}
    </select>
@@ -96,7 +96,25 @@
 				 )
    </insert>
    
-   <insert id="insFile" parameterType="com.touchpoint.kh.qna.model.vo.FileDto">
+   <insert id="insQnaFile" parameterType="com.touchpoint.kh.qna.model.vo.FileDto">
+   		INSERT
+		    INTO FILE_ADD (
+			                FILE_NO,
+			                ORIGIN_NAME,
+			                CHANGE_NAME,
+			                QNA_NO,
+			                PATH
+            )
+		           VALUES (
+			                FILE_SEQ.NEXTVAL,
+			                #{originName},
+			                #{changeName},
+			                QNA_SEQ.CURRVAL,
+			                #{path}
+			        )    
+   </insert>
+   
+   <insert id="insAnswerFile" parameterType="com.touchpoint.kh.qna.model.vo.FileDto">
    		INSERT
 		    INTO FILE_ADD (
 			                FILE_NO,
@@ -110,8 +128,8 @@
 			                FILE_SEQ.NEXTVAL,
 			                #{originName},
 			                #{changeName},
-			                QNA_SEQ.CURRVAL,
-			                NVL(ANSWER_SEQ.CURRVAL, NULL),
+			                #{qnaNo},
+			                ANSWER_SEQ.CURRVAL,
 			                #{path}
 			        )    
    </insert>

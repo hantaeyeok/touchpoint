@@ -15,14 +15,16 @@ public interface QnaMapper {
 
 	int insQna(QnaDto qnaDto);
 
-	void insFile(FileDto fileAdd);
+	void insQnaFile(FileDto fileAdd);
 
 	AnswerDto answerFind(int qnaNo);
 
-	AnswerDto insAnswer(AnswerDto answer);
+	int insAnswer(AnswerDto answer);
 
 	QnaDto qnaDetail(int qnaNo);
 
 	void updateStatus(int qnaNo);
+
+	void insAnswerFile(FileDto fileAdd);
 
 }

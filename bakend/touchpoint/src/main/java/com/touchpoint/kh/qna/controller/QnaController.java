@@ -21,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.touchpoint.kh.common.ResponseData;
 import com.touchpoint.kh.common.ResponseHandler;
 import com.touchpoint.kh.qna.model.service.FaqService;
-import com.touchpoint.kh.qna.model.service.FileService;
 import com.touchpoint.kh.qna.model.service.QnaService;
 import com.touchpoint.kh.qna.model.vo.AnswerDto;
 import com.touchpoint.kh.qna.model.vo.Faq;
@@ -42,7 +41,6 @@ public class QnaController {
 	private final FaqService faqService;
 	private final QnaService qnaService;
 	private final ResponseHandler responseHandler;
-	private final FileService fileService;
 	
 	@Value("${file.base-url}")
 	private String baseUrl;
@@ -98,7 +96,7 @@ public class QnaController {
 	}
 	
 	@GetMapping("/answer/{qnaNo}")
-	public ResponseEntity<ResponseData> getAnswer(@PathVariable int qnaNo){
+	public ResponseEntity<ResponseData> getAnswer(@PathVariable("qnaNo") int qnaNo){
 		try {
 			AnswerDto answerDto = qnaService.answerFind(qnaNo);
 			return responseHandler.createResponse("답변 조회 성공", answerDto, HttpStatus.OK);
@@ -144,7 +142,7 @@ public class QnaController {
                     fileAdd.setPath(filePath);
                     
                     try {
-                        fileService.createFile(fileAdd);
+                        qnaService.createQnaFile(fileAdd);
                     } catch (Exception e) {
                     	log.error("파일 DB 저장 중 오류 발생: {}, 이유: {}", originName, e.getMessage(), e);
                         throw new RuntimeException("파일 DB 저장 중 오류 발생: " + originName, e);
@@ -160,12 +158,14 @@ public class QnaController {
 	
 	@PostMapping("/createAnswer/{qnaNo}")
 	public ResponseEntity<ResponseData> createAnswer(HttpServletRequest request,
-													 @PathVariable int qnaNo,
+													 @PathVariable("qnaNo") int qnaNo,
 													 @RequestPart("Answer") AnswerDto answer ,
 													 @RequestPart(value="files", required = false) List<MultipartFile> files){
-		
+
 		try {
-			AnswerDto answerSave = qnaService.createAnswer(answer);
+			answer.setQnaNo(qnaNo);
+			int answerSave = qnaService.createAnswer(answer);
+			System.out.println("files: " + files);
 			
 			String uploadPath = request.getServletContext().getRealPath("/resources/qnaUpload/");
 			File directory = new File(uploadPath);
@@ -191,10 +191,9 @@ public class QnaController {
                     fileAdd.setChangeName(changeName);
                     fileAdd.setPath(filePath);
                     fileAdd.setQnaNo(qnaNo);
-                    fileAdd.setAnswerNo(answer.getAnswerNo());
                     
                     try {
-                        fileService.createFile(fileAdd);
+                    	qnaService.createAnswerFile(fileAdd);
                     } catch (Exception e) {
                     	log.error("파일 DB 저장 중 오류 발생: {}, 이유: {}", originName, e.getMessage(), e);
                         throw new RuntimeException("파일 DB 저장 중 오류 발생: " + originName, e);

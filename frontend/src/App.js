@@ -36,8 +36,7 @@ function App() {
             <Route path="/addFaq/*" element={<AddFaq />} />
             <Route path="/addQna/*" element={<AddQna />} />
             <Route path="/qnaEdit/*" element={<QnaEdit />} />
-            {/*<Route path="/qnaDetail/:qnaNo" element={<QnaDetail />} />*/}
-            <Route path="/qnaDetail/*" element={<QnaDetail />} />
+            <Route path="/qnaDetail/:qnaNo" element={<QnaDetail />} />
             <Route path="/" element={<h1>메인</h1>} />
             <Route path="/" element={<h1>메인</h1>} />
             <Route path="/product" element={<Product/>}/>

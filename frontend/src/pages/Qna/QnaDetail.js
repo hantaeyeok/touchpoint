@@ -9,6 +9,7 @@ import axios from "axios";
 
 function QnaDetail() {
 
+    const [hasAnswer, setHasAnswer] = useState(false);
     const navigate = useNavigate();
     const [qnaDetail, setQnaDetail] = useState({
         qnaNo: 0,
@@ -36,11 +37,16 @@ function QnaDetail() {
         });
     };
 
+    console.log("QnA 번호:", qnaNo);
+    
     useEffect(()=> {
         const fetchQnas = async () => {
             try {
                 const response = await axios.get(`http://localhost:8989/qna/qnaDetail/${qnaNo}`);
                 setQnaDetail(response.data.data);
+
+                const answerResponse = await axios.get(`http://localhost:8989/qna/answer/${qnaNo}`);
+                setHasAnswer(!!answerResponse.data.data);
             } catch (error) {
                 console.error("QNA 데이터를 가져오는 중 오류 발생:", error);
             }
@@ -75,11 +81,15 @@ function QnaDetail() {
             <div className="formRow">
                 <div className="formField fullWidth">
                     <label>파일첨부</label>
-                    {qnaDetail.files.map((file,index)=>(
-                        <a key={index} href={file.path} download={file.originName}>
-                            {file.OriginName}
-                        </a>
-                    ))}
+                    {qnaDetail.files?.length > 0 ? (
+                        qnaDetail.files.map((file, index) => (
+                            <a key={index} href={file.path} download={file.originName}>
+                                {file.originName}
+                            </a>
+                        ))
+                    ) : (
+                        <span>첨부된 파일이 없습니다.</span>
+                    )}
                 </div>
             </div>
             <div className="qnaContent">
@@ -90,7 +100,7 @@ function QnaDetail() {
                 <button onClick={handleEdit}>수정하기</button>
             </div>
             <QnaAnswerAdd/>
-            <QnaAnswer/>
+            {hasAnswer && <QnaAnswer/>}
         </div>
     )
 }
