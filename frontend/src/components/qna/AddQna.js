@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { FaqContext } from "@context/FaqContext";
 import axios from "axios";
+import { handleFileChange } from "./handleFileChange";
+
+
 
 function AddQna() {
 
@@ -14,16 +17,8 @@ function AddQna() {
     const [originName,setOriginName] = useState('');
     const [qnaTitle,setQnaTitle] = useState('');
     const [qnaContent,setQnaContent] = useState('');
-    
     const fileInputRef = useRef(null);
-    
-    
-    const handleFileChange = (event) => {
-        
-        const fileList = Array.from(event.target.files);
-        setOriginName(fileList.map((file)=> file.name).join(", "));
-    };
-    
+
     const qnaSubmit = async () => {
         if(!qnaTitle || !qnaContent){
             alert("제목과 내용을 입력해주세요")
@@ -97,7 +92,7 @@ function AddQna() {
                     <input 
                         type="file" 
                         ref={fileInputRef}
-                        onChange={handleFileChange}
+                        onChange={(event)=>setOriginName(handleFileChange(event))}
                         multiple="multiple" 
                         className="fileAdd" />
                 </label>

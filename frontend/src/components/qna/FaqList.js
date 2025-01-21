@@ -114,7 +114,7 @@ function FaqList() {
                             <input 
                                     className="qnaInput"
                                     value={selectedFaq.faqTitle}
-                                    onChange={(event)=>setSelectedFaq({ ...selectedFaq, faqTitle: event.target.value })}
+                                    onChange={(event)=>setSelectedFaq((prev)=>({ ...prev, faqTitle: event.target.value }))}
                                     type="text" 
                                     id="title" 
                                     name="title" 
@@ -124,7 +124,7 @@ function FaqList() {
                             <textarea
                                     className="qnaTextarea"
                                     value={selectedFaq.answer}
-                                    onChange={(event)=>setSelectedFaq({ ...selectedFaq, answer: event.target.value })}
+                                    onChange={(event)=>setSelectedFaq((prev)=>({ ...prev, answer: event.target.value }))}
                                     id="content" 
                                     name="content" 
                                     placeholder="내용을 입력하세요">

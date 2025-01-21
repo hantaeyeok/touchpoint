@@ -3,6 +3,7 @@ import "@styles/Qna2.css";
 import { Routes, Route, Link } from "react-router-dom";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { handleFileChange } from "./handleFileChange";
 
 
 
@@ -15,12 +16,6 @@ function QnaAnswerAdd() {
     const { qnaNo } = useParams();
     const fileInputRef = useRef(null);
 
-    const handleFileChange = (event) => {
-
-        const fileList = Array.from(event.target.files);
-        setOriginName(fileList.map((file)=> file.name).join(", "));
-    };
-    
     const answerSubmit = async () => {
         if(!answerTitle || !answerContent){
             alert("제목과 내용을 입력해주세요")
@@ -82,7 +77,7 @@ function QnaAnswerAdd() {
                         type="file"
                         ref={fileInputRef} 
                         multiple="multiple"
-                        onChange={handleFileChange}
+                        onChange={(event)=>setOriginName(handleFileChange(event))}
                         className="fileAdd" />
                 </label>
             </div>

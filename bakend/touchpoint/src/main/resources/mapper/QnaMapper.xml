@@ -142,11 +142,44 @@
 	    UPDATE 
 	    		QNA
 	       SET 
-        STATUS 
-        		= '답변완료'
+        		STATUS = '답변완료'
 	     WHERE 
 	     		QNA_NO = #{qnaNo}
-	</update>
+   </update>
+  
+   <update id="updateQna" parameterType="com.touchpoint.kh.qna.model.vo.QnaDto">
+   		UPDATE
+        		QNA
+		   SET    
+		        QNA_TITLE = #{qnaTitle},
+		        QNA_CONTENT = #{qnaContent},
+		        QNA_DATE = SYSDATE
+		 WHERE
+		        QNA_NO = #{qnaNo}
+   </update>
+   
+   <update id="updateAnswer" parameterType="com.touchpoint.kh.qna.model.vo.AnswerDto">
+   		UPDATE
+   				ANSWER
+		   SET
+		   		ANSWER_TITLE = #{answerTitle},
+		   		ANSWER_CONTENT = #{answerContent},
+		   		ANSWER_DATE = SYSDATE
+   		 WHERE
+   		 		ANSWER_NO = #{answerNo}
+   </update>
+   
+   <update id="updateFile" parameterType="com.touchpoint.kh.qna.model.vo.FileDto">
+   		UPDATE
+   				FILE_ADD
+		   SET
+		   		ORIGIN_NAME = #{originName},
+		   		CHANGE_NAME = #{changeName},
+		   		PATH =	#{path}
+   		 WHERE
+   		 		FILE_NO = #{fileNo}
+   </update>
+  
    
    <resultMap id="AnswerResultMap" type="com.touchpoint.kh.qna.model.vo.AnswerDto">
 	    <id property="answerNo" column="ANSWER_NO"/>

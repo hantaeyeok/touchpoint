@@ -11,8 +11,6 @@ function QnaEdit() {
     const navigate = useNavigate();
     const fileImg = `${process.env.PUBLIC_URL}/images/fileAdd.JPG`;
     const location = useLocation();
-    const [editTitle,setEditTitle] = useState('');
-    const [editContent,setEditContent] = useState('');
     const [originName,setOriginName] = useState('');
     const [qnaData, setQnaData] = useState({
         qnaNo: "",
@@ -44,6 +42,8 @@ function QnaEdit() {
             alert("제목과 내용을 입력해주세요")
             return;
         };
+
+        
     };
 
     return(
@@ -53,7 +53,7 @@ function QnaEdit() {
                 <label>제 목</label>
                 <input 
                     value={qnaData.qnaTitle}
-                    onChange={(event)=>setEditTitle(event.target.value)}
+                    onChange={(event)=>setQnaData((prev)=>({...prev, qnaTitle : event.target.value}))}
                     type="text" 
                     placeholder="제목을 입력하세요" />
                 </div>
@@ -80,7 +80,7 @@ function QnaEdit() {
             <div className="formTextarea">
                 <textarea
                     value={qnaData.qnaContent}
-                    onChange={(event)=>setEditContent(event.target.value)}
+                    onChange={(event)=>setQnaData((prev)=>({...prev, qnaContent : event.target.value}))}
                     placeholder="내용을 입력하세요">
                 </textarea>
             </div>
