@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ButtonLogin from "@components/login/ButtonLogin";
-import naverIcon from "@pages/login/icon/navericon.png";
 import "@styles/Login.css";
+import naverIcon from "@pages/login/icon/navericon.png";
+import ButtonLogin from "@components/login/ButtonLogin";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -11,87 +12,105 @@ const Login = () => {
     captchaToken: "",
   });
 
-  const [failedLoginCnt, setFailedLoginCnt] = useState(0);
-  const [captchaRequired, setCaptchaRequired] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [captchaRequired, setCaptchaRequired] = useState(false); // 캡차 활성화 여부
+  const [failedLoginCnt, setFailedLoginCnt] = useState(0); // 로그인 실패 횟수
+  const [isSubmitting, setIsSubmitting] = useState(false); // 요청 중인지 여부
+  const [errorMessage, setErrorMessage] = useState(""); // 오류 메시지
+
+  const siteKey = "6LcZWL4qAAAAAIDcO35ePOizWYKQKOtoDjtUyGE4"; // reCAPTCHA v2 Site Key
 
   useEffect(() => {
-    const loadCaptchaScript = () => {
+    if (captchaRequired) {
       const script = document.createElement("script");
-      script.src = "https://www.google.com/recaptcha/api.js?render=6Lek_LYqAAAAAM8fC9lWQNrJlR66_vgZINVe3cc1";
+      script.src = "https://www.google.com/recaptcha/api.js";
       script.async = true;
+      script.defer = true;
       document.body.appendChild(script);
-    };
-    loadCaptchaScript();
-  }, []);
+
+      console.log("reCAPTCHA v2 스크립트 로드 완료");
+
+      return () => {
+        document.body.removeChild(script);
+      };
+    }
+  }, [captchaRequired]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value.replace(/-/g, ""),
-    });
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleRecaptchaVerify = (token) => {
+    if (token) {
+      setFormData((prev) => ({ ...prev, captchaToken: token }));
+      console.log("캡차 토큰 생성:", token);
+      setErrorMessage(""); // 오류 메시지 초기화
+    } else {
+      setErrorMessage("캡차 검증이 필요합니다.");
+    }
   };
 
   const handleSubmit = async (e) => {
-    console.log("버튼 눌림");
-    console.log("")
+    e.preventDefault();
     if (isSubmitting) return;
     setIsSubmitting(true);
     setErrorMessage("");
 
     try {
+      let token = formData.captchaToken;
+
+      if (captchaRequired) {
+        const recaptchaResponse = window.grecaptcha.getResponse();
+        if (!recaptchaResponse) {
+          setErrorMessage("캡차를 완료해주세요.");
+          setIsSubmitting(false);
+          return;
+        }
+        handleRecaptchaVerify(recaptchaResponse);
+        token = recaptchaResponse;
+      }
+
       const response = await axios.post("http://localhost:8989/login/sign-in", {
         userIdOrPhone: formData.userIdOrPhone,
         password: formData.password,
-        captchaToken: captchaRequired ? formData.captchaToken : null,
+        captchaToken: token,
       });
-      console.log("response{}",response);
 
       if (response.data.code === "SU") {
         alert("로그인 성공");
         window.location.href = "/";
+      } else {
+        handleServerError(response.data);
       }
     } catch (error) {
       if (error.response) {
-        console.log("responsedd{}", error.response);
-        const { data } = error.response;
-
-        if (data.code === "AL") {
-          alert("아이디 잠금: 관리자에게 문의하세요");
-        } else if (data.captchaActive === "Y") {
-          setCaptchaRequired(true);
-          alert("캡차가 활성화되었습니다. 캡차를 완료해주세요.");
-          executeCaptcha();
-        } else if (data.code === "SF") {
-          alert("아이디와 비밀번호가 일치하지 않습니다.");
-        } else if (data.code === "CF") {
-          alert("캡차를 다시 진행해주세요.");
-        }
-
-        setFailedLoginCnt(data.loginFailCount || 0);
+        console.error("서버 응답 에러:", error.response);
+        handleServerError(error.response.data);
       } else {
-        console.error("로그인 요청 실패:", error);
-        setErrorMessage("로그인 요청 중 오류가 발생했습니다. 다시 시도해주세요.");
+        console.error("네트워크 오류:", error);
+        setErrorMessage("네트워크 오류가 발생했습니다.");
       }
     } finally {
-      setTimeout(() => {
-        setIsSubmitting(false);
-      }, 3000);
+      setIsSubmitting(false);
     }
   };
 
-  const executeCaptcha = async () => {
-    try {
-      const token = await window.grecaptcha.execute(
-        "6Lek_LYqAAAAAM8fC9lWQNrJlR66_vgZINVe3cc1",
-        { action: "login" }
-      );
-      setFormData((prev) => ({ ...prev, captchaToken: token }));
-    } catch (error) {
-      console.error("캡차 실행 실패:", error);
-      setErrorMessage("캡차를 실행하는 중 오류가 발생했습니다. 다시 시도해주세요.");
+  const handleServerError = (data) => {
+    console.log("서버에서 반환된 오류:", data);
+
+    if (data.captchaActive === "Y") {
+      setCaptchaRequired(true);
+      setFailedLoginCnt(data.loginFailCount || 0);
+      alert("캡차가 활성화되었습니다. 캡차를 완료해주세요.");
+    } else if (data.code === "SF") {
+      const alertMessage = captchaRequired
+        ? "캡차는 성공했지만 아이디와 비밀번호가 일치하지 않습니다."
+        : "아이디와 비밀번호가 일치하지 않습니다.";
+      alert(alertMessage);
+    } else if (data.code === "AL") {
+      alert("아이디 잠금: 관리자에게 문의하세요.");
+    } else if (data.code === "CF") {
+      alert("캡차를 다시 진행해주세요.");
     }
   };
 
@@ -105,7 +124,6 @@ const Login = () => {
         <div className="login-form-group">
           <input
             type="text"
-            id="userIdOrPhone"
             name="userIdOrPhone"
             placeholder="아이디 또는 전화번호"
             required
@@ -118,7 +136,6 @@ const Login = () => {
         <div className="login-form-group">
           <input
             type="password"
-            id="password"
             name="password"
             placeholder="비밀번호"
             required
@@ -130,54 +147,41 @@ const Login = () => {
 
         {captchaRequired && (
           <div className="captcha-info">
-            <p>로그인 실패 횟수: {failedLoginCnt}</p>
-            <p>캡차를 완료하고 다시 시도해주세요.</p>
+            <div
+              className="g-recaptcha"
+              data-sitekey={siteKey}
+              data-callback="handleRecaptchaVerify"
+            ></div>
           </div>
         )}
 
         {errorMessage && <p className="error-message">{errorMessage}</p>}
 
-        <div className="button-group">
-          <ButtonLogin
-            className="signup-button"
-            text="로그인"
-            type="submit"
-            disabled={isSubmitting}
-            onSubmit={handleSubmit}
-          />
-          <ButtonLogin
-            text="소셜임시회원가입"
-            url="/socalsignup"
-            type="link"
-            variant="outline"
-          />
-          <ButtonLogin
-            text="일반회원가입 테스트"
-            url="/signupform"
-            type="link"
-            variant="outline"
-          />
-        </div>
-
-        <div className="login-or">or</div>
-        <div className="social-login">
-          <button
-            type="button"
-            className="social-button naver"
-            onClick={handleNaverLogin}
-          >
-            <img src={naverIcon} alt="Naver" className="icon" />
-          </button>
-        </div>
-
-        <div className="login-links">
-          <a href="/find-password">비밀번호 찾기</a>
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <span>|</span>
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <a href="/find-id">아이디 찾기</a>
-        </div>
+      <ButtonLogin text="로그인" type="submit"></ButtonLogin>
+        <button type="submit" className="signup-button">
+          로그인
+        </button>
       </form>
+      <ButtonLogin text="소셜임시회원가입" url="/socalsignup" type="link" variant="outline" />
+      <ButtonLogin text="일반회원가입 테스트" url="/signupform" type="link" variant="outline" />
+      <ButtonLogin text="캡차 테스트" url="/recaptcha" type="link" variant="outline" />
+
+      <div className="login-or">or</div>
+      <div className="social-login">
+        <button type="button" className="social-button naver" onClick={handleNaverLogin}>
+          <img src={naverIcon} alt="Naver" className="icon" />
+        </button>
+      </div>
+
+      <div className="login-links">
+        <Link to={"/findPassword"}>비밀번호 찾기</Link>
+        
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <span>|</span>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="/find-id">아이디 찾기</a>
+      </div>
+      <a href="/find-password">비밀번호 찾기</a>
     </div>
   );
 };

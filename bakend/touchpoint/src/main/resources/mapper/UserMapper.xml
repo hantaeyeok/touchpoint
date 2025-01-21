@@ -20,5 +20,60 @@
     		WHERE USER_ID = #{userIdOrPhone} OR PHONE_NO = #{userIdOrPhone}
     </select>
     
+    
+      <update id="updateUser" parameterType="com.touchpoint.kh.user.model.vo.User">
+        UPDATE USERS
+        SET 
+            PASSWORD = #{password},
+            EMAIL = #{email},
+            PHONE_NO = #{phoneNo},
+            NAME = #{name},
+            USER_ST = #{userSt},
+            SOCIAL_USER = #{socialUser},
+            AD_AGREED = #{adAgreed},
+            USER_ROLE = #{userRole}
+        WHERE USER_ID = #{userId}
+    </update>
+    
+    
+    
+    
+    <select id="attemptFindByUserId" parameterType="string" resultType="com.touchpoint.kh.user.model.vo.LoginAttemptMy">
+    	SELECT
+            ATTEMPT_ID AS attemptId,
+            USER_ID AS userId,
+            FAILED_LOGIN_CNT AS failedLoginCnt,
+            CAPTCHA_ACTIVE AS captchaActive
+        FROM LOGIN_ATTEMPT
+        WHERE USER_ID = #{userId}
+    		
+    
+    </select>
+    
+   <insert id="insertLoginAttempt" parameterType="com.touchpoint.kh.user.model.vo.LoginAttemptMy">
+        INSERT INTO LOGIN_ATTEMPT (
+            ATTEMPT_ID,
+            USER_ID,
+            FAILED_LOGIN_CNT,
+            CAPTCHA_ACTIVE
+        ) VALUES (
+            LOGIN_ATTEMPT_SEQ.NEXTVAL,
+            #{userId},
+            #{failedLoginCnt},
+            #{captchaActive}
+        )
+    </insert>
+    
+    <delete id="deleteLoginAttemptByUserId" parameterType="string">
+        DELETE FROM LOGIN_ATTEMPT WHERE USER_ID = #{userId}
+    </delete>
+    
+    <update id="updateLoginAttempt" parameterType="com.touchpoint.kh.user.model.vo.LoginAttemptMy" >
+        UPDATE LOGIN_ATTEMPT
+        SET
+            FAILED_LOGIN_CNT = #{failedLoginCnt},
+            CAPTCHA_ACTIVE = #{captchaActive}
+        WHERE USER_ID = #{userId}
+    </update>
 
 </mapper>

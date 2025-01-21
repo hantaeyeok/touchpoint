@@ -15,4 +15,6 @@ public interface ResponseMessage {
 	 // Login specific
     String ACCOUNT_LOCKED = "Account has been locked. Contact administrator.";
     String CAPTCHA_FAIL = "Captcha validation failed. Please try again.";
+    
+    String PASSWORD_FAIL_AFTER_CAPTCHA = "Captcha was successful, but the password is incorrect.";
 }

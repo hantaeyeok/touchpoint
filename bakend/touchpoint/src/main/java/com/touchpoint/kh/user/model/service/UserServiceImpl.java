@@ -190,6 +190,9 @@ public class UserServiceImpl implements UserService{
 					loginValidationService.validateLogin(user, dto);
 			
 			 if (!validationResponse.getStatusCode().is2xxSuccessful()) {
+				 log.info("validationResponse {}",validationResponse);
+				 log.info("Validation Response: Status={}, Body={}", validationResponse.getStatusCode(), validationResponse.getBody());
+
 		            return validationResponse;
 		        }
 	        

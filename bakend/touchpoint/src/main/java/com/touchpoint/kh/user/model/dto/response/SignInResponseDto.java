@@ -61,4 +61,8 @@ public class SignInResponseDto extends ResponseDto {
         SignInResponseDto responseBody = new SignInResponseDto(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, loginFailCount, captchaActive);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
+    public static ResponseEntity<SignInResponseDto> captchaSuccessButPasswordFail(int loginFailCount, String captchaActive) {
+        SignInResponseDto responseBody = new SignInResponseDto(ResponseCode.PASSWORD_FAIL_AFTER_CAPTCHA,ResponseMessage.PASSWORD_FAIL_AFTER_CAPTCHA,loginFailCount,captchaActive);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
+    }
 }

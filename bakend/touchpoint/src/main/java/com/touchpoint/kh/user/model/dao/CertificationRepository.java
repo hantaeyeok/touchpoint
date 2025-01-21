@@ -5,14 +5,12 @@ import org.springframework.stereotype.Repository;
 
 import com.touchpoint.kh.user.model.vo.Certification;
 
-import jakarta.transaction.Transactional;
 
 @Repository
 public interface CertificationRepository extends JpaRepository<Certification, String>{
 
 	Certification findByUserId(String userId);
 	
-	@Transactional
 	void deleteByUserId(String userId);
 
 

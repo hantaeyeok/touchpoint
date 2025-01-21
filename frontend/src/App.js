@@ -13,14 +13,18 @@ import { FaqProvider } from 'context/FaqContext';
 import axios from 'axios';
 import './App.css'
 import HistoryMain from "@pages/history/HistoryMain";
-
-
+import RecaptchaTest from "@pages/login/RecaptchaTest ";
+import FindPassword from "@pages/login/FindPassword";
 
 function App() {
 
+
+  
   
 
-  return (
+  return (<>
+  
+  
     <FaqProvider>
         <Menubar/>
 
@@ -37,9 +41,30 @@ function App() {
             <Route path="/signupform" element={<SignUpForm />} /> 
             <Route path="/socalsignup" element={<SocalSignUp />} /> 
             <Route path="/history" element={<HistoryMain/>} />
+            <Route path="/recaptcha" element={<RecaptchaTest />} />
+            <Route path="/findPassword" element={<FindPassword />} />
+            
           </Routes>
         </div>
     </FaqProvider>
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </>
 );
 }
 

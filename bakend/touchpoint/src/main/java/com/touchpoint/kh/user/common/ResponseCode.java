@@ -17,4 +17,6 @@ public interface ResponseCode {
 	// Login specific
     String ACCOUNT_LOCKED = "AL";
     String CAPTCHA_FAIL = "CF";
+    
+    String PASSWORD_FAIL_AFTER_CAPTCHA = "PFAC";
 }
