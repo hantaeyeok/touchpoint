@@ -1,4 +1,4 @@
-import "@styles/ProductInsert.css";
+/*import "@styles/ProductInsert.css";
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
 
@@ -81,6 +81,7 @@ function ProductInsert() {
             })
             .then(response => {
                 console.log('Response:', response.data);
+                alert('상품이 등록되었습니다!');
             })
             .catch(error => {
                 if (error.response) {
@@ -247,3 +248,4 @@ function ProductInsert() {
 }
 
 export default ProductInsert;
+*/

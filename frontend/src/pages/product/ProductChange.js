@@ -1,4 +1,4 @@
-import { use, useState } from "react";
+/*import { use, useState } from "react";
 import "@styles/ProductInsert.css";
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -163,4 +163,4 @@ const ProductChange = ({ initialData, onSubmit }) =>{
         </>
     );
 };
-export default ProductChange;
+export default ProductChange;*/

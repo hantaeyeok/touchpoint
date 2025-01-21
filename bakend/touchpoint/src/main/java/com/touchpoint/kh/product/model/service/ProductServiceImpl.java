@@ -71,25 +71,35 @@ public class ProductServiceImpl implements ProductService {
 
 	@Transactional
 	public void deleteProductWithImages(Long productId) {
-	    // Product 조회
 	    Product product = productRepository.findById(productId)
 	        .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + productId));
 	    
-	    // Product 삭제 (연관된 ProductImage도 자동 삭제)
-	    productRepository.delete(product);
+	    // 연관된 ProductImage가 존재하는지 확인하고 삭제
+	    if (!product.getProductImages().isEmpty()) {
+	        //log.info("Deleting associated product images for product ID: {}", productId);
+	        product.getProductImages().clear();  // 연관된 ProductImage 삭제
+	    }
+	    productRepository.delete(product);  // Product 삭제
 	}
+
 
 	@Transactional
 	public void updateProductWithImages(Product product, List<ProductImage> productImages) {
-		productMapper.setProduct(product);
+		productMapper.setProduct(product);   //상품 정보 저장 
+		System.out.println("setProduct: " + product);
 
         // 2. 상세 이미지 저장
         for (ProductImage image : productImages) {
             image.setProductId(product.getProductId()); // product에 들어있는 productId를 받아옴
-            productMapper.updateProductImage(image);
-            System.out.println("매퍼 갔다옴: " + image);
+            
+            if (image.getImageId() == null) {
+            	productRepository.save(image);
+            	System.out.println("레포지토리 갔다옴: " + image);
+            }else {
+            	productMapper.updateProductImage(image);
+            	System.out.println("매퍼 갔다옴: " + image);
+            }
         }
-		
 	}
 
 	public Product update(Product existingProduct) {

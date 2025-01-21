@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
+import "@styles/ProductInsert.css";
 
 const ProductForm = ({ images, initialData, onSubmit }) => {
     const [productData, setProductData] = useState(initialData || {
@@ -7,11 +8,14 @@ const ProductForm = ({ images, initialData, onSubmit }) => {
         productCategory: '키오스크/포스',  // 기본값 설정
         shortDescription: '',
         detailedDescription: '',
+        //thumbnailImage:'',
+        //productImages:'',
+
       });
       
     const [mainImg, setMainImg] = useState(''); 
     const [imgList, setImgList] = useState([]); 
-    console.log("imgList0:",imgList);
+ 
     
     
     const convertUrlToFile = async (url, fileName) => {
@@ -21,36 +25,37 @@ const ProductForm = ({ images, initialData, onSubmit }) => {
         return file;
       }; 
 
-    useEffect(() => {
-        if (initialData) {
-          setProductData((prevState) => ({
-            ...prevState,
-            thumbnailImage: initialData.thumbnailImage || '',
-          }));
+    useEffect(() => { //화면에 원래정보 넣어줌
+        if (initialData) {                  //initialData에 데이터가 있다면
+            setProductData((prevState) => ({
+                ...prevState,                   //prevState기존상태를 유지하면서 썸네일이미지 설정정
+                thumbnailImage: initialData.thumbnailImage || '',
+            }));
       
-          if (initialData.thumbnailImage) {
-            convertUrlToFile(`http://localhost:8989${initialData.thumbnailImage}`, 'thumbnailImage.jpg')
-              .then(file => {
-                setMainImg(file);  // file을 mainImg 상태에 저장
-              })
-              .catch((error) => {
-                console.error('Error converting URL to file:', error);
-              });
-          }
+            if (initialData.thumbnailImage) {    //썸네일 이미지 있으면 실행
+                convertUrlToFile(`http://localhost:8989${initialData.thumbnailImage}`, 'thumbnailImage.jpg')  //thumbnailImage.jpg이름의 파일객체로 만듦듦
+                .then(file => {
+                    setMainImg(file);  // file을 mainImg 상태에 저장
+                })
+                .catch((error) => {
+                    console.error('Error converting URL to file:', error);
+                });
+            }
       
-          // imgList 처리
-    if (initialData.productImages && initialData.productImages.length > 0) {
-        const formattedImages = initialData.productImages.map((img) => {
-          return {
-            id: img.imageId,
-            previewUrl: `http://localhost:8989${img.imageUrl}`, // 서버에서 제공된 imageUrl
-            originFile: null, // 원래 파일 객체는 null로 설정
-          };
-        });
-            setImgList(formattedImages); // 이미지 목록 설정
-          }
+            // imgList 처리
+            if (initialData.productImages && initialData.productImages.length > 0) {  //productImages가 있을경우
+                const formattedImages = initialData.productImages.map((img, index) => {  //initialData.productImages 배열을 map 메서드를 사용하여 새로운 형식의 formattedImages 배열로 변환
+                return {
+                    id: img.imageId,
+                    displayOrder:index,
+                    previewUrl: `http://localhost:8989${img.imageUrl}`, // 서버에서 제공된 imageUrl
+                    originFile: null, // 원래 파일 객체는 null로 설정
+                };
+                });
+                setImgList(formattedImages); // 이미지 목록 설정
+            }
         }
-      }, [initialData]);
+    }, [initialData]);
 
     // 썸네일 이미지 추가 함수
     const onMainImgSelected = (e) => {
@@ -83,67 +88,59 @@ const ProductForm = ({ images, initialData, onSubmit }) => {
     const onDetailImgSelected = (e) => {
         const now = new Date();
         const id = now.toString(); // 고유 ID 생성
+        const file = e.target.files[0];
+        if (!file) return;
+    
         const reader = new FileReader();
-        reader.readAsDataURL(e.target.files[0]);
-
-        reader.onload = () => {   //새로 선택한 이미지를 ImgList배열에 추가해준다. 
-            setImgList((prev) => [
-                ...prev,
-                { id, previewUrl: reader.result, originFile: e.target.files[0] },
-            ]); 
+        reader.readAsDataURL(file);
+    
+        reader.onload = () => {
+            setImgList((prev) => {
+                const updatedList = [
+                    ...prev,
+                    { id, displayOrder: prev.length, previewUrl: reader.result, originFile: file },
+                ];
+                return updatedList.map((img, index) => ({ ...img, displayOrder: index })); // 순서 재설정
+            });
         };
     };
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setProductData((prevState) => ({ ...prevState, [name]: value }));
   };
 
 //상세이미지가 바뀔때
-  const onImgChanged = (id, e) => {  //id : 원래 저장된 이미지 아이디
-    
-    let cpy = JSON.parse(JSON.stringify(imgList)); //문자열로 바꾸고 다시 객체로 바꾸면 복제본이 생성된다.
-
-    console.log('e.id:', e.id);
-    console.log('id:', id);
-    console.log('e.target.files:', e.target);
-    console.log('imgList.id:', imgList.id);
-
-    // id가 동일한 요소 찾기
-    let target = cpy.find((img) => img.id === id);
-    if (!target) {
-        console.error('Target not found for id:', id);
-        return;
-    }
+const onImgChanged = (id, e) => {
     const file = e.target.files[0];
-    if (!file) {
-        console.error('No file selected');
-        return;
-    }
+    if (!file) return;
 
     const reader = new FileReader();
-    reader.readAsDataURL(e.target.files[0]); //미리보기 url. 어떤url을 미리보기할건지()안에 넣어줘야한다. 그래서, e.target.files[0] --> 사용자가 업로드한 이미지 파일
-    reader.onload = () => { //다 읽어지면(완료가되면) 실행되는 함수
-        target.previewUrl = reader.result; //previewUrl -> 미리보기 바꾸고,
-        target.originFile =file; //origin -> 원본파일도 바꾸고
-        setImgList(cpy); //setImgList에서, cpy원본으로 바꿔줘
-    }
-}
+    reader.readAsDataURL(file);
 
+    reader.onload = () => {
+        setImgList((prev) => {
+            const updatedList = prev.map((img) =>
+                img.id === id
+                    ? { ...img, displayOrder: prev.indexOf(img), previewUrl: reader.result, originFile: file }
+                    : img
+            );
+            return updatedList.map((img, index) => ({ ...img, displayOrder: index })); // 순서 재설정
+        });
+    };
+};
+const handleSubmit = (e) => {
+    e.preventDefault();
 
+    const formattedImgList = [...imgList]
+        .sort((a, b) => a.displayOrder - b.displayOrder) // displayOrder 기준으로 정렬
+        .map((img, index) => ({ ...img, displayOrder: index })); // 재정렬 후 displayOrder 업데이트
 
-
-  const handleSubmit = (e) => {
     console.log('Submitting data:', productData);
     console.log('Main image:', mainImg);
-    e.preventDefault();
-    onSubmit(productData, mainImg, imgList); 
-  };
+    console.log('formattedImgList:', formattedImgList);
 
-
-  
-
-
+    onSubmit(productData, mainImg, formattedImgList); // 정렬된 데이터 전송
+};
   return (
     <>
             <div className="insertPage">

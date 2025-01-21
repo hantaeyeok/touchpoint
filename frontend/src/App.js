@@ -38,9 +38,7 @@ function App() {
             <Route path="/addFaq/*" element={<AddFaq />} />
             <Route path="/" element={<h1>메인</h1>} />
             <Route path="/product" element={<Product/>}/>
-            <Route path="/productInsert" element={<ProductInsert/>}/>
             <Route path="/detailProduct/:productId" element={<DetailProduct/>}/>
-            <Route path="/productChange/:productId" element={<ProductChange/>}/>
             <Route path="/productRegister" element={<ProductRegister/>}/>
             <Route path="/productEdit/:productId" element={<ProductEdit/>}/>
             <Route path="/login" element={<Login />} /> 

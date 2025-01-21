@@ -98,9 +98,6 @@ const Product = () => {
           </button>
         </div>
       </div>
-
-      
-      
     </>
   );
 }

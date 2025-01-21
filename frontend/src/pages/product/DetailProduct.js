@@ -70,16 +70,20 @@ const DetailProduct = () => {
 
             <div>
                 <h2>상세 이미지들</h2>
-                <div className="product-images">
-                    {images.map((image, index) => (
-                        <img
-                            key={image.imageId}
-                            src={`http://localhost:8989${image.imageUrl}`}
-                            alt={`Detail Image ${index + 1}`}
-                            style={{ width: '150px', marginRight: '10px' }}
-                        />
-                    ))}
+                <div className="product-images"> 
+                    {images
+                        .slice() // 원본 배열을 복사하여 정렬 (immutable)
+                        .sort((a, b) => a.displayOrder - b.displayOrder) // displayOrder 기준 정렬
+                        .map((image, index) => (
+                            <img
+                                key={image.imageId}
+                                src={`http://localhost:8989${image.imageUrl}`}
+                                alt={`Detail Image ${index + 1}`}
+                                style={{ width: '150px', marginRight: '10px' }}
+                            />
+                        ))}
                 </div>
+
             </div>
         </div>
     );
