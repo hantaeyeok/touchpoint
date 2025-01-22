@@ -1,8 +1,12 @@
 package com.touchpoint.kh.product.model.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -82,25 +86,69 @@ public class ProductServiceImpl implements ProductService {
 	    productRepository.delete(product);  // Product 삭제
 	}
 
+	@Transactional   //트렌젝션 분리
+	public void saveProduct(Product product) {
+		Logger logger = LoggerFactory.getLogger(getClass());
+		long start = System.currentTimeMillis();
+		// 1. 상품 정보 저장
+	    logger.info("setProduct 실행 전: {}", product);
+	    productMapper.setProduct(product);
+	    logger.info("setProduct 실행 후: {}", product);
+	    
+	    long end = System.currentTimeMillis();
+	    logger.info("Execution time: {} ms", (end - start));
+
+	}
 
 	@Transactional
-	public void updateProductWithImages(Product product, List<ProductImage> productImages) {
-		productMapper.setProduct(product);   //상품 정보 저장 
-		System.out.println("setProduct: " + product);
+	public void updateProductWithImages(Product product, List<ProductImage> productImages, List<Long> deleteImg) {
+		
+		long start = System.currentTimeMillis();
+		
+	    Logger logger = LoggerFactory.getLogger(getClass());
+/*
+	    // 1. 상품 정보 저장
+	    logger.info("setProduct 실행 전: {}", product);
+	    productMapper.setProduct(product);
+	    logger.info("setProduct 실행 후: {}", product);
+*/
+	    
+	    // 2. 삭제된 이미지 DB에서 삭제
+	    if (deleteImg != null && !deleteImg.isEmpty()) {
+	        for (Long imageId : deleteImg) {
+	            try {
+	                productMapper.removeImg(imageId);
+	                logger.info("삭제된 이미지 ID: {}", imageId);
+	            } catch (Exception e) {
+	                logger.error("이미지 삭제 실패: ID = {}, 에러 = {}", imageId, e.getMessage(), e);
+	            }
+	        }
+	    }else {
+	        logger.info("No images to delete.");
+	    }
 
-        // 2. 상세 이미지 저장
-        for (ProductImage image : productImages) {
-            image.setProductId(product.getProductId()); // product에 들어있는 productId를 받아옴
-            
-            if (image.getImageId() == null) {
-            	productRepository.save(image);
-            	System.out.println("레포지토리 갔다옴: " + image);
-            }else {
-            	productMapper.updateProductImage(image);
-            	System.out.println("매퍼 갔다옴: " + image);
-            }
-        }
+
+	    // 3. 상세 이미지 저장
+	    for (ProductImage image : productImages) {
+	        image.setProductId(product.getProductId()); // productId 설정
+
+	        // 이미지 ID가 null인경우 새로운 이미지로 저장
+	        if (image.getImageId() == null) {
+	            productRepository.save(image);  
+	            logger.info("새로운 이미지 저장: {}", image);
+	        } else {
+	            productMapper.updateProductImage(image); 
+	            logger.info("기존 이미지 업데이트: {}", image);
+	        }
+	    }
+	    
+	    long end = System.currentTimeMillis();
+	    logger.info("Execution time: {} ms", (end - start));
 	}
+
+
+
+
 
 	public Product update(Product existingProduct) {
 		// TODO Auto-generated method stub
@@ -112,7 +160,21 @@ public class ProductServiceImpl implements ProductService {
 	    productMapper.setProduct(product);
 	}
 
+
 	
+
+	@Override
+	public List<ProductImage> deleteImg(List<Long> deleteImg) {
+		List<ProductImage> productImages = null;
+		for (Long imageId : deleteImg) {
+			 productMapper.removeImg(imageId);
+	        System.out.println("삭제된 이미지 ID: " + imageId);
+	    }
+		
+		return null;
+	}
+
+
 	
 	
 }

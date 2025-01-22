@@ -109,25 +109,40 @@ const ProductForm = ({ images, initialData, onSubmit }) => {
     setProductData((prevState) => ({ ...prevState, [name]: value }));
   };
 
-//상세이미지가 바뀔때
-const onImgChanged = (id, e) => {
+  const onImgChanged = (id, e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.readAsDataURL(file);
-
     reader.onload = () => {
-        setImgList((prev) => {
-            const updatedList = prev.map((img) =>
-                img.id === id
-                    ? { ...img, displayOrder: prev.indexOf(img), previewUrl: reader.result, originFile: file }
-                    : img
-            );
-            return updatedList.map((img, index) => ({ ...img, displayOrder: index })); // 순서 재설정
-        });
+        setImgList((prev) =>
+            prev
+                .map((img) =>
+                    img.id === id
+                        ? { ...img, previewUrl: reader.result, originFile: file }
+                        : img
+                )
+                .map((img, index) => ({ ...img, displayOrder: index })) // 순서 재설정
+        );
     };
+    reader.readAsDataURL(file); // 파일 읽기 시작
 };
+
+const [deleteImg, setDeleteImg] = useState([]); //삭제할 이미지들
+console.log("deleteImg",deleteImg);
+
+const onImgDelete = (id) => {
+    setImgList((prev) =>
+        prev
+            .filter((e) => e.id !== id) // 삭제 대상 제거
+            .map((img, index) => ({ ...img, displayOrder: index })) // 순서 재설정
+            
+    );
+    setDeleteImg([...deleteImg, id]);  //원래 기존의 삭제할 이미지들에다가 새로운 id를 추가해준다.
+};
+
+
+
 const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -139,7 +154,7 @@ const handleSubmit = (e) => {
     console.log('Main image:', mainImg);
     console.log('formattedImgList:', formattedImgList);
 
-    onSubmit(productData, mainImg, formattedImgList); // 정렬된 데이터 전송
+    onSubmit(productData, mainImg, formattedImgList, deleteImg  ); // 정렬된 데이터 전송
 };
   return (
     <>
@@ -243,7 +258,9 @@ const handleSubmit = (e) => {
                                 <div className="ImgInputWrap">
                                 {
                                     imgList.map((img) =>
+                                        
                                         <label key={img.id}>{/* 이건 원래 들어있던 이미지의 id*/}
+                                        
                                             <img
                                                 src={img.previewUrl}
                                                 alt="Detail"
@@ -253,7 +270,13 @@ const handleSubmit = (e) => {
                                                     objectFit: 'cover',
                                                     objectPosition: 'center'
                                                 }}
-                                                 />
+                                            />
+
+                                        <button
+                                            style={{  top: '0', right: '0' }}
+                                            onClick={() => { onImgDelete(img.id) }}
+                                            type='button'>삭제하기
+                                        </button>
                                             <input onChange={(e) => onImgChanged(img.id, e)}  accept="image/*" type="file" />
                                         </label>
                                     )

@@ -16,4 +16,8 @@ public interface ProductMapper {
 
 	void updateProductImage(ProductImage image);
 
+	//void removeImg(List<Long> deleteImg);
+
+	void removeImg(Long image);
+
 }

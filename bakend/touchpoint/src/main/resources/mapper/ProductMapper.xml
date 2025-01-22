@@ -21,6 +21,13 @@
 		    SET IMAGE_URL = #{imageUrl},
 		        DISPLAY_ORDER = #{displayOrder}
 		    WHERE PRODUCT_ID = #{productId}
-	    AND IMAGE_ID = #{imageId} 	</update>
+	    AND IMAGE_ID = #{imageId} 	
+	</update>
+	
+	<delete id="removeImg" parameterType="Long">
+		DELETE FROM TB_PRODUCT_IMAGES
+		    WHERE IMAGE_ID = #{imageId}
+	</delete>
+	
 
 </mapper>
