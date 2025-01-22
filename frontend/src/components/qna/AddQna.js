@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "@styles/Qna2.css";
 import { useNavigate } from "react-router-dom";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { FaqContext } from "@context/FaqContext";
 import axios from "axios";
 import { handleFileChange } from "./handleFileChange";
 
@@ -37,7 +36,7 @@ function AddQna() {
 
         if (fileInputRef.current.files.length > 0) {
             Array.from(fileInputRef.current.files).forEach((file) => {
-                formData.append("files", file);
+                formData.append("files", file); //파일 실제 데이터 저장
             });
         }
 

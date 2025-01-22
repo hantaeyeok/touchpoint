@@ -27,5 +27,9 @@ public interface QnaMapper {
 
 	void insAnswerFile(FileDto fileAdd);
 
+	void updateQna(QnaDto qnaDto);
+
+	void deleteFile(int fileNo);
+
 
 }

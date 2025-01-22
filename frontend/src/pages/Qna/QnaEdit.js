@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useLocation  } from "react-router-dom";
-import { useRef } from "react";
 import "@styles/Qna2.css";
 import { Routes, Route, Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { handleFileChange } from "@components/qna/handleFileChange";
 
 function QnaEdit() {
 
+    const fileInputRef = useRef(null);
     const navigate = useNavigate();
     const fileImg = `${process.env.PUBLIC_URL}/images/fileAdd.JPG`;
     const location = useLocation();
@@ -32,19 +33,33 @@ function QnaEdit() {
         }
     }, [qnaData.files]);
 
-    const handleFileChange = (event) => {
-        const fileList = Array.from(event.target.files);
-        setOriginName(fileList.map((file)=> file.name));
-    };
-
     const editSubmit = async () => {
         if(!qnaData.qnaTitle || !qnaData.qnaContent){
             alert("제목과 내용을 입력해주세요")
             return;
         };
 
+        const formData = new FormData();
+        formData.append("QnaDto", new Blob([JSON.stringify(qnaData)], { type: "application/json" }));
         
-    };
+        if (fileInputRef.current.files.length > 0) {
+            Array.from(fileInputRef.current.files).forEach((file) => {
+                formData.append("files", file); //파일 실제 데이터 저장
+            });
+        }
+
+        try {
+            const response = await axios.put(`http://localhost:8989/qna/updateQna${qnaData.qnaNo}`, formData, {
+                headers: {"Content-Type": "multipart/form-data"}
+            });
+            console.log("서버 응답:", response.data);
+            alert("글이 성공적으로 저장되었습니다!");
+            navigate("/qna");
+        } catch (error) {
+        console.error("데이터 저장 중 오류 발생:", error.message);
+        alert("글 저장 중 문제가 발생했습니다. 다시 시도해주세요.");
+        };
+    }
 
     return(
         <div className="formContainer">
@@ -62,7 +77,6 @@ function QnaEdit() {
             <label>파일첨부</label>
                 <input 
                     value={originName}
-                    onChange={(event)=>setOriginName(event.target.value)}
                     readOnly
                     type="text" 
                     id="fileName" 
@@ -72,7 +86,8 @@ function QnaEdit() {
                     <img src={fileImg} className="fileImg"/>
                     <input 
                         type="file" 
-                        onChange={handleFileChange}
+                        ref={fileInputRef}
+                        onChange={(event)=>setOriginName(handleFileChange(event))}
                         multiple="multiple" 
                         className="fileAdd" />
                 </label>
