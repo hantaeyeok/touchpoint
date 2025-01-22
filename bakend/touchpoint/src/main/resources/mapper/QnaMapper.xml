@@ -176,6 +176,13 @@
    		 		FILE_NO = #{fileNo}
    </update>
   
+   <delete id="deleteFile">
+   		DELETE
+		  FROM
+   				FILE_ADD
+		 WHERE
+		 		FILE_NO = #{fileNo}
+   </delete>
    
    <resultMap id="AnswerResultMap" type="com.touchpoint.kh.qna.model.vo.AnswerDto">
 	    <id property="answerNo" column="ANSWER_NO"/>

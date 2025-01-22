@@ -134,8 +134,7 @@ public class QnaController {
 	        fileDto.setOriginName(originName);
 	        fileDto.setChangeName(changeName);
 	        fileDto.setPath(filePath);
-	        fileDto.setQnaNo(qnaNo); //qna 호출시 시퀀스 적용됨.. answer호출시 qnaNo정상 적용
-	        System.out.println("qnaNo: " + qnaNo);
+	        fileDto.setQnaNo(qnaNo);
 	        fileDtos.add(fileDto);
 	    }
 
@@ -205,9 +204,11 @@ public class QnaController {
 	    try {
 	        qnaDto.setQnaNo(qnaNo);
 	        qnaService.updateQna(qnaDto);
-
 	        QnaDto prevFile = qnaService.qnaDetail(qnaNo);
 	        List<FileDto> prevFiles = prevFile.getFiles();
+	        System.out.println("prevFiles: " + prevFiles);
+	        System.out.println("prevFile: " + prevFile);
+	        System.out.println("files: " + files);
 
 	        // 새로 추가된 파일 필터링
 	        List<MultipartFile> newFilesToSave = files.stream()
@@ -220,15 +221,20 @@ public class QnaController {
 
 	        // 기존 파일 중 삭제 대상 처리
 	        for (FileDto existingFile : prevFiles) {
-	            					 boolean isDeleted = newFilesToSave.stream()
-	            					.noneMatch(file -> file.getOriginalFilename().equals(existingFile.getOriginName()));
+					 boolean isDeleted = newFilesToSave.stream()
+	            					     .noneMatch(file -> file.getOriginalFilename().equals(existingFile.getOriginName()));
 	            if (isDeleted) {
 	                // 파일 삭제
 	                File oldFile = new File(request.getServletContext().getRealPath("/resources/qnaUpload/"), existingFile.getChangeName());
 	                if (oldFile.exists()) {
 	                    oldFile.delete();
 	                }
+	                System.out.println("existingFile: " + existingFile);
+	                System.out.println("isDeleted: " + isDeleted);
+	                System.out.println("existingFile: " + existingFile);
 	                qnaService.deleteFile(existingFile.getFileNo());
+	                qnaService.updateFile(existingFile.getFileNo());
+	                log.debug("Updating file with data: {}", existingFile);
 	            }
 	        }
 

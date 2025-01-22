@@ -77,6 +77,13 @@ public class QnaServiceImpl implements QnaService {
 	}
 
 
+	@Override
+	public void updateFile(int fileNo) {
+		qnaMapper.updateFile(fileNo);
+		
+	}
+
+
 //	@Transactional(rollbackOn = Exception.class) 안되는데 ㅡㅡㅗ
 //	@Override
 //	public int createQna(QnaDto qnaDto, List<FileDto> fileDtos) {

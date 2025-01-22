@@ -41,15 +41,18 @@ function QnaEdit() {
 
         const formData = new FormData();
         formData.append("QnaDto", new Blob([JSON.stringify(qnaData)], { type: "application/json" }));
-        
+        console.log("QnaDto :",qnaData);
+        console.log("fileInputRef.current.files:", fileInputRef.current?.files);
         if (fileInputRef.current.files.length > 0) {
             Array.from(fileInputRef.current.files).forEach((file) => {
                 formData.append("files", file); //파일 실제 데이터 저장
             });
         }
-
+        console.log("formData :",formData);
+        console.log(qnaData.qnaNo);
+        
         try {
-            const response = await axios.put(`http://localhost:8989/qna/updateQna${qnaData.qnaNo}`, formData, {
+            const response = await axios.put(`http://localhost:8989/qna/updateQna/${qnaData.qnaNo}`, formData, {
                 headers: {"Content-Type": "multipart/form-data"}
             });
             console.log("서버 응답:", response.data);
