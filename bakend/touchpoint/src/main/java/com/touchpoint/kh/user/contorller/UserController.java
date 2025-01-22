@@ -77,8 +77,7 @@ public class UserController {
 	public ResponseEntity<? super SignUpResponseDto> signUp(
 			@RequestBody @Valid SignUpRequestDto requestBody){
 		ResponseEntity<? super SignUpResponseDto> response = userService.signUp(requestBody);
-		return response;
-		
+		return response;	
 	}
 	
 	@PostMapping("/sign-in")
@@ -100,7 +99,14 @@ public class UserController {
 			@RequestBody FindPasswordRequestDto responsebody){
 		ResponseEntity<? super FindPasswordResponseDto> response = userService.findPassword(responsebody);
 		return response;
-	} 
+	}
+	
+	@PostMapping("/password-certification")
+	public ResponseEntity<? super CheckCertificaionResponseDto> passwordCertification(
+			@RequestBody @Valid CheckCertificaionRequestDto requsetBody){
+		ResponseEntity<? super CheckCertificaionResponseDto> response = userService.passwordCertification(requsetBody);
+		return response;
+	}
 	
 	
 	

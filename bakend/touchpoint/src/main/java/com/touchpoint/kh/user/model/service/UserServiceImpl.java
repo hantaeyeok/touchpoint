@@ -250,28 +250,50 @@ public class UserServiceImpl implements UserService{
 		try {
 			String userIdOrPhone = dto.getUserIdOrPhone().replace("-", "");
 	        String email = dto.getEmail();
+	        
 	        User user = userRepository.findByUserIdAndEmailAndPhoneNo(userIdOrPhone, email);
-	        if (user == null) { 
-	            return FindPasswordResponseDto.resetFail(); // 사용자 정보 없음
-	        }
-			
+	        if (user == null) return FindPasswordResponseDto.resetFail(); // 사용자 정보 없음
+
 	        String certificaionNumber = CertificationNumber.getCertificationNumber();
 			
 			boolean isSuccessed = emailProvider.sendCerttificaionMail(email, certificaionNumber);
-			if(!isSuccessed) return EmailCertificaionResponseDto.mailSendFail();
+			if(!isSuccessed) return FindPasswordResponseDto.mailSendFail();
 			
-			Certification certification = new Certification(userId, email, certificaionNumber);
-			certificationRepository.save(certification);
+			Certification certification = new Certification(user.getUserId(), email, certificaionNumber);
+			certificationRepository.save(certification); 
 	        
-	        
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseDto.databaseError();
+
+		}
+		
+		return FindPasswordResponseDto.success();
+	}
+
+	@Override
+	public ResponseEntity<? super CheckCertificaionResponseDto> passwordCertification(CheckCertificaionRequestDto dto) {
+		User user = null;
+		try {
+			String userIdOrPhone = dto.getUserId();
+			String email = dto.getEmail();
+			String certificaionNumber = dto.getCertificationNumber();
+			
+			user = userMapper.findByUserIdOrPhone(userIdOrPhone);
+			if(user == null) return CheckCertificaionResponseDto.validaionFail();
+			
+			String userId = user.getUserId();
+			Certification certification = certificationRepository.findByUserId(userId);
+			if(certification == null) return CheckCertificaionResponseDto.certificaionFail();
+			
+			boolean isMatch = certification.getEmail().equals(email) && certification.getCertificationNumber().equals(certificaionNumber);
+			if(!isMatch) return CheckCertificaionResponseDto.certificaionFail();
 		} catch (Exception e) {
 			e.printStackTrace();
 			
 		}
 		
-		
-		
-		return null;
+		return CheckCertificaionResponseDto.success(user);
 	}
 
 	

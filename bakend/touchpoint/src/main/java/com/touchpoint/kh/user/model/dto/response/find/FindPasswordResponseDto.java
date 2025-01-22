@@ -17,7 +17,7 @@ public class FindPasswordResponseDto extends ResponseDto {
 	    }
 
     // 비밀번호 초기화 성공
-    public static ResponseEntity<FindPasswordResponseDto> resetSuccess() {
+    public static ResponseEntity<FindPasswordResponseDto> success() {
         FindPasswordResponseDto responseBody = new FindPasswordResponseDto();
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
@@ -33,4 +33,9 @@ public class FindPasswordResponseDto extends ResponseDto {
         ResponseDto responseBody = new ResponseDto(ResponseCode.CERTIFICATION_FAIL, ResponseMessage.CERTIFICATION_FAIL);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(responseBody);
     }
+    
+    public static ResponseEntity<ResponseDto> mailSendFail(){
+		ResponseDto responseBody = new ResponseDto(ResponseCode.MAIL_FAIL, ResponseMessage.MAIL_FAIL);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+	}
 }

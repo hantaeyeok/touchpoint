@@ -26,15 +26,12 @@ public interface UserService {
 	ResponseEntity<? super IdCheckResponseDto> idCheck(IdCheckRequestDto dto);
 	ResponseEntity<? super PhoneCheckResponsetDto> phoneCheck(PhoneCheckRequestDto dto);
 	ResponseEntity<? super EmailCheckResponseDto> emailCheck(EmailCheckRequestDto dto);
-	
-	
 	ResponseEntity<? super EmailCertificaionResponseDto> emailCertification(EmailCertificaionRequsetDto dto);
 	ResponseEntity<? super CheckCertificaionResponseDto> checkCertificaion(CheckCertificaionRequestDto dto);
 	ResponseEntity<? super SignUpResponseDto> signUp(SignUpRequestDto dto);
 	ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto);
-	
 	ResponseEntity<? super FindIdResponseDto> findId(FindIdRequestDto dto);
 	ResponseEntity<? super FindPasswordResponseDto> findPassword(FindPasswordRequestDto dto);
-
+	ResponseEntity<? super CheckCertificaionResponseDto> passwordCertification(CheckCertificaionRequestDto dto);
 
 }

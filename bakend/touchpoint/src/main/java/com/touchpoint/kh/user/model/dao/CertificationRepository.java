@@ -10,8 +10,6 @@ import com.touchpoint.kh.user.model.vo.Certification;
 public interface CertificationRepository extends JpaRepository<Certification, String>{
 
 	Certification findByUserId(String userId);
-	
 	void deleteByUserId(String userId);
-
 
 }

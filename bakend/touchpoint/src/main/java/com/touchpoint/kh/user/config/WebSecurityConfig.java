@@ -37,39 +37,50 @@ public class WebSecurityConfig {
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 	private final DefaultOAuth2UserService oAuth2UserService;
 	private final OAuth2SucessHandler oAuth2SucessHandler;
-	  @Bean
-	    protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
-	        httpSecurity
-	            .cors(cors -> cors
-	                .configurationSource(corsConfigurationSource())
-	            )
-	            .csrf(CsrfConfigurer::disable)
-	            .httpBasic(HttpBasicConfigurer::disable)
-	            .sessionManagement(sessionManagement -> sessionManagement
-	                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-	                .maximumSessions(1) // 동시 세션 1개 제한
-	                .maxSessionsPreventsLogin(false) // 기존 세션 무효화
-	                .expiredUrl("/login?sessionExpired=true") // 세션 만료 시 이동 URL
-	                .sessionRegistry(sessionRegistry())
-	            )
-	            .authorizeHttpRequests(request -> request
-	                .requestMatchers("/user/**").hasRole("USER")
-	                .requestMatchers("/admin/**").hasRole("ADMIN")
-	                .anyRequest().permitAll()
-	            )
-	            .oauth2Login(oauth2 -> oauth2
-	            		.authorizationEndpoint(endpoint -> endpoint.baseUri("/api/v1/auth/oauth2"))
-	            		.redirectionEndpoint(endpoint -> endpoint.baseUri("/oauth2/callback/*"))
-	            		.userInfoEndpoint(endpoint -> endpoint.userService(oAuth2UserService))
-	            		.successHandler(oAuth2SucessHandler)
-	            		)
-	            .exceptionHandling(exceptionHandling -> exceptionHandling
-	            		.authenticationEntryPoint(new FailedAuthenticationEntryPoint())		
-	            )
-	            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
-	        return httpSecurity.build();
-	    }
+	
+	@Bean
+	protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
+		
+		httpSecurity
+		
+		    .cors(cors -> cors
+		        .configurationSource(corsConfigurationSource())
+		    )
+		    
+		    .csrf(CsrfConfigurer::disable)
+		    
+		    .httpBasic(HttpBasicConfigurer::disable)
+		    
+		    .sessionManagement(sessionManagement -> sessionManagement
+			        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			        .maximumSessions(1) // 동시 세션 1개 제한
+					.maxSessionsPreventsLogin(false) // 기존 세션 무효화
+					.expiredUrl("/login?sessionExpired=true") // 세션 만료 시 이동 URL
+				    .sessionRegistry(sessionRegistry())
+	    			)
+		    
+			.authorizeHttpRequests(request -> request
+				    .requestMatchers("/user/**").hasRole("USER")
+				    .requestMatchers("/admin/**").hasRole("ADMIN")
+				    .anyRequest().permitAll()
+					)
+			
+			.oauth2Login(oauth2 -> oauth2
+					.authorizationEndpoint(endpoint -> endpoint.baseUri("/api/v1/auth/oauth2"))
+					.redirectionEndpoint(endpoint -> endpoint.baseUri("/oauth2/callback/*"))
+		    		.userInfoEndpoint(endpoint -> endpoint.userService(oAuth2UserService))
+		    		.successHandler(oAuth2SucessHandler)
+		    		)
+			
+		    .exceptionHandling(exceptionHandling -> exceptionHandling
+		    		.authenticationEntryPoint(new FailedAuthenticationEntryPoint())		
+		    		)
+		    
+		    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+		
+			
+		return httpSecurity.build();
+		}
 	
 	@Bean
 	protected CorsConfigurationSource corsConfigurationSource() {
@@ -96,6 +107,9 @@ public class WebSecurityConfig {
     }
 	
 }
+
+
+
 class FailedAuthenticationEntryPoint implements AuthenticationEntryPoint{
 
 	@Override
