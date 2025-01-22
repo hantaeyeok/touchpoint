@@ -238,11 +238,10 @@ public class UserServiceImpl implements UserService{
 		} catch (Exception e) {
 			e.printStackTrace();
 	        return ResponseDto.databaseError();
-
 		}
+		
         return FindIdResponseDto.success(user.getUserId());
 
-		
 	}
 
 	@Override
@@ -251,11 +250,20 @@ public class UserServiceImpl implements UserService{
 		try {
 			String userIdOrPhone = dto.getUserIdOrPhone().replace("-", "");
 	        String email = dto.getEmail();
-	        User user = userRepository.findByUserIdAndEmailAndPhoneNo(userId, email, phone);
-	        if (user == null) {
+	        User user = userRepository.findByUserIdAndEmailAndPhoneNo(userIdOrPhone, email);
+	        if (user == null) { 
 	            return FindPasswordResponseDto.resetFail(); // 사용자 정보 없음
 	        }
 			
+	        String certificaionNumber = CertificationNumber.getCertificationNumber();
+			
+			boolean isSuccessed = emailProvider.sendCerttificaionMail(email, certificaionNumber);
+			if(!isSuccessed) return EmailCertificaionResponseDto.mailSendFail();
+			
+			Certification certification = new Certification(userId, email, certificaionNumber);
+			certificationRepository.save(certification);
+	        
+	        
 		} catch (Exception e) {
 			e.printStackTrace();
 			

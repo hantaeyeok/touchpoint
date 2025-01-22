@@ -11,17 +11,24 @@ import lombok.Getter;
 
 @Getter
 public class FindIdResponseDto extends ResponseDto{
+	
+	private String userId;
 	 
 	private FindIdResponseDto() {
 	        super();
 	    }
 
+	private FindIdResponseDto(String userId) {
+		this.userId = userId;
+	}
+	
 	 // ID 찾기 성공
-    public static ResponseEntity<FindIdResponseDto> success() {
-        FindIdResponseDto responseBody = new FindIdResponseDto();
+    public static ResponseEntity<FindIdResponseDto> success(String userId) {
+        FindIdResponseDto responseBody = new FindIdResponseDto(userId);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
+    
     // ID 찾기 실패
     public static ResponseEntity<ResponseDto> findFail() {
         ResponseDto responseBody = new ResponseDto(ResponseCode.ID_FIND_FAIL, ResponseMessage.ID_FIND_FAIL);
