@@ -17,6 +17,8 @@ import com.touchpoint.kh.user.model.dto.request.check.CheckCertificaionRequestDt
 import com.touchpoint.kh.user.model.dto.request.check.EmailCheckRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.IdCheckRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.PhoneCheckRequestDto;
+import com.touchpoint.kh.user.model.dto.request.find.FindIdRequestDto;
+import com.touchpoint.kh.user.model.dto.request.find.FindPasswordRequestDto;
 import com.touchpoint.kh.user.model.dto.response.EmailCertificaionResponseDto;
 import com.touchpoint.kh.user.model.dto.response.ResponseDto;
 import com.touchpoint.kh.user.model.dto.response.SignInResponseDto;
@@ -25,6 +27,8 @@ import com.touchpoint.kh.user.model.dto.response.check.CheckCertificaionResponse
 import com.touchpoint.kh.user.model.dto.response.check.EmailCheckResponseDto;
 import com.touchpoint.kh.user.model.dto.response.check.IdCheckResponseDto;
 import com.touchpoint.kh.user.model.dto.response.check.PhoneCheckResponsetDto;
+import com.touchpoint.kh.user.model.dto.response.find.FindIdResponseDto;
+import com.touchpoint.kh.user.model.dto.response.find.FindPasswordResponseDto;
 import com.touchpoint.kh.user.model.vo.Certification;
 import com.touchpoint.kh.user.model.vo.User;
 import com.touchpoint.kh.user.provider.EmailProvider;
@@ -208,39 +212,61 @@ public class UserServiceImpl implements UserService{
 		return SignInResponseDto.success(token);
 	}
 
-	
-	/*
 	@Override
-	public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
-		
-		String token = null;
-		
+	public ResponseEntity<? super FindIdResponseDto> findId(FindIdRequestDto dto) {
+		User user = null;
 		try {
+			String email = dto.getEmail();
+			String phone = dto.getPhone().replace("-", "");
+			String userName = dto.getUserName();
 			
-			String userIdOrPhone = dto.getUserIdOrPhone();
-			User user = userRepository.findByUserId(userId);
-			if(user == null) return SignInResponseDto.signInFail();
-			
-			String password = dto.getPassword();
-			String encodedPassword = user.getPassword();
-			
-			boolean isMatched = passwordEncoder.matches(password, encodedPassword);
-			if(!isMatched) return SignInResponseDto.signInFail();
-			
-			token = jwtProvider.create(userId);
+			// 이메일과 전화번호로 조회
+	        if (email != null && !email.isEmpty()) {
+	            user = userRepository.findByEmailAndPhoneNo(email, phone);
+	        }
 
+	        // 이름과 전화번호로 조회
+	        if (user == null && userName != null && !userName.isEmpty()) {
+	            user = userRepository.findByUserNameAndPhoneNo(userName, phone);
+	        }
+
+	        // 두 조건 모두 만족하지 못한 경우
+	        if (user == null) {
+	            return FindIdResponseDto.findFail();
+	        }
+	        
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseDto.databaseError();
+	        return ResponseDto.databaseError();
+
+		}
+        return FindIdResponseDto.success(user.getUserId());
+
 		
+	}
+
+	@Override
+	public ResponseEntity<? super FindPasswordResponseDto> findPassword(FindPasswordRequestDto dto) {
+		
+		try {
+			String userIdOrPhone = dto.getUserIdOrPhone().replace("-", "");
+	        String email = dto.getEmail();
+	        User user = userRepository.findByUserIdAndEmailAndPhoneNo(userId, email, phone);
+	        if (user == null) {
+	            return FindPasswordResponseDto.resetFail(); // 사용자 정보 없음
+	        }
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
 		}
 		
 		
-		return SignInResponseDto.success(token);
+		
+		return null;
 	}
 
-*/
-
+	
 
 
 

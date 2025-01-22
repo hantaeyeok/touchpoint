@@ -1,8 +1,5 @@
 package com.touchpoint.kh.user.contorller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +13,8 @@ import com.touchpoint.kh.user.model.dto.request.check.CheckCertificaionRequestDt
 import com.touchpoint.kh.user.model.dto.request.check.EmailCheckRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.IdCheckRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.PhoneCheckRequestDto;
+import com.touchpoint.kh.user.model.dto.request.find.FindIdRequestDto;
+import com.touchpoint.kh.user.model.dto.request.find.FindPasswordRequestDto;
 import com.touchpoint.kh.user.model.dto.response.EmailCertificaionResponseDto;
 import com.touchpoint.kh.user.model.dto.response.SignInResponseDto;
 import com.touchpoint.kh.user.model.dto.response.SignUpResponseDto;
@@ -23,7 +22,8 @@ import com.touchpoint.kh.user.model.dto.response.check.CheckCertificaionResponse
 import com.touchpoint.kh.user.model.dto.response.check.EmailCheckResponseDto;
 import com.touchpoint.kh.user.model.dto.response.check.IdCheckResponseDto;
 import com.touchpoint.kh.user.model.dto.response.check.PhoneCheckResponsetDto;
-import com.touchpoint.kh.user.model.service.GoogleRecaptchaService;
+import com.touchpoint.kh.user.model.dto.response.find.FindIdResponseDto;
+import com.touchpoint.kh.user.model.dto.response.find.FindPasswordResponseDto;
 import com.touchpoint.kh.user.model.service.UserService;
 
 import jakarta.validation.Valid;
@@ -37,7 +37,6 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
 	private final UserService userService;
-	private final GoogleRecaptchaService googleRecaptchaService;
 	
 	@PostMapping("/check-id")
 	public ResponseEntity<? super IdCheckResponseDto> idCheck(
@@ -89,36 +88,19 @@ public class UserController {
 		return response;
 	}
 	
-
-	@PostMapping("/validate")
-	public ResponseEntity<Map<String, Object>> validateRecaptcha(@RequestBody Map<String, String> requestBody) {
-	    String token = requestBody.get("token"); // 클라이언트에서 보낸 reCAPTCHA 토큰
-	    Map<String, Object> response = new HashMap<>();
-
-	    log.info("reCAPTCHA 검증 요청 시작 - 토큰: {}", token);
-
-	    if (token == null || token.isEmpty()) {
-	        log.warn("reCAPTCHA 토큰이 비어 있음.");
-	        response.put("success", false);
-	        response.put("message", "reCAPTCHA 토큰이 비어 있습니다.");
-	        return ResponseEntity.badRequest().body(response);
-	    }
-
-	    boolean isValid = googleRecaptchaService.verifyRecaptcha(token);
-
-	    if (isValid) {
-	        log.info("reCAPTCHA 검증 성공 - 토큰: {}", token);
-	        response.put("success", true);
-	        response.put("message", "reCAPTCHA 검증에 성공했습니다.");
-	    } else {
-	        log.warn("reCAPTCHA 검증 실패 - 토큰: {}", token);
-	        response.put("success", false);
-	        response.put("message", "reCAPTCHA 검증에 실패했습니다.");
-	    }
-
-	    log.info("reCAPTCHA 검증 응답 - {}", response);
-	    return ResponseEntity.ok(response);
-	}
+	@PostMapping("/find-id")
+	public ResponseEntity<? super FindIdResponseDto> findId(
+			@RequestBody FindIdRequestDto responsebody){
+		ResponseEntity<? super FindIdResponseDto> response = userService.findId(responsebody);
+		return response;
+	} 
+	
+	@PostMapping("/find-password")
+	public ResponseEntity<? super FindPasswordResponseDto> findPassword(
+			@RequestBody FindPasswordRequestDto responsebody){
+		ResponseEntity<? super FindPasswordResponseDto> response = userService.findPassword(responsebody);
+		return response;
+	} 
 	
 	
 	

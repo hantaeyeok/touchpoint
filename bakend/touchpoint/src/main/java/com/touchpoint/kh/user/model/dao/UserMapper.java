@@ -18,6 +18,7 @@ public interface UserMapper {
 	int updateUser(User user);
 	
 
+	//jpa error mybites
     // LoginAttempt 삽입
     void insertLoginAttempt(LoginAttemptMy loginAttempt);
 
