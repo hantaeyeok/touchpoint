@@ -179,7 +179,7 @@ const Login = () => {
       <ButtonLogin text="로그인" type="submit"></ButtonLogin>
       </form>
       <ButtonLogin text="회원가입" url="/signupform" type="link" variant="outline" />
-      <ButtonLogin text="소셜임시회원가입" url="/socalsignup" type="link" variant="outline" />
+      {/* <ButtonLogin text="소셜임시회원가입" url="/socalsignup" type="link" variant="outline" /> */}
 
       <div className="login-or">or</div>
       <div className="social-login">
@@ -192,11 +192,11 @@ const Login = () => {
       </div>
 
       <div className="login-links">
-        <Link to={"/findPassword"}>비밀번호 찾기</Link>
+        <Link to={"/findID"}>아이디 찾기</Link>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <span>|</span>
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <Link to={"/findID"}>아이디 찾기</Link>
+        <Link to={"/findPassword"}>비밀번호 찾기</Link>
       </div>
     </div>
   );

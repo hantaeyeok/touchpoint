@@ -34,4 +34,10 @@ public class FindIdResponseDto extends ResponseDto{
         ResponseDto responseBody = new ResponseDto(ResponseCode.ID_FIND_FAIL, ResponseMessage.ID_FIND_FAIL);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
     }
+    
+    //소셜 로그인 반려
+    public static ResponseEntity<ResponseDto> findSocialFail() {
+        ResponseDto responseBody = new ResponseDto(ResponseCode.FIND_SOCIAL_FAIL, ResponseMessage.FIND_SOCIAL_FAIL);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+    }
 }

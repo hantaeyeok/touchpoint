@@ -10,14 +10,11 @@ import com.touchpoint.kh.user.model.dao.UserRepository;
 import com.touchpoint.kh.user.model.dto.request.SignInRequestDto;
 import com.touchpoint.kh.user.model.dto.response.SignInResponseDto;
 import com.touchpoint.kh.user.model.vo.LoginAttempt;
-import com.touchpoint.kh.user.model.vo.LoginAttemptMy;
 import com.touchpoint.kh.user.model.vo.User;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LoginValidationService {
@@ -51,7 +48,6 @@ public class LoginValidationService {
 		
 
 		boolean isMatched = passwordEncoder.matches(password, encodedPassword);
-		log.info("isMatched {}",isMatched);
 		if(!isMatched) {
 			attempt.setFailedLoginCnt(attempt.getFailedLoginCnt() + 1);
 			if(attempt.getFailedLoginCnt() > 5) {
@@ -67,7 +63,6 @@ public class LoginValidationService {
 	        if(!isCaptchaValid) return SignInResponseDto.captchaFail(attempt.getFailedLoginCnt(),attempt.getCaptchaActive());
 	        
 	        if (!passwordEncoder.matches(password, encodedPassword)) {
-	            log.info("캡차 성공했지만 비밀번호 불일치");
 	            attempt.setFailedLoginCnt(attempt.getFailedLoginCnt() + 1);
 	            loginAttemptRepository.save(attempt);
 	            return SignInResponseDto.captchaSuccessButPasswordFail(attempt.getFailedLoginCnt(), attempt.getCaptchaActive());

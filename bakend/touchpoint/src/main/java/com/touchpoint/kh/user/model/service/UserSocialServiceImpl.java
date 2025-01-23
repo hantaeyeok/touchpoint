@@ -1,7 +1,6 @@
 package com.touchpoint.kh.user.model.service;
 
 
-import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,23 +10,19 @@ import org.springframework.stereotype.Service;
 import com.touchpoint.kh.user.model.dao.UserMapper;
 import com.touchpoint.kh.user.model.dao.UserRepository;
 import com.touchpoint.kh.user.model.dao.UserSocialRepository;
-import com.touchpoint.kh.user.model.dto.request.SignUpRequestDto;
 import com.touchpoint.kh.user.model.dto.request.SocialSignUpRequestDto;
 import com.touchpoint.kh.user.model.dto.response.ResponseDto;
-import com.touchpoint.kh.user.model.dto.response.SignUpResponseDto;
 import com.touchpoint.kh.user.model.dto.response.SocialSignUpResponseDto;
-import com.touchpoint.kh.user.model.vo.Certification;
 import com.touchpoint.kh.user.model.vo.User;
 import com.touchpoint.kh.user.model.vo.UserSocial;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+
 @Service
 @RequiredArgsConstructor
-public class UserSocialServiceImple implements UserSocialService{
+public class UserSocialServiceImpl implements UserSocialService{
 
 	private final UserRepository userRepository;
 	private final UserSocialRepository userSocialRepository;
@@ -39,17 +34,23 @@ public class UserSocialServiceImple implements UserSocialService{
   	
         Optional<UserSocial> existingSocialUser = userSocialRepository.findByProviderAndProviderUserId(provider, providerUserId);
         if (existingSocialUser.isPresent()) return;
-        
-        User user = userRepository.findByEmail(email);
+                
+   	 	User user = userRepository.findByEmail(email); //email@email.com
         if(user == null) {
-        			user = User.builder()
-        			        	.userId(UUID.randomUUID().toString().replace("-", "").substring(0, 20)) // 하이픈 제거 후 첫 20자만 사용
-			                    .name(username)
-			                    .email(email)
-			                    .build();
+			user = User.builder()
+			        	.userId(UUID.randomUUID().toString().replace("-", "").substring(0, 20)) // 하이픈 제거 후 첫 20자만 사용
+	                    .name(username)
+	                    .email(email)
+	                    .socialUser("Y")
+	                    .build();
         	
             userRepository.save(user);
+        } else if ("N".equals(user.getSocialUser())) {
+            // 4. 기존 사용자가 일반 사용자라면 SOCIAL_USER를 'B'로 업데이트
+            user.setSocialUser("B");
+            userRepository.save(user);
         }
+        
         
         UserSocial userSocial = UserSocial.builder()
                 .provider(provider)
@@ -71,13 +72,14 @@ public class UserSocialServiceImple implements UserSocialService{
 			User user = userMapper.findUserByProviderUserId(providerUserId);
 			if(user == null) return SocialSignUpResponseDto.socialAuthFail();
 			
-			user = User.builder()
-						.email(email)
-						.name(name)
-						.adAgreed(dto.getAdAgreed())
-						.phoneNo(dto.getPhone())
-						.build();
-			
+			user.setEmail(email);
+	        user.setName(name);
+	        user.setAdAgreed(dto.getAdAgreed());
+	        user.setPhoneNo(dto.getPhone());
+	        
+	        if ("N".equals(user.getSocialUser())) {
+	            user.setSocialUser("B");
+	        }
 			userRepository.save(user);
 			
 		} catch (Exception e) {

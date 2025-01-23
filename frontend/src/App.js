@@ -1,34 +1,45 @@
 import React, { useState, useEffect } from "react";
 import { Route, Routes, useNavigate } from 'react-router-dom';
-import Login from '@pages/login/Login'; 
-import SocalSignUp from '@pages/login/SocalSignUp'; 
-import SignUpForm from '@pages/login/SignUpForm'; 
+import { FaqProvider } from 'context/FaqContext';
+import './App.css'
 import Menubar from '@components/indexcomponents/Menubar';
 import Product from '@pages/product/Product';
 import ProductInsert from '@pages/product/ProductInsert';
 import Qna from '@pages/Qna/Qna';
 import Faq from '@pages/Qna/Faq';
 import AddFaq from '@components/qna/AddFaq';
-import { FaqProvider } from 'context/FaqContext';
-import axios from 'axios';
-import './App.css'
 import HistoryMain from "@pages/history/HistoryMain";
+
+import Login from '@pages/login/Login'; 
+import SocalSignUp from '@pages/login/SocalSignUp'; 
+import SignUpForm from '@pages/login/SignUpForm'; 
 import RecaptchaTest from "@pages/login/RecaptchaTest ";
 import FindPassword from "@pages/login/FindPassword";
 import AuthHandler from "@components/login/AuthHandler";
+import FindId from "@pages/login/FindId";
+
 import UseUserId from "@components/login/UseUserId";
+import UseAdmin from "@components/login/UseAdmin";
 
 function App() {
 
   const userId = UseUserId();
+  const { userId: adminId, role } = UseAdmin(); // Admin 정보 가져오기
   useEffect(() => {
     if (userId) {
       console.log("Logged-in User ID:", userId);
     } else {
       console.log("No User ID found in cookies.");
     }
-  }, [userId]);
+
+    if (adminId && role) {
+      console.log("Admin User ID:", adminId, "Role:", role);
+    } else {
+      console.log("No Admin or Role found in cookies.");
+    }
+  }, [userId, adminId, role]);
   
+
   
 
   return (<>
@@ -54,6 +65,7 @@ function App() {
             <Route path="/history" element={<HistoryMain/>} />
             <Route path="/recaptcha" element={<RecaptchaTest />} />
             <Route path="/findPassword" element={<FindPassword />} />
+            <Route path="/findId" element={<FindId />} />
             
           </Routes>
         </div>
@@ -66,3 +78,16 @@ function App() {
 
 
 export default App;
+// 사용 방법법
+// const { userId, role } = useAdmin();
+
+//   return (
+//     <div>
+//       <h1>Admin Page</h1>
+//       {userId && role === "ADMIN" ? (
+//         <p>Welcome, Admin {userId}!</p>
+//       ) : (
+//         <p>You do not have access to this page.</p>
+//       )}
+//     </div>
+//   );

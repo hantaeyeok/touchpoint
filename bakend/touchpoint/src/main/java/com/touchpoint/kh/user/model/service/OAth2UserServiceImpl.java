@@ -9,18 +9,14 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.touchpoint.kh.user.model.dao.UserRepository;
 import com.touchpoint.kh.user.model.vo.CustomOAuth2User;
-import com.touchpoint.kh.user.model.vo.User;
-import com.touchpoint.kh.user.model.vo.UserSocial;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+
 @Service
 @RequiredArgsConstructor
-public class OAth2UserServiceImple extends DefaultOAuth2UserService{
+public class OAth2UserServiceImpl extends DefaultOAuth2UserService{
 
 	private final UserSocialService userSocialService;
 	
@@ -53,10 +49,6 @@ public class OAth2UserServiceImple extends DefaultOAuth2UserService{
 			name = responseMap.get("name");
         }
 
-        log.info("Provider: {}", provider);
-        log.info("Provider User ID: {}", providerUserId);
-        log.info("Email: {}", email);
-        log.info("Name: {}", name);
         
         userSocialService.saveSocialUser(provider, providerUserId, email, name);		
 		

@@ -1,4 +1,4 @@
-package com.touchpoint.kh.user.common;
+package com.touchpoint.kh.user.common.handler;
 
 import java.io.IOException;
 
@@ -15,9 +15,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+
 @Component
 @RequiredArgsConstructor
 public class OAuth2SucessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -34,13 +33,12 @@ public class OAuth2SucessHandler extends SimpleUrlAuthenticationSuccessHandler {
 		
 		CustomOAuth2User oAuth2User = (CustomOAuth2User)authentication.getPrincipal();
 		String userId = oAuth2User.getName();
-		
-		String token = jwtProvider.create(userId);
+		String role = "ROLE_USER";
+		String token = jwtProvider.create(userId,role);
 		
 		
 		if (userId.startsWith("kakao_")) {
 			User user = userMapper.findUserByProviderUserId(userId);	
-			log.info("user.getEmail() {}",user.getEmail());
 			boolean isMatched = user.getEmail().equalsIgnoreCase("email@email.com");
 			
 			if(!isMatched) {
@@ -49,7 +47,6 @@ public class OAuth2SucessHandler extends SimpleUrlAuthenticationSuccessHandler {
 		        response.sendRedirect("http://localhost:3000/socalsignup/" + token);
 			}
 	    } else {
-	        // 일반적인 경우
 	    	response.sendRedirect("http://localhost:3000/auth/" + token);		
 	    }
 	

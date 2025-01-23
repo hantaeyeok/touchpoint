@@ -21,6 +21,7 @@ public interface ResponseMessage {
     // 아이디 및 비밀번호 찾기 관련
     String ID_FIND_SUCCESS = "ID retrieval was successful."; // 아이디 찾기 성공
     String ID_FIND_FAIL = "ID retrieval failed."; // 아이디 찾기 실패
+    String FIND_SOCIAL_FAIL ="소셜로그인으로 가입하셨습니다. 소셜로그인으로 로그인해주세요";
     String PASSWORD_RESET_SUCCESS = "Password reset was successful."; // 비밀번호 초기화 성공
     String PASSWORD_RESET_FAIL = "Password reset failed."; // 비밀번호 초기화 실패
 

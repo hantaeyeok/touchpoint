@@ -13,7 +13,6 @@ import com.touchpoint.kh.user.model.dao.UserRepository;
 import com.touchpoint.kh.user.model.dto.request.EmailCertificaionRequsetDto;
 import com.touchpoint.kh.user.model.dto.request.SignInRequestDto;
 import com.touchpoint.kh.user.model.dto.request.SignUpRequestDto;
-import com.touchpoint.kh.user.model.dto.request.SocialSignUpRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.CheckCertificaionRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.EmailCheckRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.IdCheckRequestDto;
@@ -24,7 +23,6 @@ import com.touchpoint.kh.user.model.dto.response.EmailCertificaionResponseDto;
 import com.touchpoint.kh.user.model.dto.response.ResponseDto;
 import com.touchpoint.kh.user.model.dto.response.SignInResponseDto;
 import com.touchpoint.kh.user.model.dto.response.SignUpResponseDto;
-import com.touchpoint.kh.user.model.dto.response.SocialSignUpResponseDto;
 import com.touchpoint.kh.user.model.dto.response.check.CheckCertificaionResponseDto;
 import com.touchpoint.kh.user.model.dto.response.check.EmailCheckResponseDto;
 import com.touchpoint.kh.user.model.dto.response.check.IdCheckResponseDto;
@@ -54,7 +52,6 @@ public class UserServiceImpl implements UserService{
 	
 	private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	
-	//check
 	@Override
 	public ResponseEntity<? super IdCheckResponseDto> idCheck(IdCheckRequestDto dto) {
 		try {
@@ -168,7 +165,15 @@ public class UserServiceImpl implements UserService{
 			String encodedPassword = passwordEncoder.encode(password);
 			dto.setPassword(encodedPassword);
 			
-			User user = new User(dto);
+			User user = User.builder()
+							.userId(userId)
+							.password(encodedPassword)
+							.email(email)
+							.phoneNo(dto.getPhone().replace("-", ""))
+							.name(dto.getUserName())
+							.adAgreed(dto.getAdAgreed())
+							.build();
+			
 			userRepository.save(user);
 		
 			certificationRepository.deleteByUserId(userId);
@@ -181,8 +186,6 @@ public class UserServiceImpl implements UserService{
 		return SignUpResponseDto.success();
 	}
 	
-	
-
 	@Override
 	public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
 		
@@ -204,7 +207,7 @@ public class UserServiceImpl implements UserService{
 		            return validationResponse;
 		        }
 	        
-			token = jwtProvider.create(user.getUserId());
+			token = jwtProvider.create(user.getUserId(),user.getUserRole());
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -219,25 +222,25 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public ResponseEntity<? super FindIdResponseDto> findId(FindIdRequestDto dto) {
 		User user = null;
+
 		try {
-			String email = dto.getEmail();
-			String phone = dto.getPhone().replace("-", "");
-			String userName = dto.getUserName();
 			
-			// 이메일과 전화번호로 조회
-	        if (email != null && !email.isEmpty()) {
-	            user = userRepository.findByEmailAndPhoneNo(email, phone);
+			String userName = dto.getUserName();
+	        String phone = dto.getPhone() != null ? dto.getPhone().replace("-", "") : null; // 전화번호 형식 처리
+			String email = dto.getEmail();
+
+			if (email != null && !email.isEmpty() && userName != null && !userName.isEmpty()) {
+				email = dto.getEmail();
+	            user = userRepository.findByNameAndEmail(userName, email);
 	        }
 
-	        // 이름과 전화번호로 조회
-	        if (user == null && userName != null && !userName.isEmpty()) {
-	            //user = userRepository.findByUserNameAndPhoneNo(userName, phone);
+	        if (user == null && userName != null && !userName.isEmpty() && phone != null && !phone.isEmpty()) {
+				phone = dto.getPhone().replace("-", "");
+	            user = userRepository.findByNameAndPhoneNo(userName, phone);
 	        }
 
-	        // 두 조건 모두 만족하지 못한 경우
-	        if (user == null) {
-	            return FindIdResponseDto.findFail();
-	        }
+	        if (user == null) return FindIdResponseDto.findFail();
+	        if (user.getSocialUser().equals("Y")) return FindIdResponseDto.findSocialFail();
 	        
 		} catch (Exception e) {
 			e.printStackTrace();

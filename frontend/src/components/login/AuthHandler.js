@@ -13,7 +13,7 @@ const AuthHandler = () => {
       try {
         // 토큰을 쿠키에 저장
         Cookies.set("authToken", token, {
-          expires: 7, // 7일 동안 유효
+          expires: 1, // 7일 동안 유효
           path: "/", // 전체 경로에서 사용 가능
           sameSite: "Strict", // 동일 사이트 요청에만 전송
         });

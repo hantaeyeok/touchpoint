@@ -22,7 +22,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.touchpoint.kh.user.common.OAuth2SucessHandler;
+import com.touchpoint.kh.user.common.handler.OAuth2SucessHandler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,10 +54,10 @@ public class WebSecurityConfig {
 		    
 		    .sessionManagement(sessionManagement -> sessionManagement
 			        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			        .maximumSessions(1) // 동시 세션 1개 제한
-					.maxSessionsPreventsLogin(false) // 기존 세션 무효화
-					.expiredUrl("/login?sessionExpired=true") // 세션 만료 시 이동 URL
-				    .sessionRegistry(sessionRegistry())
+//			        .maximumSessions(1) // 동시 세션 1개 제한
+//					.maxSessionsPreventsLogin(false) // 기존 세션 무효화
+//					.expiredUrl("/login?sessionExpired=true") // 세션 만료 시 이동 URL
+//				    .sessionRegistry(sessionRegistry())
 	    			)
 		    
 			.authorizeHttpRequests(request -> request

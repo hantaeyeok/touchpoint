@@ -22,6 +22,7 @@ public interface ResponseCode {
     // 아이디 및 비밀번호 찾기 관련
     String ID_FIND_SUCCESS = "IFS"; // 아이디 찾기 성공
     String ID_FIND_FAIL = "IFF"; // 아이디 찾기 실패
+    String FIND_SOCIAL_FAIL = "FCF";
     String PASSWORD_RESET_SUCCESS = "PRS"; // 비밀번호 초기화 성공
     String PASSWORD_RESET_FAIL = "PRF"; // 비밀번호 초기화 실패
     
