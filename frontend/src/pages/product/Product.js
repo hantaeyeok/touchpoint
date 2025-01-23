@@ -35,14 +35,17 @@ const Product = () => {
         //여기에 버튼 색 고정 시켜놓으면 될듯
     }, [clickCategory]); // clickCategory 상태가 변경될 때 실행
 
-    const onClick_kioskButton = () => {
+    const onClick_kioskButton = (category) => {
         setParam('키오스크/포스');
+        setActiveButton(category);
     };
-    const onClick_cctvButton = () => {
+    const onClick_cctvButton = (category) => {
         setParam('출입인증기/CCTV/인터넷');
+        setActiveButton(category);
     };
-    const onClick_otherButton = () => {
+    const onClick_otherButton = (category) => {
         setParam('부가상품');
+        setActiveButton(category);
     };
 
    
@@ -59,7 +62,12 @@ const Product = () => {
             </Link></div>
         );
       };
+      const [activeButton, setActiveButton] = useState(""); 
 
+      const onClickButton = (category) => {
+        setActiveButton(category);
+        
+      };
 
   return (
     <>
@@ -71,9 +79,10 @@ const Product = () => {
 
       {/*카테고리 나뉘는 부분*/}
       <div className="style-divPro">
-        <button className="style-button1" onClick={onClick_kioskButton}>키오스크 / 포스</button>
-        <button className="style-button1" onClick={onClick_cctvButton}>출입인증기 / CCTV / 인터넷</button>
-        <button className="style-button1" onClick={onClick_otherButton}>부가상품</button>
+        <button className={`style-button1 ${ activeButton === "키오스크/포스" ? "active" : "" }`} onClick={() => onClick_kioskButton("키오스크/포스")}>키오스크 / 포스</button>      
+        <button className={`style-button1 ${ activeButton === "출입인증기 / CCTV / 인터넷" ? "active" : "" }`} onClick={() => onClick_cctvButton("출입인증기 / CCTV / 인터넷")}>출입인증기 / CCTV / 인터넷</button>      
+        <button className={`style-button1 ${ activeButton === "부가상품" ? "active" : "" }`} onClick={() => onClick_otherButton("부가상품")}>부가상품</button>      
+
       </div>
             
       <div className="product-list">

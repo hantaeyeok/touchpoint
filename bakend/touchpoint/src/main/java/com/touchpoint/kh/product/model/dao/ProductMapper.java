@@ -20,4 +20,10 @@ public interface ProductMapper {
 
 	void removeImg(Long image);
 
+	String getImagePathById(Long imageId);
+
+	List<Long> getImageId(Long productId);
+
+	//String getImagePathById(List<Long>  imageId);
+
 }

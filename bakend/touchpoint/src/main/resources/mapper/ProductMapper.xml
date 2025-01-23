@@ -16,6 +16,12 @@
             PRODUCT_ID = #{productId}                    -- 수정할 상품의 ID
     </update>
     
+    <select id="getImagePathById" parameterType="Long" resultType="String">
+	    SELECT IMAGE_URL
+	    FROM TB_PRODUCT_IMAGES
+	    WHERE IMAGE_ID = #{imageId}
+	</select>
+    
     <update id="updateProductImage" parameterType="ProductImage">
 	    UPDATE TB_PRODUCT_IMAGES
 		    SET IMAGE_URL = #{imageUrl},
@@ -28,6 +34,15 @@
 		DELETE FROM TB_PRODUCT_IMAGES
 		    WHERE IMAGE_ID = #{imageId}
 	</delete>
+	
+	<select id="getImageId">
+		select 
+				image_id
+			from 
+				tb_product_images 
+			where 
+				product_id=  #{productId}
+	</select>
 	
 
 </mapper>

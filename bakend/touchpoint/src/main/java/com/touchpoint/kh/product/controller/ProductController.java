@@ -93,21 +93,26 @@ public class ProductController {
 	private List<ProductImage> saveImages(List<MultipartFile> images, List<Long> imageIds, List<Long> deleteImg, HttpServletRequest request) throws IOException {
 	    List<ProductImage> productImages = new ArrayList<>();
 
-	    for (int i = 0; i < images.size(); i++) { 
+	    for (int i = 0; i < images.size(); i++) {
 	        MultipartFile image = images.get(i); // 현재 이미지
-	        
-	        String imagePath = saveFile(image, request); // 이미지 저장
-	        log.info("저장할 imagePath :{}" , imagePath);  
+	        String imagePath = null; // 이미지 경로 초기화
+	        Long imageId = (imageIds != null && i < imageIds.size()) ? imageIds.get(i) : null; // imageIds에서 값 가져오기
 
-	        Long id = (imageIds != null && i < imageIds.size()) ? imageIds.get(i) : null; // imageIds에서 값 가져오기
-	        
-	        //id가 값이 없거나(처음등록) deleteImg에 포함된 id라면(삭제된이미지)  imageId를 배정하지 않음
-	        if (id == null || deleteImg==null || deleteImg.contains(id)) {    
-	            productImages.add(new ProductImage(imagePath, i, null, null)); // ID 배정하지 않음
-	        } else {
-	            productImages.add(new ProductImage(imagePath, i, null, id)); // 기존 ID 배정
+	        // 기존 이미지 재사용
+	        if (imageId != null && (deleteImg == null || !deleteImg.contains(imageId))) {
+	            // 기존 이미지는 saveFile을 호출하지 않고 그대로 사용
+	            imagePath = productService.getPathById(imageId); // 기존 경로 가져오기 (가정)
+	            log.info("기존 이미지 사용: imageId = {}, imagePath = {}", imageId, imagePath);
+	        } 
+	        // 새로운 이미지는 저장
+	        else if (image != null && !image.isEmpty()) {
+	            imagePath = saveFile(image, request); // 새 이미지 저장
+	            log.info("새로운 이미지 저장: {}", imagePath);
 	        }
-	    }log.info("저장할 imagePath :{}"  );  
+
+	        // 이미지 정보를 List에 추가
+	        productImages.add(new ProductImage(imagePath, i, null, imageId));
+	    }
 	    return productImages;
 	}
 
@@ -148,8 +153,9 @@ public class ProductController {
 	
 	
 	@DeleteMapping("/{productId}")
-	public ResponseEntity<ResponseData>deletelById(@PathVariable("productId")Long productId ){
-		productService.deleteProductWithImages(productId);
+	public ResponseEntity<ResponseData>deletelById(@PathVariable("productId")Long productId, HttpServletRequest request ){
+		productService.deleteProductWithImages(productId, request);
+		//productService.deleteImages(productId);
 		
 		return responseHandler.createResponse("상품 삭제 성공!", null, HttpStatus.OK);
 	}
@@ -165,7 +171,6 @@ public class ProductController {
 
 	    List<Long> deleteImg = new ObjectMapper().readValue(deleteImgJson, new TypeReference<List<Long>>() {});
 
-
 		Product updateProduct = new ObjectMapper().readValue(productJson, Product.class); 
 		
 	    Product product = productService.findByProductId(productId);  //imageId받기위해서 갔다옴(수정사항은 반영되지않으니 다른 변수로 받아야함)
@@ -180,13 +185,12 @@ public class ProductController {
 	    updateProduct.setThumbnailImage(saveFile(upfile, request));
 	    
 	    List<ProductImage> productImages = saveImages(images, imageIds, deleteImg, request);  //여기 갔다오면 인덱스, 이미지 아이디 배정
-	    log.info("실행 확인용 로그"  );  
-	    
+	
 	    productService.saveProduct(updateProduct);
 	    
+	    productService.deleteImages(deleteImg, request);
+	    
 	    productService.updateProductWithImages(updateProduct, productImages, deleteImg);
-	    log.info("반환받은 updateProduct :{}" , updateProduct);
-	    log.info("반환받은 productImages :{}" , productImages);
 	    
 	    return responseHandler.createResponse("상품 수정 성공!", productImages, HttpStatus.OK);
 	}
