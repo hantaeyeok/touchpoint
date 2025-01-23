@@ -24,4 +24,7 @@ public interface ResponseCode {
     String ID_FIND_FAIL = "IFF"; // 아이디 찾기 실패
     String PASSWORD_RESET_SUCCESS = "PRS"; // 비밀번호 초기화 성공
     String PASSWORD_RESET_FAIL = "PRF"; // 비밀번호 초기화 실패
+    
+    String SOCIAL_AUTH_FAIL = "SAF";
+
 }

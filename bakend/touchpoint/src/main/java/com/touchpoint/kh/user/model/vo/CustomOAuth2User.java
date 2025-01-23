@@ -14,7 +14,8 @@ import lombok.NoArgsConstructor;
 public class CustomOAuth2User implements OAuth2User{
 
 	private String userId; //name id
-	
+	private String provider; // OAuth2 제공자
+    private Map<String, Object> attributes; // 사용자 속성
 	
 	
 	@Override

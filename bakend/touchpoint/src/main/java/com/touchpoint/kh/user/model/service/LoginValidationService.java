@@ -5,10 +5,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.touchpoint.kh.user.model.dao.UserMapper;
+import com.touchpoint.kh.user.model.dao.LoginAttemptRepository;
 import com.touchpoint.kh.user.model.dao.UserRepository;
 import com.touchpoint.kh.user.model.dto.request.SignInRequestDto;
 import com.touchpoint.kh.user.model.dto.response.SignInResponseDto;
+import com.touchpoint.kh.user.model.vo.LoginAttempt;
 import com.touchpoint.kh.user.model.vo.LoginAttemptMy;
 import com.touchpoint.kh.user.model.vo.User;
 
@@ -23,7 +24,8 @@ public class LoginValidationService {
 
 	//private final LoginAttemptRepository loginAttemptRepository;
 	private final GoogleRecaptchaService googleRecaptchaService;
-	private final UserMapper userMapper;
+	private final LoginAttemptRepository loginAttemptRepository;
+	private final UserRepository userRepository;
 	
 	private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	
@@ -35,15 +37,15 @@ public class LoginValidationService {
 		String password = dto.getPassword();
 		String encodedPassword = user.getPassword();
 	
-		LoginAttemptMy attempt = userMapper.attemptFindByUserId(userId);
+		LoginAttempt attempt = loginAttemptRepository.findByUserId(userId);
 		if(attempt==null) {
-			attempt = LoginAttemptMy.builder().userId(userId).failedLoginCnt(0).captchaActive("N").build();
-			userMapper.insertLoginAttempt(attempt);
+			attempt = LoginAttempt.builder().userId(userId).failedLoginCnt(0).captchaActive("N").build();
+			loginAttemptRepository.save(attempt);
 		}
 		
 		if(attempt.getFailedLoginCnt() >= 20) {
 			user.setUserSt("N");
-			userMapper.updateUser(user);
+			userRepository.save(user);
 			return SignInResponseDto.accountLocked(attempt.getFailedLoginCnt(),attempt.getCaptchaActive());
 		}
 		
@@ -55,7 +57,7 @@ public class LoginValidationService {
 			if(attempt.getFailedLoginCnt() > 5) {
 				attempt.setCaptchaActive("Y"); 
 			}	
-			userMapper.updateLoginAttempt(attempt);
+			loginAttemptRepository.save(attempt);
 			return SignInResponseDto.signInFail(attempt.getFailedLoginCnt(),attempt.getCaptchaActive());
 		}
 		
@@ -67,17 +69,14 @@ public class LoginValidationService {
 	        if (!passwordEncoder.matches(password, encodedPassword)) {
 	            log.info("캡차 성공했지만 비밀번호 불일치");
 	            attempt.setFailedLoginCnt(attempt.getFailedLoginCnt() + 1);
-	            userMapper.updateLoginAttempt(attempt);
+	            loginAttemptRepository.save(attempt);
 	            return SignInResponseDto.captchaSuccessButPasswordFail(attempt.getFailedLoginCnt(), attempt.getCaptchaActive());
 	        }
-	    
-	    
-	    
 	    }
 		
         
 	    if(isMatched) {
-			userMapper.deleteLoginAttemptByUserId(userId);
+	    	loginAttemptRepository.deleteByUserId(userId);
 		}
 	    
 	    return SignInResponseDto.validataSuccess(attempt.getFailedLoginCnt(), attempt.getCaptchaActive());

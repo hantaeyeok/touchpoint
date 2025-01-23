@@ -15,10 +15,19 @@ import './App.css'
 import HistoryMain from "@pages/history/HistoryMain";
 import RecaptchaTest from "@pages/login/RecaptchaTest ";
 import FindPassword from "@pages/login/FindPassword";
+import AuthHandler from "@components/login/AuthHandler";
+import UseUserId from "@components/login/UseUserId";
 
 function App() {
 
-
+  const userId = UseUserId();
+  useEffect(() => {
+    if (userId) {
+      console.log("Logged-in User ID:", userId);
+    } else {
+      console.log("No User ID found in cookies.");
+    }
+  }, [userId]);
   
   
 
@@ -35,11 +44,13 @@ function App() {
             <Route path="/faq/*" element={<Faq />} />
             <Route path="/addFaq/*" element={<AddFaq />} />
             <Route path="/" element={<h1>메인</h1>} />
+            <Route path="/auth/:token" element={<AuthHandler/>} />
+
             <Route path="/product" element={<Product/>}/>
             <Route path="/productInsert" element={<ProductInsert/>}/>
             <Route path="/login" element={<Login />} /> 
             <Route path="/signupform" element={<SignUpForm />} /> 
-            <Route path="/socalsignup" element={<SocalSignUp />} /> 
+            <Route path="/socalsignup/:token" element={<SocalSignUp />} /> 
             <Route path="/history" element={<HistoryMain/>} />
             <Route path="/recaptcha" element={<RecaptchaTest />} />
             <Route path="/findPassword" element={<FindPassword />} />
@@ -48,24 +59,10 @@ function App() {
         </div>
     </FaqProvider>
 
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     </>
 );
 }
+
+
 
 export default App;

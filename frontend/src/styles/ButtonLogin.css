@@ -1,6 +1,7 @@
 /* 기본 버튼 스타일 */
 .login-button {
     width: 100%;
+    margin-bottom: 10px;
     background-color: #F299A0;
     color: white;
     border: none;

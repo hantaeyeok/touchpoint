@@ -6,6 +6,7 @@ import EmailField from "@components/login/EmailField";
 import AgreementField from "@components/login/AgreementField";
 import { validateField } from "@components/login/ValidateField";
 import ButtonLogin from "@components/login/ButtonLogin";
+import { useNavigate } from "react-router-dom";
 import "@styles/SignUp.css";
 
 const SignUpForm = () => {
@@ -28,7 +29,7 @@ const SignUpForm = () => {
   const [phoneAvailable, setPhoneAvailable] = useState(null);
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [isCertificationValid, setIsCertificationValid] = useState(false);
-
+  const navigate = useNavigate();
 
   // 공통 Axios 요청 함수
   const sendRequest = async (url, data, successCallback, errorCallback) => {
@@ -115,14 +116,22 @@ const SignUpForm = () => {
 
     sendRequest(
       checkApi,
-      { [field]: value },
-      () => {
-        setAvailable(true);
-        setErrors((prev) => ({ ...prev, [field]: "" }));
-      },
-      () => {
-        setAvailable(false);
-        setErrors((prev) => ({ ...prev, [field]: "이미 사용 중인 값입니다." }));
+    { [field]: value },
+    () => {
+      setAvailable(true);
+      setErrors((prev) => ({ ...prev, [field]: "" }));
+    },
+    () => {
+      const errorMessage =
+        field === "userId"
+          ? "사용 중인 아이디입니다."
+          : field === "phone"
+          ? "사용 중인 전화번호입니다."
+          : field === "email"
+          ? "사용 중인 이메일입니다."
+          : "이미 사용 중인 값입니다.";
+      setAvailable(false);
+      setErrors((prev) => ({ ...prev, [field]: errorMessage }));
       }
     );
   };
@@ -152,6 +161,8 @@ const SignUpForm = () => {
       () => {
         alert("회원가입이 완료되었습니다!");
         resetForm();
+        navigate("/login");
+
       },
       () => {
         alert("회원가입 중 오류가 발생했습니다. 다시 시도해주세요.");
@@ -290,7 +301,7 @@ const SignUpForm = () => {
         />
 
         {isEmailSent && (
-          <>
+          <div className="email-button-group">
             <InputField
               type="text"
               name="certificationNumber"
@@ -307,7 +318,7 @@ const SignUpForm = () => {
               onSubmit={handleCertificationVerify}
               disabled={!formData.certificationNumber}
             />
-          </>
+          </div>
         )}
 
         <AgreementField
@@ -334,6 +345,7 @@ const SignUpForm = () => {
           type="submit"
           disabled={isSubmitting}
           onSubmit={handleSubmit}
+          style={{ marginTop: "20px" }}
         />
       </form>
     </div>

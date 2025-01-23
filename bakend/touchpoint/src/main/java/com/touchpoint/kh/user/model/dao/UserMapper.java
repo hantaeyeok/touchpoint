@@ -11,20 +11,9 @@ import com.touchpoint.kh.user.model.vo.User;
 @Mapper
 public interface UserMapper {
 	
-	
+	//UserIdOrPhoneNo 아이디 또는 전화번호로 User 검색.
 	User findByUserIdOrPhone(@Param("userIdOrPhone")String userIdOrPhone);
-	LoginAttemptMy attemptFindByUserId(@Param("userId")String userId);
-	//User update
-	int updateUser(User user);
-	
+    User findByUserIdAndEmailAndPhoneNo(@Param("userIdOrPhone") String userIdOrPhone, @Param("userId") String userId);
+    User findUserByProviderUserId(String providerUserId);
 
-	//jpa error mybites
-    // LoginAttempt 삽입
-    void insertLoginAttempt(LoginAttemptMy loginAttempt);
-
-    // LoginAttempt 삭제
-    void deleteLoginAttemptByUserId(@Param("userId") String userId);
-
-    // LoginAttempt 업데이트
-    int updateLoginAttempt(LoginAttemptMy loginAttempt);
 }

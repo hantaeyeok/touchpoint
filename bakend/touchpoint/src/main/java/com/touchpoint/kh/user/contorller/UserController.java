@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.touchpoint.kh.user.model.dto.request.EmailCertificaionRequsetDto;
 import com.touchpoint.kh.user.model.dto.request.SignInRequestDto;
 import com.touchpoint.kh.user.model.dto.request.SignUpRequestDto;
+import com.touchpoint.kh.user.model.dto.request.SocialSignUpRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.CheckCertificaionRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.EmailCheckRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.IdCheckRequestDto;
@@ -18,6 +19,7 @@ import com.touchpoint.kh.user.model.dto.request.find.FindPasswordRequestDto;
 import com.touchpoint.kh.user.model.dto.response.EmailCertificaionResponseDto;
 import com.touchpoint.kh.user.model.dto.response.SignInResponseDto;
 import com.touchpoint.kh.user.model.dto.response.SignUpResponseDto;
+import com.touchpoint.kh.user.model.dto.response.SocialSignUpResponseDto;
 import com.touchpoint.kh.user.model.dto.response.check.CheckCertificaionResponseDto;
 import com.touchpoint.kh.user.model.dto.response.check.EmailCheckResponseDto;
 import com.touchpoint.kh.user.model.dto.response.check.IdCheckResponseDto;
@@ -25,18 +27,18 @@ import com.touchpoint.kh.user.model.dto.response.check.PhoneCheckResponsetDto;
 import com.touchpoint.kh.user.model.dto.response.find.FindIdResponseDto;
 import com.touchpoint.kh.user.model.dto.response.find.FindPasswordResponseDto;
 import com.touchpoint.kh.user.model.service.UserService;
+import com.touchpoint.kh.user.model.service.UserSocialService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RestController
 @RequestMapping("/login")
 @RequiredArgsConstructor
 public class UserController {
 
 	private final UserService userService;
+	private final UserSocialService userSocialService;
 	
 	@PostMapping("/check-id")
 	public ResponseEntity<? super IdCheckResponseDto> idCheck(
@@ -71,7 +73,7 @@ public class UserController {
 			@RequestBody @Valid CheckCertificaionRequestDto requsetBody){
 		ResponseEntity<? super CheckCertificaionResponseDto> response = userService.checkCertificaion(requsetBody);
 		return response;
-	} //Su success일때 다음검증이동
+	}
 	
 	@PostMapping("/sign-up")
 	public ResponseEntity<? super SignUpResponseDto> signUp(
@@ -108,7 +110,12 @@ public class UserController {
 		return response;
 	}
 	
-	
+	@PostMapping("/social-sign-up")
+	public ResponseEntity<? super SocialSignUpResponseDto> socialSignUp(
+			@RequestBody @Valid SocialSignUpRequestDto requestBody){
+		ResponseEntity<? super SocialSignUpResponseDto> response = userSocialService.socialSignUp(requestBody);
+		return response;	
+	}
 	
 	
 	

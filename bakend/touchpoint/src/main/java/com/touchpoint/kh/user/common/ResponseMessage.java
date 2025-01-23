@@ -23,4 +23,7 @@ public interface ResponseMessage {
     String ID_FIND_FAIL = "ID retrieval failed."; // 아이디 찾기 실패
     String PASSWORD_RESET_SUCCESS = "Password reset was successful."; // 비밀번호 초기화 성공
     String PASSWORD_RESET_FAIL = "Password reset failed."; // 비밀번호 초기화 실패
+
+    String SOCIAL_AUTH_FAIL = "소셜 인증에 실패했습니다.";
+
 }

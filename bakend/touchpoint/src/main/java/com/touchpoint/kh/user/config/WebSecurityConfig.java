@@ -15,6 +15,7 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.cors.CorsConfiguration;
@@ -66,10 +67,11 @@ public class WebSecurityConfig {
 					)
 			
 			.oauth2Login(oauth2 -> oauth2
-					.authorizationEndpoint(endpoint -> endpoint.baseUri("/api/v1/auth/oauth2"))
+					.authorizationEndpoint(endpoint -> endpoint.baseUri("/oauth2/authorization/"))
 					.redirectionEndpoint(endpoint -> endpoint.baseUri("/oauth2/callback/*"))
 		    		.userInfoEndpoint(endpoint -> endpoint.userService(oAuth2UserService))
 		    		.successHandler(oAuth2SucessHandler)
+		    	    .failureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error=true")) // 실패 시 리다이렉트 URL 설정
 		    		)
 			
 		    .exceptionHandling(exceptionHandling -> exceptionHandling

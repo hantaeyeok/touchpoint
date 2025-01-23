@@ -5,28 +5,30 @@ const RecaptchaTest = () => {
   const [captchaVerified, setCaptchaVerified] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
   const [message, setMessage] = useState("");
-  const siteKey = "6LcZWL4qAAAAAIDcO35ePOizWYKQKOtoDjtUyGE4"; // Google reCAPTCHA v2 사이트 키를 여기에 입력하세요.
+  const siteKey = "6LcZWL4qAAAAAIDcO35ePOizWYKQKOtoDjtUyGE4"; // Google reCAPTCHA v2 사이트 키
 
   useEffect(() => {
     // Google reCAPTCHA v2 스크립트 동적으로 로드
-    const script = document.createElement("script");
-    script.src = "https://www.google.com/recaptcha/api.js";
-    script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
+    const loadRecaptchaScript = () => {
+      const script = document.createElement("script");
+      script.src = "https://www.google.com/recaptcha/api.js";
+      script.async = true;
+      script.defer = true;
 
-    script.onload = () => {
-      console.log("reCAPTCHA v2 스크립트 로드 완료");
+      script.onload = () => {
+        console.log("reCAPTCHA v2 스크립트 로드 완료");
+      };
+
+      script.onerror = () => {
+        console.error("reCAPTCHA v2 스크립트 로드 실패");
+        setMessage("reCAPTCHA 스크립트를 로드할 수 없습니다. 인터넷 연결을 확인하세요.");
+      };
+
+      document.body.appendChild(script);
+      return () => document.body.removeChild(script);
     };
 
-    script.onerror = () => {
-      console.error("reCAPTCHA v2 스크립트 로드 실패");
-      setMessage("reCAPTCHA 스크립트를 로드할 수 없습니다. 인터넷 연결을 확인하세요.");
-    };
-
-    return () => {
-      document.body.removeChild(script);
-    };
+    loadRecaptchaScript();
   }, []);
 
   const handleSubmit = async () => {
@@ -46,10 +48,23 @@ const RecaptchaTest = () => {
         setMessage("reCAPTCHA 검증 성공! 서버 요청 완료.");
       } else {
         setMessage("reCAPTCHA 검증 실패. 다시 시도해주세요.");
+        resetRecaptcha(); // reCAPTCHA 초기화
       }
     } catch (error) {
       console.error("서버와의 통신 오류:", error);
       setMessage("서버와의 통신 중 오류가 발생했습니다.");
+      resetRecaptcha(); // 오류 발생 시 reCAPTCHA 초기화
+    }
+  };
+
+  const resetRecaptcha = () => {
+    if (typeof grecaptcha !== "undefined") {
+      grecaptcha.reset(); // reCAPTCHA 초기화
+      setCaptchaVerified(false);
+      setCaptchaToken("");
+      console.log("reCAPTCHA 초기화 완료");
+    } else {
+      console.error("grecaptcha가 정의되지 않았습니다.");
     }
   };
 

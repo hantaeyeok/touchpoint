@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "@styles/Login.css";
 import naverIcon from "@pages/login/icon/navericon.png";
+import kakaoIcon from "@pages/login/icon/kakoicon.png";
+
 import ButtonLogin from "@components/login/ButtonLogin";
 import { Link } from "react-router-dom";
 
@@ -64,6 +66,7 @@ const Login = () => {
         if (!recaptchaResponse) {
           setErrorMessage("캡차를 완료해주세요.");
           setIsSubmitting(false);
+          resetRecaptcha();
           return;
         }
         handleRecaptchaVerify(recaptchaResponse);
@@ -77,8 +80,11 @@ const Login = () => {
       });
 
       if (response.data.code === "SU") {
+        const authToken = response.data.token;
+        console.log("authToken", authToken);
         alert("로그인 성공");
-        window.location.href = "/";
+        window.location.href = `/auth/${authToken}`;
+
       } else {
         handleServerError(response.data);
       }
@@ -99,6 +105,7 @@ const Login = () => {
     console.log("서버에서 반환된 오류:", data);
 
     if (data.captchaActive === "Y") {
+      resetRecaptcha();
       setCaptchaRequired(true);
       setFailedLoginCnt(data.loginFailCount || 0);
       alert("캡차가 활성화되었습니다. 캡차를 완료해주세요.");
@@ -111,12 +118,24 @@ const Login = () => {
       alert("아이디 잠금: 관리자에게 문의하세요.");
     } else if (data.code === "CF") {
       alert("캡차를 다시 진행해주세요.");
+      resetRecaptcha();
     }
   };
 
+  const resetRecaptcha = () => {
+    if (window.grecaptcha) {
+      grecaptcha.reset(); // reCAPTCHA 초기화
+      setFormData((prev) => ({ ...prev, captchaToken: "" })); // 토큰 초기화
+      console.log("reCAPTCHA 초기화 완료");
+    }
+  };
   const handleNaverLogin = () => {
     window.location.href = "http://localhost:8989/oauth2/authorization/naver";
   };
+  const handleKakaoLogin = () => {
+    window.location.href = "http://localhost:8989/oauth2/authorization/kakao";
+  };
+  
 
   return (
     <div className="login-container">
@@ -158,30 +177,27 @@ const Login = () => {
         {errorMessage && <p className="error-message">{errorMessage}</p>}
 
       <ButtonLogin text="로그인" type="submit"></ButtonLogin>
-        <button type="submit" className="signup-button">
-          로그인
-        </button>
       </form>
+      <ButtonLogin text="회원가입" url="/signupform" type="link" variant="outline" />
       <ButtonLogin text="소셜임시회원가입" url="/socalsignup" type="link" variant="outline" />
-      <ButtonLogin text="일반회원가입 테스트" url="/signupform" type="link" variant="outline" />
-      <ButtonLogin text="캡차 테스트" url="/recaptcha" type="link" variant="outline" />
 
       <div className="login-or">or</div>
       <div className="social-login">
         <button type="button" className="social-button naver" onClick={handleNaverLogin}>
           <img src={naverIcon} alt="Naver" className="icon" />
         </button>
+        <button type="button" className="social-button kakao" onClick={handleKakaoLogin}>
+          <img src={kakaoIcon} alt="Naver" className="icon" />
+        </button>
       </div>
 
       <div className="login-links">
         <Link to={"/findPassword"}>비밀번호 찾기</Link>
-        
         &nbsp;&nbsp;&nbsp;&nbsp;
         <span>|</span>
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <a href="/find-id">아이디 찾기</a>
+        <Link to={"/findID"}>아이디 찾기</Link>
       </div>
-      <a href="/find-password">비밀번호 찾기</a>
     </div>
   );
 };

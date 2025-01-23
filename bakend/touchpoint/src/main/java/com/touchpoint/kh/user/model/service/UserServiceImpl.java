@@ -13,6 +13,7 @@ import com.touchpoint.kh.user.model.dao.UserRepository;
 import com.touchpoint.kh.user.model.dto.request.EmailCertificaionRequsetDto;
 import com.touchpoint.kh.user.model.dto.request.SignInRequestDto;
 import com.touchpoint.kh.user.model.dto.request.SignUpRequestDto;
+import com.touchpoint.kh.user.model.dto.request.SocialSignUpRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.CheckCertificaionRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.EmailCheckRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.IdCheckRequestDto;
@@ -23,6 +24,7 @@ import com.touchpoint.kh.user.model.dto.response.EmailCertificaionResponseDto;
 import com.touchpoint.kh.user.model.dto.response.ResponseDto;
 import com.touchpoint.kh.user.model.dto.response.SignInResponseDto;
 import com.touchpoint.kh.user.model.dto.response.SignUpResponseDto;
+import com.touchpoint.kh.user.model.dto.response.SocialSignUpResponseDto;
 import com.touchpoint.kh.user.model.dto.response.check.CheckCertificaionResponseDto;
 import com.touchpoint.kh.user.model.dto.response.check.EmailCheckResponseDto;
 import com.touchpoint.kh.user.model.dto.response.check.IdCheckResponseDto;
@@ -34,6 +36,7 @@ import com.touchpoint.kh.user.model.vo.User;
 import com.touchpoint.kh.user.provider.EmailProvider;
 import com.touchpoint.kh.user.provider.JwtProvider;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -143,6 +146,7 @@ public class UserServiceImpl implements UserService{
 		return CheckCertificaionResponseDto.success();
 	}
 
+	@Transactional
 	@Override
 	public ResponseEntity<? super SignUpResponseDto> signUp(SignUpRequestDto dto) {
 
@@ -227,7 +231,7 @@ public class UserServiceImpl implements UserService{
 
 	        // 이름과 전화번호로 조회
 	        if (user == null && userName != null && !userName.isEmpty()) {
-	            user = userRepository.findByUserNameAndPhoneNo(userName, phone);
+	            //user = userRepository.findByUserNameAndPhoneNo(userName, phone);
 	        }
 
 	        // 두 조건 모두 만족하지 못한 경우
@@ -251,7 +255,7 @@ public class UserServiceImpl implements UserService{
 			String userIdOrPhone = dto.getUserIdOrPhone().replace("-", "");
 	        String email = dto.getEmail();
 	        
-	        User user = userRepository.findByUserIdAndEmailAndPhoneNo(userIdOrPhone, email);
+	        User user = userMapper.findByUserIdAndEmailAndPhoneNo(userIdOrPhone, email);
 	        if (user == null) return FindPasswordResponseDto.resetFail(); // 사용자 정보 없음
 
 	        String certificaionNumber = CertificationNumber.getCertificationNumber();
@@ -265,7 +269,6 @@ public class UserServiceImpl implements UserService{
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseDto.databaseError();
-
 		}
 		
 		return FindPasswordResponseDto.success();
@@ -296,8 +299,9 @@ public class UserServiceImpl implements UserService{
 		return CheckCertificaionResponseDto.success(user);
 	}
 
-	
 
+	
+	
 
 
 
