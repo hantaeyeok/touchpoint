@@ -9,6 +9,7 @@ import com.touchpoint.kh.history.model.vo.UpdateHistoryDto;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import jakarta.servlet.http.HttpServlet;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -112,6 +113,7 @@ public class SetupHistoryServiceImpl implements SetupHistoryService {
         if (savePath == null) {
             savePath = "/path/to/your/upload/directory/"; // 외부 디렉토리 설정 가능
         }
+
 
         // 디렉토리 생성
         File directory = new File(savePath);

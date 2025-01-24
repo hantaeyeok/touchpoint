@@ -72,7 +72,7 @@
   .social-login {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 30px;
     position: relative; 
     margin-bottom: 15px; 
     padding: 20px;
@@ -98,6 +98,7 @@
     cursor: pointer;
     background-color: #f1f1f1;
     transition: transform 0.2s;
+  
   }
 
   .social-button:hover {
@@ -105,8 +106,8 @@
   }
 
   .social-button img {
-    width: 24px;
-    height: 24px;
+    width: 30px;
+    height: 30px;
   }
 
   .login-links {
@@ -131,4 +132,21 @@
   flex-direction: column; /* 세로 정렬 */
   align-items: center; /* 버튼들을 가운데 정렬 */
   gap: 10px; /* 버튼 간의 간격 설정 */
+  }
+
+  .captcha-info {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* 세로 정렬 */
+    width: 100%; /* 부모 컨테이너 너비 */
+    height: 70px; /* 버튼과 동일한 높이 */
+    overflow: hidden; /* 넘치는 부분 숨김 */
+    padding: 0; /* 안쪽 여백 제거 */
+    margin: 10px; /* 바깥 여백 제거 */
+    box-sizing: border-box; /* 패딩 포함 크기 계산 */
+  }
+  
+  .g-recaptcha {
+    transform: scale(0.9); /* 크기 조정 */
+    transform-origin: center; /* 중심을 기준으로 크기 조정 */
   }
