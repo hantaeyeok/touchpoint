@@ -1,4 +1,4 @@
-package com.touchpoint.kh.user.common;
+package com.touchpoint.kh.user.common.handler;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;

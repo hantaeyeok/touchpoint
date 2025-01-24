@@ -1,23 +1,45 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import InputField from "@components/login/InputField";
 import EmailField from "@components/login/EmailField";
-
 import AgreementField from "@components/login/AgreementField";
 import ButtonLogin from "@components/login/ButtonLogin";
 import axios from "axios";
 import { validateField } from "@components/login/ValidateField"; // 검증 로직 가져오기
 import "@styles/SignUp.css";
+import { jwtDecode } from "jwt-decode";
+import { useLocation } from "react-router-dom"; // URL에서 토큰 추출
+import { useNavigate } from "react-router-dom";
 
 const SocalSignUp = () => {
   const [formData, setFormData] = useState({
     username: "",
     phone: "",
     email: "",
+    adAgreed: "N", // 기본값 설정
   });
   const [errors, setErrors] = useState({});
   const [isMandatoryChecked, setIsMandatoryChecked] = useState(false);
   const [isAdChecked, setIsAdChecked] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+
+  const [userId, setUserId] = useState(""); // userId 저장
+  const location = useLocation(); // 현재 URL 가져오기
+
+  useEffect(() => {
+    // URL에서 토큰 추출 및 디코딩
+    const token = location.pathname.split("/socalsignup/")[1];
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setUserId(decoded.sub); // 토큰의 `sub`에서 userId 추출
+        console.log("Decoded Token:", decoded);
+        console.log("Extracted userId:", decoded.sub);
+      } catch (error) {
+        console.error("Invalid token:", error);
+      }
+    }
+  }, [location]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,20 +84,24 @@ const SocalSignUp = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await axios.post("/api/user/social-signup", {
+      const response = await axios.post("http://localhost:8989/login/social-sign-up", {
         ...formData,
-        adAgreed: isAdChecked, // 광고 동의 여부 추가
+        userId,
       });
 
-      if (response.data.success) {
+      console.log("Sign-up Response:", response.data);
+
+      if (response.data.code === "SU") {
         alert("회원가입이 완료되었습니다!");
         setFormData({
           username: "",
           phone: "",
           email: "",
+          adAgreed: "N",
         });
         setIsMandatoryChecked(false);
         setIsAdChecked(false);
+        navigate("/login");
       } else {
         alert(response.data.message || "회원가입 실패. 다시 시도해주세요.");
       }
@@ -111,7 +137,7 @@ const SocalSignUp = () => {
           errorMessage={errors.phone}
         />
 
-      <EmailField
+        <EmailField
           name="email"
           value={formData.email}
           onChange={handleChange}
@@ -130,13 +156,20 @@ const SocalSignUp = () => {
         <AgreementField
           type="ad"
           isChecked={isAdChecked}
-          onToggle={() => setIsAdChecked(!isAdChecked)}
+          onToggle={() => {
+            setIsAdChecked(!isAdChecked);
+            setFormData((prev) => ({
+              ...prev,
+              adAgreed: !isAdChecked ? "Y" : "N", // "Y" 또는 "N"으로 설정
+            }));
+          }}
         />
 
         <ButtonLogin
           className="signup-button"
           text={isSubmitting ? "처리 중..." : "회원가입"}
           type="submit"
+          onSubmit={handleSubmit}
           disabled={isSubmitting}
         />
       </form>

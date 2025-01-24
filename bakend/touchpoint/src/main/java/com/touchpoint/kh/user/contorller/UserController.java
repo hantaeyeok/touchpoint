@@ -9,18 +9,25 @@ import org.springframework.web.bind.annotation.RestController;
 import com.touchpoint.kh.user.model.dto.request.EmailCertificaionRequsetDto;
 import com.touchpoint.kh.user.model.dto.request.SignInRequestDto;
 import com.touchpoint.kh.user.model.dto.request.SignUpRequestDto;
+import com.touchpoint.kh.user.model.dto.request.SocialSignUpRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.CheckCertificaionRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.EmailCheckRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.IdCheckRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.PhoneCheckRequestDto;
+import com.touchpoint.kh.user.model.dto.request.find.FindIdRequestDto;
+import com.touchpoint.kh.user.model.dto.request.find.FindPasswordRequestDto;
 import com.touchpoint.kh.user.model.dto.response.EmailCertificaionResponseDto;
 import com.touchpoint.kh.user.model.dto.response.SignInResponseDto;
 import com.touchpoint.kh.user.model.dto.response.SignUpResponseDto;
+import com.touchpoint.kh.user.model.dto.response.SocialSignUpResponseDto;
 import com.touchpoint.kh.user.model.dto.response.check.CheckCertificaionResponseDto;
 import com.touchpoint.kh.user.model.dto.response.check.EmailCheckResponseDto;
 import com.touchpoint.kh.user.model.dto.response.check.IdCheckResponseDto;
 import com.touchpoint.kh.user.model.dto.response.check.PhoneCheckResponsetDto;
+import com.touchpoint.kh.user.model.dto.response.find.FindIdResponseDto;
+import com.touchpoint.kh.user.model.dto.response.find.FindPasswordResponseDto;
 import com.touchpoint.kh.user.model.service.UserService;
+import com.touchpoint.kh.user.model.service.UserSocialService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +38,7 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
 	private final UserService userService;
+	private final UserSocialService userSocialService;
 	
 	@PostMapping("/check-id")
 	public ResponseEntity<? super IdCheckResponseDto> idCheck(
@@ -65,31 +73,49 @@ public class UserController {
 			@RequestBody @Valid CheckCertificaionRequestDto requsetBody){
 		ResponseEntity<? super CheckCertificaionResponseDto> response = userService.checkCertificaion(requsetBody);
 		return response;
-	} //Su success일때 다음검증이동
+	}
 	
-	@PostMapping("sign-up")
+	@PostMapping("/sign-up")
 	public ResponseEntity<? super SignUpResponseDto> signUp(
 			@RequestBody @Valid SignUpRequestDto requestBody){
 		ResponseEntity<? super SignUpResponseDto> response = userService.signUp(requestBody);
-		return response;
-		
+		return response;	
 	}
 	
 	@PostMapping("/sign-in")
 	public ResponseEntity<? super SignInResponseDto> signIn(
-			@RequestBody @Valid SignInRequestDto responsebody){
+			@RequestBody SignInRequestDto responsebody){
 		ResponseEntity<? super SignInResponseDto> response = userService.signIn(responsebody);
 		return response;
 	}
 	
-	//DJDJDJDJDJDJ
+	@PostMapping("/find-id")
+	public ResponseEntity<? super FindIdResponseDto> findId(
+			@RequestBody FindIdRequestDto responsebody){
+		ResponseEntity<? super FindIdResponseDto> response = userService.findId(responsebody);
+		return response;
+	} 
 	
+	@PostMapping("/find-password")
+	public ResponseEntity<? super FindPasswordResponseDto> findPassword(
+			@RequestBody FindPasswordRequestDto responsebody){
+		ResponseEntity<? super FindPasswordResponseDto> response = userService.findPassword(responsebody);
+		return response;
+	}
 	
+	@PostMapping("/password-certification")
+	public ResponseEntity<? super CheckCertificaionResponseDto> passwordCertification(
+			@RequestBody @Valid CheckCertificaionRequestDto requsetBody){
+		ResponseEntity<? super CheckCertificaionResponseDto> response = userService.passwordCertification(requsetBody);
+		return response;
+	}
 	
-	
-	
-	
-	
+	@PostMapping("/social-sign-up")
+	public ResponseEntity<? super SocialSignUpResponseDto> socialSignUp(
+			@RequestBody @Valid SocialSignUpRequestDto requestBody){
+		ResponseEntity<? super SocialSignUpResponseDto> response = userSocialService.socialSignUp(requestBody);
+		return response;	
+	}
 	
 	
 	

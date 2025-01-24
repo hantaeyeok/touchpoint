@@ -1,10 +1,8 @@
 package com.touchpoint.kh.history.controller;
 
-import com.touchpoint.kh.history.model.vo.HistoryImage;
 import com.touchpoint.kh.history.model.vo.SetupHistory;
 import com.touchpoint.kh.history.model.vo.SetupHistoryDto;
 
-import jakarta.servlet.http.HttpServletRequest;
 
 import com.touchpoint.kh.common.ResponseData;
 import com.touchpoint.kh.common.ResponseHandler;
@@ -18,11 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.List;
 
 @RestController

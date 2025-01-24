@@ -9,6 +9,8 @@ import com.touchpoint.kh.user.model.dto.request.check.CheckCertificaionRequestDt
 import com.touchpoint.kh.user.model.dto.request.check.EmailCheckRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.IdCheckRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.PhoneCheckRequestDto;
+import com.touchpoint.kh.user.model.dto.request.find.FindIdRequestDto;
+import com.touchpoint.kh.user.model.dto.request.find.FindPasswordRequestDto;
 import com.touchpoint.kh.user.model.dto.response.EmailCertificaionResponseDto;
 import com.touchpoint.kh.user.model.dto.response.SignInResponseDto;
 import com.touchpoint.kh.user.model.dto.response.SignUpResponseDto;
@@ -16,17 +18,20 @@ import com.touchpoint.kh.user.model.dto.response.check.CheckCertificaionResponse
 import com.touchpoint.kh.user.model.dto.response.check.EmailCheckResponseDto;
 import com.touchpoint.kh.user.model.dto.response.check.IdCheckResponseDto;
 import com.touchpoint.kh.user.model.dto.response.check.PhoneCheckResponsetDto;
+import com.touchpoint.kh.user.model.dto.response.find.FindIdResponseDto;
+import com.touchpoint.kh.user.model.dto.response.find.FindPasswordResponseDto;
 
 public interface UserService {
 	
 	ResponseEntity<? super IdCheckResponseDto> idCheck(IdCheckRequestDto dto);
 	ResponseEntity<? super PhoneCheckResponsetDto> phoneCheck(PhoneCheckRequestDto dto);
 	ResponseEntity<? super EmailCheckResponseDto> emailCheck(EmailCheckRequestDto dto);
-	
-	
 	ResponseEntity<? super EmailCertificaionResponseDto> emailCertification(EmailCertificaionRequsetDto dto);
 	ResponseEntity<? super CheckCertificaionResponseDto> checkCertificaion(CheckCertificaionRequestDto dto);
 	ResponseEntity<? super SignUpResponseDto> signUp(SignUpRequestDto dto);
 	ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto);
+	ResponseEntity<? super FindIdResponseDto> findId(FindIdRequestDto dto);
+	ResponseEntity<? super FindPasswordResponseDto> findPassword(FindPasswordRequestDto dto);
+	ResponseEntity<? super CheckCertificaionResponseDto> passwordCertification(CheckCertificaionRequestDto dto);
 
 }

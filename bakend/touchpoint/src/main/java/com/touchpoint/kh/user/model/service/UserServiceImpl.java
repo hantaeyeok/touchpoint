@@ -1,8 +1,6 @@
 package com.touchpoint.kh.user.model.service;
 
 
-import java.util.Optional;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +17,8 @@ import com.touchpoint.kh.user.model.dto.request.check.CheckCertificaionRequestDt
 import com.touchpoint.kh.user.model.dto.request.check.EmailCheckRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.IdCheckRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.PhoneCheckRequestDto;
+import com.touchpoint.kh.user.model.dto.request.find.FindIdRequestDto;
+import com.touchpoint.kh.user.model.dto.request.find.FindPasswordRequestDto;
 import com.touchpoint.kh.user.model.dto.response.EmailCertificaionResponseDto;
 import com.touchpoint.kh.user.model.dto.response.ResponseDto;
 import com.touchpoint.kh.user.model.dto.response.SignInResponseDto;
@@ -27,11 +27,14 @@ import com.touchpoint.kh.user.model.dto.response.check.CheckCertificaionResponse
 import com.touchpoint.kh.user.model.dto.response.check.EmailCheckResponseDto;
 import com.touchpoint.kh.user.model.dto.response.check.IdCheckResponseDto;
 import com.touchpoint.kh.user.model.dto.response.check.PhoneCheckResponsetDto;
+import com.touchpoint.kh.user.model.dto.response.find.FindIdResponseDto;
+import com.touchpoint.kh.user.model.dto.response.find.FindPasswordResponseDto;
 import com.touchpoint.kh.user.model.vo.Certification;
 import com.touchpoint.kh.user.model.vo.User;
 import com.touchpoint.kh.user.provider.EmailProvider;
 import com.touchpoint.kh.user.provider.JwtProvider;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,7 +52,6 @@ public class UserServiceImpl implements UserService{
 	
 	private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	
-	//check
 	@Override
 	public ResponseEntity<? super IdCheckResponseDto> idCheck(IdCheckRequestDto dto) {
 		try {
@@ -141,6 +143,7 @@ public class UserServiceImpl implements UserService{
 		return CheckCertificaionResponseDto.success();
 	}
 
+	@Transactional
 	@Override
 	public ResponseEntity<? super SignUpResponseDto> signUp(SignUpRequestDto dto) {
 
@@ -162,7 +165,15 @@ public class UserServiceImpl implements UserService{
 			String encodedPassword = passwordEncoder.encode(password);
 			dto.setPassword(encodedPassword);
 			
-			User user = new User(dto);
+			User user = User.builder()
+							.userId(userId)
+							.password(encodedPassword)
+							.email(email)
+							.phoneNo(dto.getPhone().replace("-", ""))
+							.name(dto.getUserName())
+							.adAgreed(dto.getAdAgreed())
+							.build();
+			
 			userRepository.save(user);
 		
 			certificationRepository.deleteByUserId(userId);
@@ -175,8 +186,6 @@ public class UserServiceImpl implements UserService{
 		return SignUpResponseDto.success();
 	}
 	
-	
-
 	@Override
 	public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
 		
@@ -188,10 +197,17 @@ public class UserServiceImpl implements UserService{
 			User user = userMapper.findByUserIdOrPhone(userIdOrPhone);
 			if(user == null) return SignInResponseDto.signInFail();
 
-			ResponseEntity<ResponseDto> response = loginValidationService.validateLogin(user, dto);
+			ResponseEntity<SignInResponseDto> validationResponse = 
+					loginValidationService.validateLogin(user, dto);
+			
+			 if (!validationResponse.getStatusCode().is2xxSuccessful()) {
+				 log.info("validationResponse {}",validationResponse);
+				 log.info("Validation Response: Status={}, Body={}", validationResponse.getStatusCode(), validationResponse.getBody());
 
-	
-			token = jwtProvider.create(user.getUserId());
+		            return validationResponse;
+		        }
+	        
+			token = jwtProvider.create(user.getUserId(),user.getUserRole());
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -203,40 +219,92 @@ public class UserServiceImpl implements UserService{
 		return SignInResponseDto.success(token);
 	}
 
-	
-	/*
 	@Override
-	public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
-		
-		String token = null;
-		
+	public ResponseEntity<? super FindIdResponseDto> findId(FindIdRequestDto dto) {
+		User user = null;
+
 		try {
 			
-			String userIdOrPhone = dto.getUserIdOrPhone();
-			User user = userRepository.findByUserId(userId);
-			if(user == null) return SignInResponseDto.signInFail();
-			
-			String password = dto.getPassword();
-			String encodedPassword = user.getPassword();
-			
-			boolean isMatched = passwordEncoder.matches(password, encodedPassword);
-			if(!isMatched) return SignInResponseDto.signInFail();
-			
-			token = jwtProvider.create(userId);
+			String userName = dto.getUserName();
+	        String phone = dto.getPhone() != null ? dto.getPhone().replace("-", "") : null; // 전화번호 형식 처리
+			String email = dto.getEmail();
 
+			if (email != null && !email.isEmpty() && userName != null && !userName.isEmpty()) {
+				email = dto.getEmail();
+	            user = userRepository.findByNameAndEmail(userName, email);
+	        }
+
+	        if (user == null && userName != null && !userName.isEmpty() && phone != null && !phone.isEmpty()) {
+				phone = dto.getPhone().replace("-", "");
+	            user = userRepository.findByNameAndPhoneNo(userName, phone);
+	        }
+
+	        if (user == null) return FindIdResponseDto.findFail();
+	        if (user.getSocialUser().equals("Y")) return FindIdResponseDto.findSocialFail();
+	        
+		} catch (Exception e) {
+			e.printStackTrace();
+	        return ResponseDto.databaseError();
+		}
+		
+        return FindIdResponseDto.success(user.getUserId());
+
+	}
+
+	@Override
+	public ResponseEntity<? super FindPasswordResponseDto> findPassword(FindPasswordRequestDto dto) {
+		
+		try {
+			String userIdOrPhone = dto.getUserIdOrPhone().replace("-", "");
+	        String email = dto.getEmail();
+	        
+	        User user = userMapper.findByUserIdAndEmailAndPhoneNo(userIdOrPhone, email);
+	        if (user == null) return FindPasswordResponseDto.resetFail(); // 사용자 정보 없음
+
+	        String certificaionNumber = CertificationNumber.getCertificationNumber();
+			
+			boolean isSuccessed = emailProvider.sendCerttificaionMail(email, certificaionNumber);
+			if(!isSuccessed) return FindPasswordResponseDto.mailSendFail();
+			
+			Certification certification = new Certification(user.getUserId(), email, certificaionNumber);
+			certificationRepository.save(certification); 
+	        
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseDto.databaseError();
-		
 		}
 		
-		
-		return SignInResponseDto.success(token);
+		return FindPasswordResponseDto.success();
 	}
 
-*/
+	@Override
+	public ResponseEntity<? super CheckCertificaionResponseDto> passwordCertification(CheckCertificaionRequestDto dto) {
+		User user = null;
+		try {
+			String userIdOrPhone = dto.getUserId();
+			String email = dto.getEmail();
+			String certificaionNumber = dto.getCertificationNumber();
+			
+			user = userMapper.findByUserIdOrPhone(userIdOrPhone);
+			if(user == null) return CheckCertificaionResponseDto.validaionFail();
+			
+			String userId = user.getUserId();
+			Certification certification = certificationRepository.findByUserId(userId);
+			if(certification == null) return CheckCertificaionResponseDto.certificaionFail();
+			
+			boolean isMatch = certification.getEmail().equals(email) && certification.getCertificationNumber().equals(certificaionNumber);
+			if(!isMatch) return CheckCertificaionResponseDto.certificaionFail();
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		
+		return CheckCertificaionResponseDto.success(user);
+	}
 
 
+	
+	
 
 
 

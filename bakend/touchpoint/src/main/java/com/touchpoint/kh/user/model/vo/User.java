@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -55,8 +56,8 @@ public class User {
     @Column(name = "USER_ST", length = 1, nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y' CHECK (USER_ST IN ('Y', 'N'))")
     private String userSt; // 계정 상태 (Y: 활성, N: 비활성)
 
-    @Column(name = "SOCIAL_USER", length = 1, nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N' CHECK (SOCIAL_USER IN ('Y', 'N'))")
-    private String socialUser; // 소셜 로그인 여부 (Y/N)
+    @Column(name = "SOCIAL_USER", length = 1, nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N' CHECK (SOCIAL_USER IN ('Y', 'N', 'B'))")
+    private String socialUser; // 소셜 로그인 여부 ('Y': 소셜, 'N': 일반, 'B': 둘 다)
 
     @Column(name = "AD_AGREED", length = 1, nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N' CHECK (AD_AGREED IN ('Y', 'N'))")
     private String adAgreed; // 광고 동의 여부 (Y/N)
@@ -64,17 +65,47 @@ public class User {
     @Column(name = "USER_ROLE", length = 20, nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'ROLE_USER'")
     private String userRole; // 사용자 역할 (기본값: ROLE_USER)
     
-    public User(SignUpRequestDto dto) {
-    	this.userId = dto.getUserId();
-    	this.password = dto.getPassword();
-    	this.email = dto.getEmail();
-    	this.phoneNo = dto.getPhone().replace("-", "");
-    	this.name = dto.getUserName();
-    	this.joinDt = LocalDate.now();
-    	this.userSt = "Y";
-    	this.socialUser ="N";
-    	this.adAgreed = dto.getAdAgreed();
-    	this.userRole = "ROLE_USER";
+    
+    @PrePersist
+    public void prePersist() {
+        if (this.joinDt == null) {
+            this.joinDt = LocalDate.now(); // 기본값 설정
+        }
+        if (this.userSt == null) {
+            this.userSt = "Y";
+        }
+        if (this.socialUser == null) {
+            this.socialUser = "N";
+        }
+        if (this.adAgreed == null) {
+            this.adAgreed = "N";
+        }
+        if (this.userRole == null) {
+            this.userRole = "ROLE_USER";
+        }
     }
     
+    
+//    public User(SignUpRequestDto dto) {
+//    	this.userId = dto.getUserId();
+//    	this.password = dto.getPassword();
+//    	this.email = dto.getEmail();
+//    	this.phoneNo = dto.getPhone().replace("-", "");
+//    	this.name = dto.getUserName();
+//    	this.joinDt = LocalDate.now();
+//    	this.userSt = "Y";
+//    	this.socialUser ="N";
+//    	this.adAgreed = dto.getAdAgreed();
+//    	this.userRole = "ROLE_USER";
+//    }
+//    
+//    public User(String userId, String type, String email) {
+//    	this.userId = userId;
+//    	this.password = "password";
+//    	this.email = email;
+//    	this.joinDt = LocalDate.now();
+//    	this.userSt = "Y";
+//    	this.socialUser ="N";
+//    	this.userRole = "ROLE_USER";
+//    }
 }

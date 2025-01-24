@@ -1,189 +1,203 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ButtonLogin from "@components/login/ButtonLogin";
-import naverIcon from "@pages/login/icon/navericon.png";
 import "@styles/Login.css";
+import naverIcon from "@pages/login/icon/navericon.png";
+import kakaoIcon from "@pages/login/icon/kakoicon.png";
+
+import ButtonLogin from "@components/login/ButtonLogin";
+import { Link } from "react-router-dom";
 
 const Login = () => {
-  // formData
   const [formData, setFormData] = useState({
-    usernameOrPhone: "",
-    userType: "",
+    userIdOrPhone: "",
     password: "",
-    remember: false,
     captchaToken: "",
   });
 
+  const [captchaRequired, setCaptchaRequired] = useState(false); // 캡차 활성화 여부
   const [failedLoginCnt, setFailedLoginCnt] = useState(0); // 로그인 실패 횟수
-  const [captchaRequired, setCaptchaRequired] = useState(false); // 캡차 필요 여부
+  const [isSubmitting, setIsSubmitting] = useState(false); // 요청 중인지 여부
+  const [errorMessage, setErrorMessage] = useState(""); // 오류 메시지
 
+  const siteKey = "6LcZWL4qAAAAAIDcO35ePOizWYKQKOtoDjtUyGE4"; // reCAPTCHA v2 Site Key
 
-  // Load Google reCAPTCHA script
   useEffect(() => {
-    const captchaScript = () => {
+    if (captchaRequired) {
       const script = document.createElement("script");
-      script.src = "https://www.google.com/recaptcha/api.js?render=6Lek_LYqAAAAAM8fC9lWQNrJlR66_vgZINVe3cc1"; // ✅ 캡차 키 확인 필요 (개발용 키인지, 프로덕션용인지)
+      script.src = "https://www.google.com/recaptcha/api.js";
       script.async = true;
+      script.defer = true;
       document.body.appendChild(script);
-    };
 
-    captchaScript();
-  }, []);
+      console.log("reCAPTCHA v2 스크립트 로드 완료");
+
+      return () => {
+        document.body.removeChild(script);
+      };
+    }
+  }, [captchaRequired]);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    let userType = formData.userType;
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-    if (name === "usernameOrPhone") {
-      // ✅ 입력값에 따라 전화번호인지 아이디인지 구분
-      const isPhone = /^[0-9]{10,11}$/.test(value.replace(/-/g, ""));
-      userType = isPhone ? "phone" : "userId";
+  const handleRecaptchaVerify = (token) => {
+    if (token) {
+      setFormData((prev) => ({ ...prev, captchaToken: token }));
+      console.log("캡차 토큰 생성:", token);
+      setErrorMessage(""); // 오류 메시지 초기화
+    } else {
+      setErrorMessage("캡차 검증이 필요합니다.");
     }
-
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value.replace(/-/g, ""), // ✅ 전화번호 입력 시 '-' 자동 제거
-      userType,
-    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    setErrorMessage("");
 
     try {
+      let token = formData.captchaToken;
+
+      if (captchaRequired) {
+        const recaptchaResponse = window.grecaptcha.getResponse();
+        if (!recaptchaResponse) {
+          setErrorMessage("캡차를 완료해주세요.");
+          setIsSubmitting(false);
+          resetRecaptcha();
+          return;
+        }
+        handleRecaptchaVerify(recaptchaResponse);
+        token = recaptchaResponse;
+      }
+
       const response = await axios.post("http://localhost:8989/login/sign-in", {
-        userIdOrPhone: formData.usernameOrPhone,
-        userType: formData.userType,
+        userIdOrPhone: formData.userIdOrPhone,
         password: formData.password,
-        captchaToken: captchaRequired ? formData.captchaToken : null,
+        captchaToken: token,
       });
 
-      // 캡차가 필요한 경우 처리
-      if (response.data.data?.captchaRequired) {
-        setCaptchaRequired(true); // 캡차 활성화
-        setFailedLoginCnt(response.data.data.failedLoginCnt);
+      if (response.data.code === "SU") {
+        const authToken = response.data.token;
+        console.log("authToken", authToken);
+        alert("로그인 성공");
+        window.location.href = `/auth/${authToken}`;
 
-        // 캡차 실행
-        const token = await window.grecaptcha.execute("6Lek_LYqAAAAAM8fC9lWQNrJlR66_vgZINVe3cc1", { action: "login" });
-        setFormData({ ...formData, captchaToken: token });
       } else {
-        handleLoginResponse(response);
+        handleServerError(response.data);
       }
     } catch (error) {
-      console.error("로그인 실패:", error);
-      alert("로그인 실패. 다시 시도해주세요.");
+      if (error.response) {
+        console.error("서버 응답 에러:", error.response);
+        handleServerError(error.response.data);
+      } else {
+        console.error("네트워크 오류:", error);
+        setErrorMessage("네트워크 오류가 발생했습니다.");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleLoginResponse = (response) => {
-    if (response.data.message === "로그인 성공") {
-      alert("로그인 성공!");
-       // ✅ Context나 LocalStorage에 로그인 정보 저장 가능
-    } else {
-      alert(response.data.message);
-      setFailedLoginCnt(response.data.data?.failedLoginCnt || 0);
-      setCaptchaRequired(response.data.data?.captchaRequired || false);
+  const handleServerError = (data) => {
+    console.log("서버에서 반환된 오류:", data);
+
+    if (data.captchaActive === "Y") {
+      resetRecaptcha();
+      setCaptchaRequired(true);
+      setFailedLoginCnt(data.loginFailCount || 0);
+      alert("캡차가 활성화되었습니다. 캡차를 완료해주세요.");
+    } else if (data.code === "SF") {
+      const alertMessage = captchaRequired
+        ? "캡차는 성공했지만 아이디와 비밀번호가 일치하지 않습니다."
+        : "아이디와 비밀번호가 일치하지 않습니다.";
+      alert(alertMessage);
+    } else if (data.code === "AL") {
+      alert("아이디 잠금: 관리자에게 문의하세요.");
+    } else if (data.code === "CF") {
+      alert("캡차를 다시 진행해주세요.");
+      resetRecaptcha();
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleSubmit(e);
+  const resetRecaptcha = () => {
+    if (window.grecaptcha) {
+      grecaptcha.reset(); // reCAPTCHA 초기화
+      setFormData((prev) => ({ ...prev, captchaToken: "" })); // 토큰 초기화
+      console.log("reCAPTCHA 초기화 완료");
     }
   };
-
-  // Social Login (Naver)
   const handleNaverLogin = () => {
-    window.location.href = "http://localhost:8989/oauth2/authorization/naver"; // ✅ 네이버 OAuth 경로 확인
+    window.location.href = "http://localhost:8989/oauth2/authorization/naver";
   };
+  const handleKakaoLogin = () => {
+    window.location.href = "http://localhost:8989/oauth2/authorization/kakao";
+  };
+  
 
   return (
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit}>
-        {/* 아이디 또는 전화번호 입력 필드 */}
         <div className="login-form-group">
           <input
             type="text"
-            id="usernameOrPhone"
-            name="usernameOrPhone"
+            name="userIdOrPhone"
             placeholder="아이디 또는 전화번호"
             required
             className="login-input-field"
-            value={formData.usernameOrPhone}
+            value={formData.userIdOrPhone}
             onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            onInput={(e) => {
-              e.target.value = e.target.value.replace(/-/g, ""); // ✅ '-' 문자 제거
-            }}
           />
         </div>
 
-        {/* 비밀번호 입력 필드 */}
         <div className="login-form-group">
           <input
             type="password"
-            id="password"
             name="password"
             placeholder="비밀번호"
             required
             className="login-input-field"
             value={formData.password}
             onChange={handleChange}
-            onKeyDown={handleKeyDown}
           />
         </div>
 
-        {/* 로그인 상태 유지 체크박스 */}
-        <div className="login-form-group checkbox-group">
-          <label>
-            <input
-              type="checkbox"
-              name="remember"
-              checked={formData.remember}
-              onChange={handleChange}
-            />
-            아이디 저장하기
-          </label>
-        </div>
-
-         {/* 실패 횟수 및 캡차 활성화 정보 */}
-         {captchaRequired && (
+        {captchaRequired && (
           <div className="captcha-info">
-            <p>로그인 실패 횟수: {failedLoginCnt}</p>
-            <p>캡차를 완료하고 다시 시도해주세요.</p>
+            <div
+              className="g-recaptcha"
+              data-sitekey={siteKey}
+              data-callback="handleRecaptchaVerify"
+            ></div>
           </div>
         )}
 
-        {/* 로그인 및 회원가입 버튼 */}
-        <div className="button-group">
-          <ButtonLogin text="로그인" type="submit" />
-          <ButtonLogin text="소셜임시회원가입" url="/socalsignup" type="link" variant="outline" />
-          <ButtonLogin text="일반회원가입 테스트" url="/signupform" type="link" variant="outline" />
-        </div>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
 
-        {/* 소셜 로그인 버튼 */}
-        <div className="login-or">or</div>
-        <div className="social-login">
-          <button type="button" className="social-button naver" onClick={handleNaverLogin}>
-            <img src={naverIcon} alt="Naver" className="icon" />
-          </button>
-          <button type="button" className="social-button kakao">
-            <img src="/icons/kakao.png" alt="Kakao" className="icon" />
-          </button>
-          <button type="button" className="social-button google">
-            <img src="/icons/google.png" alt="Google" className="icon" />
-          </button>
-        </div>
-
-        {/* 하단 링크 */}
-        <div className="login-links">
-          <a href="/find-password">비밀번호 찾기</a>
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <span>|</span>
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <a href="/find-id">아이디 찾기</a>
-        </div>
+      <ButtonLogin text="로그인" type="submit"></ButtonLogin>
       </form>
+      <ButtonLogin text="회원가입" url="/signupform" type="link" variant="outline" />
+      {/* <ButtonLogin text="소셜임시회원가입" url="/socalsignup" type="link" variant="outline" /> */}
+
+      <div className="login-or">or</div>
+      <div className="social-login">
+        <button type="button" className="social-button naver" onClick={handleNaverLogin}>
+          <img src={naverIcon} alt="Naver" className="icon" />
+        </button>
+        <button type="button" className="social-button kakao" onClick={handleKakaoLogin}>
+          <img src={kakaoIcon} alt="Naver" className="icon" />
+        </button>
+      </div>
+
+      <div className="login-links">
+        <Link to={"/findID"}>아이디 찾기</Link>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <span>|</span>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <Link to={"/findPassword"}>비밀번호 찾기</Link>
+      </div>
     </div>
   );
 };

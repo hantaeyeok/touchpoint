@@ -24,7 +24,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter{
@@ -52,6 +54,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 			
 			User user = userRepository.findByUserId(userId);
 			String role = user.getUserRole();
+			System.out.println(role);
+			log.info("role : {}",role);
 	
 			List<GrantedAuthority> authorities = new ArrayList<>();
 			authorities.add(new SimpleGrantedAuthority(role));
