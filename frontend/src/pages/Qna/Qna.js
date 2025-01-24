@@ -1,16 +1,18 @@
 import React from "react";
-
+import { useRef } from "react";
 import "@styles/Qna.css";
 import { Routes, Route, Link } from "react-router-dom";
-
+import QnaList from "@components/qna/QnaList";
 
 
 
 function Qna() {
+
     const imageUrl = `${process.env.PUBLIC_URL}/images/qna.avif`;
+    const searchInput = useRef(null);
+    
     return(
         <div>
-            <h1>시작해볼까</h1>
             <div className="imgBox"> 
                 <img src={imageUrl}/>
             </div>
@@ -18,7 +20,20 @@ function Qna() {
                 <Link to="/qna">질문하기</Link>
                 <Link to="/faq">자주 묻는 질문</Link>
             </div>
-                <h3>질문하기 화면</h3>
+            <div className="qnaSearch-container">
+                <input
+                type="text"
+                placeholder="검색어를 입력해주세요."
+                ref={searchInput}
+                value={''}
+                onChange={''}
+                />
+                <button onClick={() => searchInput.current.focus()}>검색</button>
+            </div>
+            <div className="btn_box">
+                <Link to="/addQna"><button className="qna_btn" >글 등록</button></Link>
+            </div>
+            <QnaList/>
         </div>
     )
 }

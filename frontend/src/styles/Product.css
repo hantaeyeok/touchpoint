@@ -18,7 +18,10 @@
 }
 
 .style-button1:hover {
-  color: #E72681; /* 호버 시 색상 변경 */
+  color: #ec1a7c; 
+}
+.style-button1.active {
+  color: #ec1a7c;
 }
 
 
@@ -49,6 +52,8 @@ justify-content: center;
 .proImg{
   width: 200px;
   height:200px;
+  object-fit: cover;
+
 }
 .proP{
   text-align: center;
@@ -68,3 +73,4 @@ justify-content: center;
   color: #E72681
 
 }
+

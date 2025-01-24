@@ -1,26 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { Route, Routes, useNavigate } from 'react-router-dom';
-import { FaqProvider } from 'context/FaqContext';
-import './App.css'
-import Menubar from '@components/indexcomponents/Menubar';
-import Product from '@pages/product/Product';
-import ProductInsert from '@pages/product/ProductInsert';
-import Qna from '@pages/Qna/Qna';
-import Faq from '@pages/Qna/Faq';
-import AddFaq from '@components/qna/AddFaq';
-import HistoryMain from "@pages/history/HistoryMain";
-
 import Login from '@pages/login/Login'; 
 import SocalSignUp from '@pages/login/SocalSignUp'; 
 import SignUpForm from '@pages/login/SignUpForm'; 
+import Menubar from '@components/indexcomponents/Menubar';
+import ProductRegister from '@components/productcomponents/ProductRegister';
+import ProductEdit from '@components/productcomponents/ProductEdit';
+import Product from '@pages/product/Product';
+import DetailProduct from "@pages/product/DetailProduct";
+import Qna from '@pages/Qna/Qna';
+import Faq from '@pages/Qna/Faq';
+import QnaDetail from '@pages/Qna/QnaDetail';
+import AddFaq from '@components/qna/AddFaq';
+import AddQna from '@components/qna/AddQna';
+import QnaEdit from "@pages/Qna/QnaEdit";
+import { FaqProvider } from 'context/FaqContext';
+import './App.css'
+import HistoryMain from "@pages/history/HistoryMain";
 import RecaptchaTest from "@pages/login/RecaptchaTest ";
 import FindPassword from "@pages/login/FindPassword";
 import AuthHandler from "@components/login/AuthHandler";
 import FindId from "@pages/login/FindId";
-
 import UseUserId from "@components/login/UseUserId";
 import UseAdmin from "@components/login/UseAdmin";
-
+import AdminPage from "@pages/admin/AdminPage";
 function App() {
 
   const userId = UseUserId();
@@ -54,11 +57,17 @@ function App() {
             <Route path="/qna/*" element={<Qna />} />
             <Route path="/faq/*" element={<Faq />} />
             <Route path="/addFaq/*" element={<AddFaq />} />
+            <Route path="/addQna/*" element={<AddQna />} />
+            <Route path="/qnaEdit/*" element={<QnaEdit />} />
+            <Route path="/qnaDetail/:qnaNo" element={<QnaDetail />} />
+            <Route path="/" element={<h1>메인</h1>} />
             <Route path="/" element={<h1>메인</h1>} />
             <Route path="/auth/:token" element={<AuthHandler/>} />
 
             <Route path="/product" element={<Product/>}/>
-            <Route path="/productInsert" element={<ProductInsert/>}/>
+            <Route path="/detailProduct/:productId" element={<DetailProduct/>}/>
+            <Route path="/productRegister" element={<ProductRegister/>}/>
+            <Route path="/productEdit/:productId" element={<ProductEdit/>}/>
             <Route path="/login" element={<Login />} /> 
             <Route path="/signupform" element={<SignUpForm />} /> 
             <Route path="/socalsignup/:token" element={<SocalSignUp />} /> 
@@ -66,6 +75,7 @@ function App() {
             <Route path="/recaptcha" element={<RecaptchaTest />} />
             <Route path="/findPassword" element={<FindPassword />} />
             <Route path="/findId" element={<FindId />} />
+            <Route path="/adminPage" element={<AdminPage />} />
             
           </Routes>
         </div>

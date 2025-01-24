@@ -12,12 +12,7 @@ const Menubar = () => {
             <Link className="logo" to="/">logo</Link>
             <div className="menu-items">
                 <div className="dropdown">
-                    <a href="#product" className="dropdown-title">제품소개</a>
-                    <div className="dropdown-content">
-                        <Link to="/product">제품 1</Link>
-                        <Link to="/product">제품 2</Link>
-                    </div>
-                </div>
+                <Link to="/product" className="dropdown-title" id="productMenu">제품소개</Link>                </div>
 
                 <div className="dropdown">
                     <a href="#solution" className="dropdown-title">솔루션소개</a>
