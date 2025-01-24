@@ -1,11 +1,14 @@
 package com.touchpoint.kh.history.model.service;
 
 import com.touchpoint.kh.history.model.dao.SetupHistoryMapper;
+import com.touchpoint.kh.history.model.vo.DetailHistoryDto;
 import com.touchpoint.kh.history.model.vo.HistoryImage;
 import com.touchpoint.kh.history.model.vo.SetupHistory;
 import com.touchpoint.kh.history.model.vo.SetupHistoryDto;
+import com.touchpoint.kh.history.model.vo.UpdateHistoryDto;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -137,4 +140,54 @@ public class SetupHistoryServiceImpl implements SetupHistoryService {
         // 저장된 파일명 반환
         return  "/resources/uploadHistoryFiles/"+newFileName; // 파일명만 반환
     }
+
+    @Override
+    @Transactional
+    public int deleteHistory(List<Integer> historyNos) {
+        // 1. 이미지 삭제
+        int deletedImages = setupHistoryMapper.deleteHistoryImage(historyNos);
+        if (deletedImages == 0) {
+            throw new RuntimeException("이미지 삭제에 실패했습니다.");
+        }
+
+        // 2. 히스토리 삭제
+        int deletedHistories = setupHistoryMapper.deleteHistory(historyNos);
+        if (deletedHistories == 0) {
+            throw new RuntimeException("히스토리 삭제에 실패했습니다.");
+        }
+
+        return deletedHistories; // 삭제된 히스토리 수 반환
+    }
+
+	@Override
+	public DetailHistoryDto detailHistoryById(int historyNo) {
+		log.info("Service에서 no를 받아오는가: {}", historyNo);
+        // 기본 이력 정보 조회
+        SetupHistory detailHistory = setupHistoryMapper.detailHistory(historyNo);
+        log.info("조회된 게시글 데이터: {}", detailHistory); // 조회된 데이터 로그
+        if (detailHistory == null) {
+            return null; // 해당 이력 정보가 없을 경우 null 반환
+        }
+        // 연관된 이미지 리스트 조회
+        List<HistoryImage> detailImages = setupHistoryMapper.detailHistoryImage(historyNo);
+        log.info("조회된 이미지 데이ㅌ터: {}", detailImages); // 조회된 데이터 로그
+        // 조회된 데이터를 DetailHistoryDto로 매핑하여 반환
+        return DetailHistoryDto.builder()
+                .historyNo(detailHistory.getHistoryNo())
+                .storeName(detailHistory.getStoreName())
+                .storeAddress(detailHistory.getStoreAddress())
+                .modelName(detailHistory.getModelName())
+                .historyContent(detailHistory.getHistoryContent())
+                .historyDate(detailHistory.getHistoryDate())
+                .userId(detailHistory.getUserId())
+                .images(detailImages) 
+                .build();
+    }
+
+	@Override
+	public int updateSetupHistory(UpdateHistoryDto updateHistoryDto) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
+

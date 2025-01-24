@@ -39,28 +39,33 @@ const HistoryMain = () => {
 
         // 확인창 띄우기
         const confirmDelete = window.confirm("정말 삭제하시겠습니까?");
-        if (confirmDelete) {
-            try {
-                // 선택된 항목을 컨트롤러로 전송
-                const formData = new FormData();
-                const jsonData = JSON.stringify({ historyIds: selectedItems }); // JSON 변환
-                formData.append("data", new Blob([jsonData], { type: "application/json" }));
-
-                const response = await axios.post("http://localhost:8989/history/delete", formData);
-
-                if (response.status === 200) {
-                    alert("삭제가 완료되었습니다.");
-                    setSelectedItems([]); // 선택 항목 초기화
-                    setDeleteMode(false); // 딜리트 모드 종료
-                } else {
-                    alert("삭제에 실패했습니다. 다시 시도해주세요.");
+    if (confirmDelete) {
+        try {
+            // JSON 요청으로 전송
+            const response = await axios.post(
+                "http://localhost:8989/history/delete",
+                { historyNo: selectedItems }, // JSON 데이터 전송
+                {
+                    headers: {
+                        "Content-Type": "application/json", // JSON 요청 설정
+                    },
                 }
-            } catch (error) {
-                console.error("서버 오류:", error.response || error);
-                alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
+            );
+
+            if (response.data.data === true) {
+                alert(response.data.message || "삭제가 완료되었습니다.");
+                setSelectedItems([]); // 선택 항목 초기화
+                setDeleteMode(false); // 딜리트 모드 종료
+            } else {
+                alert(response.data.message || "삭제에 실패했습니다. 다시 시도해주세요.");
             }
+        } catch (error) {
+            console.error("서버 오류:", error.response || error);
+            alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
         }
-    };
+    }
+};
+
 
     return (
         <div className="historyMain">
