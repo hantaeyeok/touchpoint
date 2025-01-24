@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import Login from '@pages/login/Login'; 
-import SignUp from '@pages/login/SignUp'; 
 import SocalSignUp from '@pages/login/SocalSignUp'; 
 import SignUpForm from '@pages/login/SignUpForm'; 
 import Menubar from '@components/indexcomponents/Menubar';
 import ProductRegister from '@components/productcomponents/ProductRegister';
 import ProductEdit from '@components/productcomponents/ProductEdit';
 import Product from '@pages/product/Product';
-import ProductInsert from '@pages/product/ProductInsert';
 import DetailProduct from "@pages/product/DetailProduct";
-import ProductChange from "@pages/product/ProductChange";
 import Qna from '@pages/Qna/Qna';
 import Faq from '@pages/Qna/Faq';
 import QnaDetail from '@pages/Qna/QnaDetail';
@@ -18,20 +15,14 @@ import AddFaq from '@components/qna/AddFaq';
 import AddQna from '@components/qna/AddQna';
 import QnaEdit from "@pages/Qna/QnaEdit";
 import { FaqProvider } from 'context/FaqContext';
-import axios from 'axios';
 import './App.css'
 import HistoryMain from "@pages/history/HistoryMain";
-import Login from '@pages/login/Login'; 
-import SocalSignUp from '@pages/login/SocalSignUp'; 
-import SignUpForm from '@pages/login/SignUpForm'; 
 import RecaptchaTest from "@pages/login/RecaptchaTest ";
 import FindPassword from "@pages/login/FindPassword";
 import AuthHandler from "@components/login/AuthHandler";
 import FindId from "@pages/login/FindId";
-
 import UseUserId from "@components/login/UseUserId";
 import UseAdmin from "@components/login/UseAdmin";
-
 import AdminPage from "@pages/admin/AdminPage";
 function App() {
 
