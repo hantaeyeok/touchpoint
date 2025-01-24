@@ -31,7 +31,9 @@ public interface QnaMapper {
 
 	void deleteFile(int fileNo);
 
-	void updateFile(int fileNo);
+	void updateAnswer(AnswerDto answerDto);
+
+	void insNewFile(FileDto fileDto);
 
 
 }

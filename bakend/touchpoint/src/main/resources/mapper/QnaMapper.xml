@@ -37,6 +37,8 @@
 			    Q.QNA_NO = F.QNA_NO
 		 WHERE
 			    Q.QNA_NO = #{qnaNo}
+	       AND
+	       		(F.ANSWER_NO IS NULL OR F.ANSWER_NO = 0)
    </select>
    
    <select id="answerFind" resultMap="AnswerResultMap">
@@ -46,6 +48,7 @@
 	            A.ANSWER_CONTENT,
 	            A.ANSWER_DATE,
 	            A.QNA_NO,
+	            F.FILE_NO,
 	            F.ORIGIN_NAME,
 	            F.CHANGE_NAME,
 	            F.PATH
@@ -150,9 +153,9 @@
 			                #{originName},
 			                #{changeName},
 			                #{qnaNo},
-			                #{answerNo],
+			                #{answerNo},
 			                #{path}
-			        )    
+			        ) 
    </insert>
    
    <update id="updateStatus" parameterType="com.touchpoint.kh.qna.model.vo.QnaDto">
@@ -203,6 +206,8 @@
 	
 	    <collection property="files" ofType="com.touchpoint.kh.qna.model.vo.FileDto">
 		    <result property="fileNo" column="FILE_NO"/>
+		    <result property="qnaNo" column="QNA_NO"/>
+		    <result property="answerNo" column="ANSWER_NO"/>
 	        <result property="originName" column="ORIGIN_NAME"/>
 	        <result property="changeName" column="CHANGE_NAME"/>
 	        <result property="path" column="PATH"/>
@@ -219,6 +224,7 @@
 	
 	    <collection property="files" ofType="com.touchpoint.kh.qna.model.vo.FileDto">
 	        <result property="fileNo" column="FILE_NO"/>
+	        <result property="qnaNo" column="QNA_NO"/>
 	        <result property="originName" column="ORIGIN_NAME"/>
 	        <result property="changeName" column="CHANGE_NAME"/>
 	        <result property="path" column="PATH"/>

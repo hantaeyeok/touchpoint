@@ -22,19 +22,16 @@ public class QnaServiceImpl implements QnaService {
 	public List<QnaDto> qnaFindAll() {
 		return qnaMapper.qnaFindAll();
 	}
-	
 
 	@Override
 	public int  createQna(QnaDto qnaDto) {
 		return qnaMapper.insQna(qnaDto);
 	}
-	
 
 	@Override
 	public void createQnaFile(FileDto fileAdd) {
 		qnaMapper.insQnaFile(fileAdd);
 	}
-	
 
 	@Override
 	public QnaDto qnaDetail(int qnaNo) {
@@ -58,29 +55,29 @@ public class QnaServiceImpl implements QnaService {
 	    }
 	}
 
-
 	@Override
 	public void createAnswerFile(FileDto fileAdd) {
 		qnaMapper.insAnswerFile(fileAdd);
 	}
-
 
 	@Override
 	public void updateQna(QnaDto qnaDto) {
 		qnaMapper.updateQna(qnaDto);
 	}
 
-
 	@Override
 	public void deleteFile(int fileNo) {
 		qnaMapper.deleteFile(fileNo);
 	}
 
+	@Override
+	public void updateAnswer(AnswerDto answerDto) {
+		qnaMapper.updateAnswer(answerDto);
+	}
 
 	@Override
-	public void updateFile(int fileNo) {
-		qnaMapper.updateFile(fileNo);
-		
+	public void insNewFile(FileDto fileDto) {
+		qnaMapper.insNewFile(fileDto);
 	}
 
 

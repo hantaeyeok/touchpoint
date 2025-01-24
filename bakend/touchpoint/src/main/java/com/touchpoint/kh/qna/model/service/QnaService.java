@@ -26,7 +26,9 @@ public interface QnaService {
 
 	public void deleteFile(int fileNo);
 
-	public void updateFile(int fileNo);
+	public void updateAnswer(AnswerDto answerNo);
+
+	public void insNewFile(FileDto fileDto);
 
 	//public int createQna(QnaDto qnaDto, List<FileDto> fileDtos);
 

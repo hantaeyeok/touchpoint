@@ -109,7 +109,10 @@ public class QnaController {
 	
 	
 	//insert
-	private List<FileDto> saveFiles(HttpServletRequest request, List<MultipartFile> files, int qnaNo) {
+	private List<FileDto> saveFiles(HttpServletRequest request, 
+									List<MultipartFile> files, 
+									int qnaNo,
+									int answerNo) {
 
 	    String uploadPath = request.getServletContext().getRealPath("/resources/qnaUpload/");
 	    File directory = new File(uploadPath);
@@ -135,6 +138,7 @@ public class QnaController {
 	        fileDto.setChangeName(changeName);
 	        fileDto.setPath(filePath);
 	        fileDto.setQnaNo(qnaNo);
+	        fileDto.setAnswerNo(answerNo);
 	        fileDtos.add(fileDto);
 	    }
 	    return fileDtos;
@@ -145,10 +149,16 @@ public class QnaController {
 												  @RequestPart("QnaDto") QnaDto qnaDto,
 	        									  @RequestPart(value = "files", required = false) List<MultipartFile> files){
 		
+		Integer number = 0; //매개변수 개수 맞추기위함..
 		try {
 	        int savedQna = qnaService.createQna(qnaDto);
-	        System.out.println("savedQna: " + savedQna);
-	        List<FileDto> fileDtos = saveFiles(request, files, savedQna);
+	        
+	        if (files == null || files.isEmpty()) {
+	            log.warn("첨부 파일이 없습니다.");
+	            return responseHandler.createResponse("QnA 등록 성공 (첨부 파일 없음)", savedQna, HttpStatus.OK);
+	        }
+	        
+	        List<FileDto> fileDtos = saveFiles(request, files, savedQna, number);
 
 	        for (FileDto fileDto : fileDtos) {
 	            try {
@@ -170,11 +180,18 @@ public class QnaController {
 													 @PathVariable("qnaNo") int qnaNo,
 													 @RequestPart("Answer") AnswerDto answerDto ,
 													 @RequestPart(value="files", required = false) List<MultipartFile> files){
-
+		
+		Integer number = 0; //매개변수 개수 맞추기위함..
 		try {
 	        answerDto.setQnaNo(qnaNo);
 	        int answerSave = qnaService.createAnswer(answerDto);
-	        List<FileDto> fileDtos = saveFiles(request, files, qnaNo);
+	        
+	        if (files == null || files.isEmpty()) {
+	            log.warn("첨부 파일이 없습니다.");
+	            return responseHandler.createResponse("QnA 등록 성공 (첨부 파일 없음)", answerSave, HttpStatus.OK);
+	        }
+	        
+	        List<FileDto> fileDtos = saveFiles(request, files, qnaNo, number);
 
 	        for (FileDto fileDto : fileDtos) {
 	            try {
@@ -193,36 +210,33 @@ public class QnaController {
 	
 	
 	//update
-	@PutMapping("/updateQna/{qnaNo}")
-	public ResponseEntity<ResponseData> updateQna(HttpServletRequest request,
-	                                              @PathVariable("qnaNo") int qnaNo,
-	                                              @RequestPart("QnaDto") QnaDto qnaDto,
-	                                              @RequestPart(value = "files", required = false) List<MultipartFile> files) {
-	    try {
-	        qnaDto.setQnaNo(qnaNo);
-	        qnaService.updateQna(qnaDto);
-	        QnaDto prevFile = qnaService.qnaDetail(qnaNo);
-	        List<FileDto> prevFiles = prevFile.getFiles();
-
-	        // 새로 추가된 파일 필터링 (조건 필터링)
-	        List<MultipartFile> newFilesToSave = files.stream()
-	        									.filter(file -> prevFiles.stream()
+	private List<FileDto> updateFile(HttpServletRequest request,
+									 List<MultipartFile> files,
+									 List<FileDto> prevFiles){
+		
+			Integer qnaNo = prevFiles.get(0).getQnaNo();
+			Integer answerNo = prevFiles.get(0).getAnswerNo();
+			System.out.println("prevFiles : " + prevFiles);
+			System.out.println("qnaNo : " + qnaNo);
+			System.out.println("answerNo : " + answerNo);
+			// 새로 추가된 파일 필터링 (조건 필터링)
+			List<MultipartFile> newFilesToSave = files.stream()
+												.filter(file -> prevFiles.stream()
 												.noneMatch(prev -> file.getOriginalFilename().equals(prev.getOriginName())))
-        										.collect(Collectors.toList());
-	        
-	        // 새로 추가된 파일만 저장
-	        List<FileDto> newFiles = saveFiles(request, newFilesToSave, qnaNo);
-	        
-	        for (FileDto fileDto : newFiles) {
-	            try {
-	                qnaService.createQnaFile(fileDto);
-	            } catch (Exception e) {
-	                log.error("파일 DB 저장 중 오류 발생: {}, 이유: {}", fileDto.getOriginName(), e.getMessage(), e);
-	                throw new RuntimeException("파일 DB 저장 중 오류 발생: " + fileDto.getOriginName(), e);
-	            }
-	        }
-	        
-	        //기존 파일 삭제
+												.collect(Collectors.toList());
+			
+			// 새로 추가된 파일만 저장
+			List<FileDto> newFiles = saveFiles(request, newFilesToSave, qnaNo, answerNo);
+			for (FileDto fileDto : newFiles) {
+				try {
+					qnaService.insNewFile(fileDto);
+				} catch (Exception e) {
+					log.error("파일 DB 저장 중 오류 발생: {}, 이유: {}", fileDto.getOriginName(), e.getMessage(), e);
+					throw new RuntimeException("파일 DB 저장 중 오류 발생: " + fileDto.getOriginName(), e);
+				}
+			}
+			
+			//기존 파일 삭제
 	        for (FileDto existingFile : prevFiles) {
 	            try {
 	                // 겹치는 파일이 있는지 확인 (조건없이 일치하지 않는것만)
@@ -245,7 +259,24 @@ public class QnaController {
 	                e.printStackTrace();
 	            }
 	        }
-	        return responseHandler.createResponse("QnA 업데이트 및 파일 첨부 성공", qnaNo, HttpStatus.OK);
+        return newFiles;
+	}
+	
+	
+	
+	@PutMapping("/updateQna/{qnaNo}")
+	public ResponseEntity<ResponseData> updateQna(HttpServletRequest request,
+	                                              @PathVariable("qnaNo") int qnaNo,
+	                                              @RequestPart("QnaDto") QnaDto qnaDto,
+	                                              @RequestPart(value = "files", required = false) List<MultipartFile> files) {
+	    try {
+	        qnaService.updateQna(qnaDto);
+	        QnaDto prevFile = qnaService.qnaDetail(qnaNo);
+	        List<FileDto> prevFiles = prevFile.getFiles();
+	        
+	        List<FileDto> updatedFiles = updateFile(request, files, prevFiles);
+	        
+	        return responseHandler.createResponse("QnA 업데이트 및 파일 첨부 성공", updatedFiles, HttpStatus.OK);
 	    } catch (Exception e) {
 	        return responseHandler.handleException("QnA 업데이트 실패", e);
 	    }
@@ -253,12 +284,18 @@ public class QnaController {
 	
 	@PutMapping("updateAnswer/{qnaNo}")
 	public ResponseEntity<ResponseData> updateAnswer(HttpServletRequest request,
-													 @PathVariable("qnaNo")int qnaNo,
-													 @RequestPart("Answer")AnswerDto answerDto,
+													 @PathVariable("qnaNo") int qnaNo,
+													 @RequestPart("AnswerDto") AnswerDto answerDto,
 													 @RequestPart(value ="files", required = false) List<MultipartFile> files){
 		try {
+			System.out.println("answerDto: " + answerDto );
+			qnaService.updateAnswer(answerDto);
+			AnswerDto prevFile = qnaService.answerFind(qnaNo);
+			List<FileDto> prevFiles = prevFile.getFiles();
 			
-			   return responseHandler.createResponse("QnA 업데이트 및 파일 첨부 성공", qnaNo, HttpStatus.OK);
+			List<FileDto> updatedFiles = updateFile(request, files, prevFiles);
+			System.out.println("updatedFiles: " + updatedFiles );
+			return responseHandler.createResponse("QnA 업데이트 및 파일 첨부 성공", updatedFiles, HttpStatus.OK);
 	    } catch (Exception e) {
 	        return responseHandler.handleException("QnA 업데이트 실패", e);
 	    }

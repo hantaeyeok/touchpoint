@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useRef } from "react";
 import "@styles/Qna2.css";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 function QnaAnswer() {
 
     const { qnaNo } = useParams();
+    const navigate = useNavigate();
     const [answer, setAnswer] = useState({
             answerNo: 0,
             answerTitle: "",
@@ -17,7 +18,18 @@ function QnaAnswer() {
             files: [],
         });
 
-    console.log("QnA 번호:", qnaNo);
+    const handleEdit = () => {
+        navigate("/answerEdit", {
+            state: {
+                qnaNo:qnaNo,
+                answerNo: answer.answerNo,
+                answerTitle: answer.answerTitle,
+                answerContent: answer.answerContent,
+                files: answer.files
+            }
+        });
+    };
+    
 
     useEffect(()=> {
         const fetchQnas = async () => {
@@ -63,8 +75,8 @@ function QnaAnswer() {
                 <span className="fieldValue">{answer.answerContent}</span>
             </div>
             <div className="qnaAdd_btn">
-                <Link to="/qna"><button>이전으로</button></Link>
-                <button>수정하기</button>
+                <button onClick={()=>{navigate(-1)}}>이전으로</button>
+                <button onClick={handleEdit}>수정하기</button>
             </div>
         </div>
     )

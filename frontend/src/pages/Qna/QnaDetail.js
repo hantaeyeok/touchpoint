@@ -9,6 +9,7 @@ import axios from "axios";
 
 function QnaDetail() {
 
+    const { qnaNo } = useParams(); // URL에서 qnaNo 가져오기
     const [hasAnswer, setHasAnswer] = useState(false);
     const navigate = useNavigate();
     const [qnaDetail, setQnaDetail] = useState({
@@ -20,8 +21,6 @@ function QnaDetail() {
         phoneNo: '',
         files: []
     });
-    
-    const { qnaNo } = useParams(); // URL에서 qnaNo 가져오기
 
     const handleEdit = () => {
         navigate("/qnaEdit", {
@@ -37,8 +36,6 @@ function QnaDetail() {
         });
     };
 
-    console.log("QnA 번호:", qnaNo);
-    
     useEffect(()=> {
         const fetchQnas = async () => {
             try {
