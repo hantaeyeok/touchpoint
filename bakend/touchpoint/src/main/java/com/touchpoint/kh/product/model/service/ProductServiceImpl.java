@@ -167,11 +167,6 @@ public class ProductServiceImpl implements ProductService {
 	                    log.warn("파일이 존재하지 않음: {}", absolutePath);
 	                }
 	            }
-/*
-	            // 3. DB에서 데이터 삭제
-	            productMapper.removeImg(imageId);
-	            log.info("DB에서 이미지 데이터 삭제 완료: ID = {}", imageId);
-*/
 	        } catch (Exception e) {
 	            log.error("이미지 삭제 중 오류 발생. ID = {}, 에러 = {}", imageId, e.getMessage(), e);
 	        }

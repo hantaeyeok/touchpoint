@@ -53,6 +53,9 @@ public class ProductController {
 										    @RequestParam("images") List<MultipartFile> images,
 										    HttpServletRequest request ) throws IOException {
 	    
+		
+		long start = System.currentTimeMillis();
+		
 	    Product product = new ObjectMapper().readValue(productJson, Product.class);
 	    
 	    product.setCreatedDate(LocalDateTime.now());
@@ -64,6 +67,9 @@ public class ProductController {
 	    List<ProductImage> productImages = saveImages(images, null, null, request);
 	    
 	    productService.saveProductWithImages(product, productImages);
+	    
+	    long end = System.currentTimeMillis();
+	    log.info("등록 처리하는데 걸린 시간 : {} ms", (end - start));
 	    
 	    return responseHandler.createResponse("상품추가 성공!", true, HttpStatus.OK);
 	}
@@ -86,6 +92,8 @@ public class ProductController {
 	    File file = new File(savePath + fileName);
 	    upfile.transferTo(file);
 	    
+	    
+	    
 	    return "/resources/uploadFiles/" + fileName;  
 	}
 	
@@ -96,11 +104,11 @@ public class ProductController {
 	    for (int i = 0; i < images.size(); i++) {
 	        MultipartFile image = images.get(i); // 현재 이미지
 	        String imagePath = null; // 이미지 경로 초기화
-	        Long imageId = (imageIds != null && i < imageIds.size()) ? imageIds.get(i) : null; // imageIds에서 값 가져오기
+	        Long imageId = (imageIds != null && i < imageIds.size()) ? imageIds.get(i) : null; // 기존 이미지 ID 가져오기
 
 	        // 기존 이미지 재사용
 	        if (imageId != null && (deleteImg == null || !deleteImg.contains(imageId))) {
-	            // 기존 이미지는 saveFile을 호출하지 않고 그대로 사용
+	            // 기존 이미지는 saveFile을 호출하지 않고 기존 경로를 사용
 	            imagePath = productService.getPathById(imageId); // 기존 경로 가져오기 (가정)
 	            log.info("기존 이미지 사용: imageId = {}, imagePath = {}", imageId, imagePath);
 	        } 
@@ -108,9 +116,12 @@ public class ProductController {
 	        else if (image != null && !image.isEmpty()) {
 	            imagePath = saveFile(image, request); // 새 이미지 저장
 	            log.info("새로운 이미지 저장: {}", imagePath);
+
+	            // 새로 저장된 이미지는 항상 imageId를 null로 설정
+	            imageId = null; 
 	        }
 
-	        // 이미지 정보를 List에 추가
+	        // 이미지 정보를 List에 추가 (새로운 이미지는 imageId를 null로 넘김)
 	        productImages.add(new ProductImage(imagePath, i, null, imageId));
 	    }
 	    return productImages;
@@ -169,6 +180,8 @@ public class ProductController {
 															    @RequestParam("images") List<MultipartFile> images,
 															    HttpServletRequest request ) throws IOException {
 
+		long start = System.currentTimeMillis();
+		
 	    List<Long> deleteImg = new ObjectMapper().readValue(deleteImgJson, new TypeReference<List<Long>>() {});
 
 		Product updateProduct = new ObjectMapper().readValue(productJson, Product.class); 
@@ -191,6 +204,9 @@ public class ProductController {
 	    productService.deleteImages(deleteImg, request);
 	    
 	    productService.updateProductWithImages(updateProduct, productImages, deleteImg);
+	    
+	    long end = System.currentTimeMillis();
+	    log.info("수정 처리하는데 걸린 시간 : {} ms", (end - start));
 	    
 	    return responseHandler.createResponse("상품 수정 성공!", productImages, HttpStatus.OK);
 	}
