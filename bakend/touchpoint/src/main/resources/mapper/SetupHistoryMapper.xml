@@ -15,7 +15,7 @@
             h.HISTORY_CONTENT,
             h.HISTORY_DATE,
             h.USER_ID,
-            i.HISTORY_IMAGE_NAME AS IMAGE_NAME
+            i.HISTORY_IMAGE_NAME AS HISTORY_IMAGE_NAME
         FROM 
             TB_SETUP_HISTORY h
         LEFT JOIN 
@@ -23,12 +23,12 @@
         ON 
             h.HISTORY_NO = i.HISTORY_NO
         WHERE 
-            i.HISTORY_IMAGER_ORDER = 1
+            i.HISTORY_IMAGE_ORDER = 0
         ORDER BY 
             h.HISTORY_DATE DESC
     </select>
 
-    <resultMap id="SetupHistoryResultMap" type="com.touchpoint.kh.history.model.vo.SetupHistory">
+    <resultMap id="SetupHistoryResultMap" type="com.touchpoint.kh.history.model.vo.SelectHistoryDto">
         <id property="historyNo" column="HISTORY_NO" />
         <result property="storeName" column="STORE_NAME" />
         <result property="storeAddress" column="STORE_ADDRESS" />
@@ -38,43 +38,93 @@
         <result property="userId" column="USER_ID" />
         <result property="mainImage" column="HISTORY_IMAGE_NAME" />
     </resultMap>
-	
-	 <insert id="insertSetupHistory" parameterType="SetupHistory" useGeneratedKeys="false">
-    <!-- Insert 쿼리 -->
-    INSERT INTO TB_SETUP_HISTORY (
-        HISTORY_NO,
-        STORE_NAME,
-        STORE_ADDRESS,
-        MODEL_NAME,
-        HISTORY_CONTENT,
-        USER_ID
-    ) VALUES (
-        SEQ_HISTORY.NEXTVAL, 
-        #{storeName}, 
-        #{storeAddress}, 
-        #{modelName}, 
-        #{historyContent}, 
-        #{userId}
-    )
-    <!-- 시퀀스 생성된 ID 가져오기 -->
-    <selectKey resultType="int" keyProperty="historyNo" order="AFTER">
-        SELECT SEQ_HISTORY_NO.CURRVAL FROM DUAL
-    </selectKey>
-</insert>
 
-    <!-- 3. 설치사례 이미지 추가 -->
-    <insert id="insertHistoryImage">
-        INSERT INTO TB_HISTORY_IMAGES (
-			IMAGE_NO,
+    <!-- 게시글 등록 -->
+    <insert id="insertSetupHistory" parameterType="SetupHistory" useGeneratedKeys="false">
+        INSERT INTO TB_SETUP_HISTORY (
+            HISTORY_NO,
+            STORE_NAME,
+            STORE_ADDRESS,
+            MODEL_NAME,
+            HISTORY_CONTENT,
+            USER_ID
+        ) VALUES (
+            SEQ_HISTORY.NEXTVAL, 
+            #{storeName}, 
+            #{storeAddress}, 
+            #{modelName}, 
+            #{historyContent}, 
+            #{userId}
+        )
+        <!-- 시퀀스 생성된 ID 가져오기 -->
+        <selectKey resultType="int" keyProperty="historyNo" order="AFTER">
+            SELECT SEQ_HISTORY.CURRVAL FROM DUAL
+        </selectKey>
+    </insert>
+
+    <!-- 게시글 이미지 추가 -->
+    <insert id="insertHistoryImage" parameterType="HistoryImage">
+        INSERT INTO TB_HISTORY_IMAGE(
+            IMAGE_NO,
             HISTORY_NO, 
             HISTORY_IMAGE_NAME, 
             HISTORY_IMAGE_ORDER
         ) VALUES (
-			SEQ_HISTORY_IMAGE.NEXTVAL,
+            SEQ_HISTORY_IMAGE.NEXTVAL,
             #{historyNo},
             #{historyImageName},
             #{historyImageOrder}
         )
     </insert>
+
+    <!-- 게시글 상세 정보 조회 -->
+   <select id="detailHistory" parameterType="int" resultType="com.touchpoint.kh.history.model.vo.SetupHistory">
+    SELECT 
+        HISTORY_NO AS historyNo,         -- 게시글 번호
+        MODEL_NAME AS modelName,
+        STORE_NAME AS storeName,         -- 매장명
+        STORE_ADDRESS AS storeAddress,   -- 매장 주소
+        HISTORY_CONTENT AS historyContent, --게시글내용
+        HISTORY_DATE AS historyDate,     -- 등록일자
+        USER_ID AS userId                -- 사용자 ID
+    FROM 
+        TB_SETUP_HISTORY
+    WHERE 
+        HISTORY_NO = #{historyNo}         -- 조건에 따라 데이터 조회
+</select>
+	
+    <!-- 게시글 연관 이미지 리스트 조회 -->
+    <select id="detailHistoryImage" parameterType="int" resultType="com.touchpoint.kh.history.model.vo.HistoryImage">
+	    SELECT 
+	        i.IMAGE_NO AS imageNo,
+	        i.HISTORY_IMAGE_NAME AS historyImageName,
+	        i.HISTORY_IMAGE_ORDER AS historyImageOrder,
+	        i.HISTORY_NO AS historyNo
+	    FROM 
+	        TB_HISTORY_IMAGE i
+	    WHERE 
+	        i.HISTORY_NO = #{historyNo}
+	    ORDER BY 
+	        i.HISTORY_IMAGE_ORDER ASC
+	</select>
+
+
+    <!-- 이미지 삭제 -->
+    <delete id="deleteHistoryImage">
+        DELETE FROM TB_HISTORY_IMAGE
+        WHERE HISTORY_NO IN
+        <foreach collection="historyNos" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 게시글 삭제 -->
+    <delete id="deleteHistory">
+        DELETE FROM TB_SETUP_HISTORY
+        WHERE HISTORY_NO IN
+        <foreach collection="historyNos" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
 
 </mapper>
