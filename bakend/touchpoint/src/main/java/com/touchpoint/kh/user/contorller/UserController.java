@@ -116,34 +116,7 @@ public class UserController {
 		ResponseEntity<? super SocialSignUpResponseDto> response = userSocialService.socialSignUp(requestBody);
 		return response;	
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	
 	
 	

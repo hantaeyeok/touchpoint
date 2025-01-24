@@ -20,7 +20,7 @@ import FindId from "@pages/login/FindId";
 
 import UseUserId from "@components/login/UseUserId";
 import UseAdmin from "@components/login/UseAdmin";
-
+import LogOut from "@components/login/LogOut";
 import AdminPage from "@pages/admin/AdminPage";
 function App() {
 
@@ -68,7 +68,8 @@ function App() {
             <Route path="/findPassword" element={<FindPassword />} />
             <Route path="/findId" element={<FindId />} />
             <Route path="/adminPage" element={<AdminPage />} />
-            
+            <Route path="/logout" element={<LogOut />} />
+
           </Routes>
         </div>
     </FaqProvider>
