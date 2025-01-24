@@ -18,7 +18,7 @@ public class ResponseHandler {
 				.body(ResponseData.builder().data(data).message(message).build());
 	}
 	
-	// 공통 응답 실패
+	// 공통 응답 실패	
 	public ResponseEntity<ResponseData> handleException(String errorMessage, Exception e) {
         log.error("{}: {}", errorMessage, e.getMessage());
         return createResponse(errorMessage + ": " + e.getMessage(), "error", HttpStatus.INTERNAL_SERVER_ERROR);

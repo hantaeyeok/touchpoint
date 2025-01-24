@@ -5,19 +5,62 @@
 
     <!-- 사용자 조회: userId 또는 phoneNo로 검색 -->
     <select id="findByUserIdOrPhone" parameterType="string" resultType="com.touchpoint.kh.user.model.vo.User">
-SELECT 
-        USER_CD AS userCd,
-        USER_ID AS userId,
-        PASSWORD AS password,
-        EMAIL AS email,
-        PHONE_NO AS phoneNo,
-        NAME AS name,
-        JOIN_DT AS joinDt,
-        USER_ST AS userSt,
-        SOCIAL_USER AS socialUser,
-        AD_AGREED AS adAgreed
-    FROM users
-    WHERE USER_ID = #{userIdOrPhone} OR PHONE_NO = #{userIdOrPhone}
+		SELECT 
+	        USER_CD AS userCd,
+	        USER_ID AS userId,
+	        PASSWORD AS password,
+	        EMAIL AS email,
+	        PHONE_NO AS phoneNo,
+	        NAME AS name,
+	        JOIN_DT AS joinDt,
+	        USER_ST AS userSt,
+	        SOCIAL_USER AS socialUser,
+	        AD_AGREED AS adAgreed,
+	        USER_ROLE AS userRole
+    	FROM users
+    		WHERE USER_ID = #{userIdOrPhone} OR PHONE_NO = #{userIdOrPhone}
+    </select>
+    
+        <!-- 사용자 조회: userIdOrPhone으로 검색하고 email과 phoneNo가 일치 -->
+    <select id="findByUserIdAndEmailAndPhoneNo" resultType="com.touchpoint.kh.user.model.vo.User">
+        SELECT 
+            USER_CD AS userCd,
+            USER_ID AS userId,
+            PASSWORD AS password,
+            EMAIL AS email,
+            PHONE_NO AS phoneNo,
+            NAME AS name,
+            JOIN_DT AS joinDt,
+            USER_ST AS userSt,
+            SOCIAL_USER AS socialUser,
+            AD_AGREED AS adAgreed,
+            USER_ROLE AS userRole
+        FROM USERS
+        WHERE (USER_ID = #{userIdOrPhone} OR PHONE_NO = #{userIdOrPhone})
+          AND EMAIL = #{email}
+    </select>
+    
+    
+     <select id="findUserByProviderUserId" resultType="com.touchpoint.kh.user.model.vo.User">
+        SELECT 
+             u.USER_CD AS userCd,
+	        u.USER_ID AS userId,
+	        u.PASSWORD AS password,
+	        u.EMAIL AS email,
+	        u.PHONE_NO AS phoneNo,
+	        u.NAME AS name,
+	        u.JOIN_DT AS joinDt,
+	        u.USER_ST AS userSt,
+	        u.SOCIAL_USER AS socialUser,
+	        u.AD_AGREED AS adAgreed,
+	        u.USER_ROLE AS userRole
+        FROM 
+            (SELECT USER_ID 
+             FROM USER_SOCIAL 
+             WHERE PROVIDER_USER_ID = #{providerUserId}
+            ) us
+        JOIN 
+            USERS u ON u.USER_ID = us.USER_ID
     </select>
 
 </mapper>

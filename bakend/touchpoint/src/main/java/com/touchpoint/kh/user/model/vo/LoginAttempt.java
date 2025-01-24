@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "LOGIN_ATTEMPT")
@@ -20,6 +21,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class LoginAttempt {
 
     @Id
@@ -38,4 +40,5 @@ public class LoginAttempt {
     @Builder.Default
     @Column(name = "CAPTCHA_ACTIVE", nullable = false, length = 1)
     private String captchaActive = "N"; // 캡차 활성화 여부, 기본값 'N'
+    
 }

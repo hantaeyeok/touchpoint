@@ -8,20 +8,20 @@ import axios from "axios";
 function AddFaq() {
     const imageUrl = `${process.env.PUBLIC_URL}/images/qna.avif`;
     
-    const [qTitle, setTilte] = useState('');
-    const [qContent, setContent] = useState('');
+    const [faqTitle, setFaqTitle] = useState('');
+    const [answer, setAnswer] = useState('');
     const navigate = useNavigate(); // 페이지 이동을 위한 hook
     
     const { FaqTodoList, setFaqTodoList } = useContext(FaqContext);
     console.log("FaqTodoList 상태:", FaqTodoList);
     
     const faqSubmit = async () =>{
-        if(!qTitle || !qContent){
+        if(!faqTitle || !answer){
             alert("제목과 내용을 입력해주세요")
             return;
         };
 
-        const newFaq = { qTitle, qContent };
+        const newFaq = { faqTitle, answer };
         setFaqTodoList([...FaqTodoList, newFaq]);
 
         try {
@@ -33,8 +33,8 @@ function AddFaq() {
         alert("글 저장 중 문제가 발생했습니다. 다시 시도해주세요.");
         }
         
-        setTilte('');
-        setContent('');
+        setFaqTitle('');
+        setAnswer('');
         navigate("/faq");
     };
 
@@ -55,8 +55,8 @@ function AddFaq() {
                 <div className="form-group">
                     <input 
                             className="qnaInput"
-                            value={qTitle}
-                            onChange={(event)=>setTilte(event.target.value)} 
+                            value={faqTitle}
+                            onChange={(event)=>setFaqTitle(event.target.value)} 
                             type="text" 
                             id="title" 
                             name="title" 
@@ -65,8 +65,8 @@ function AddFaq() {
                 <div className="qna-form-group">
                     <textarea
                             className="qnaTextarea"
-                            value={qContent}
-                            onChange={(event)=>setContent(event.target.value)}
+                            value={answer}
+                            onChange={(event)=>setAnswer(event.target.value)}
                             id="content" 
                             name="content" 
                             placeholder="내용을 입력하세요">

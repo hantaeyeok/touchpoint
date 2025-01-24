@@ -37,14 +37,31 @@ const AddHistoryModal = ({ isOpen, onClose }) => {
         }
     };
 
-    // 서브이미지 처리
-    const insertSubImage = (e) => {
-        const files = Array.from(e.target.files);
-        const newImages = files.map((file) => URL.createObjectURL(file));
-        setSubImagesPreview((prevImages) => {
-            // 기존 이미지와 새 이미지를 합치되, 최대 4개로 제한
-            return [...prevImages, ...newImages].slice(0, 4);
-        });
+    // 서브이미지 추가 및 수정 처리
+    const insertSubImage = (e, index) => {
+        const file = e.target.files[0];
+        if (file) {
+            const newPreview = URL.createObjectURL(file);
+
+            // 미리보기 상태 업데이트
+            const updatedPreviews = [...subImagesPreview];
+            updatedPreviews[index] = newPreview; // 해당 인덱스에 이미지 추가/수정
+            setSubImagesPreview(updatedPreviews);
+
+            // 파일 상태 업데이트
+            const updatedFiles = [...subImages];
+            updatedFiles[index] = file; // 해당 인덱스에 파일 추가/수정
+            setSubImages(updatedFiles);
+        }
+    };
+
+    // 새 서브이미지 추가
+    const addSubImage = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setSubImages((prev) => [...prev, file]);
+            setSubImagesPreview((prev) => [...prev, URL.createObjectURL(file)]);
+        }
     };
 
     // 폼 제출 처리
@@ -52,20 +69,29 @@ const AddHistoryModal = ({ isOpen, onClose }) => {
         e.preventDefault();
 
         const data = new FormData();
-        data.append("storeName", formData.storeName);
-        data.append("storeAddress", formData.storeAddress);
-        data.append("modelName", formData.modelName);
-        data.append("description", formData.description);
-        if (mainImage) data.append("mainImage", mainImage);
-        subImages.forEach((file) => data.append("subImages", file));
+
+        // JSON 데이터를 문자열로 변환하여 "data" 키로 추가
+        const jsonData = JSON.stringify({
+            storeName: formData.storeName,
+            storeAddress: formData.storeAddress,
+            modelName: formData.modelName,
+            historyContent: formData.description,
+        });
+        data.append("data", new Blob([jsonData], { type: "application/json" }));// 백엔드에서 @RequestPart("data")로 매핑
+        // mainImage 추가
+        if (mainImage) {
+            data.append("mainImage", mainImage); // 백엔드에서 @RequestPart("mainImage")로 매핑
+        }
+    
+        // subImages 추가
+        subImages.forEach((file) => data.append("subImages", file)); // 백엔드에서 @RequestPart("subImages")로 매핑
+        
 
         try {
-            const response = await axios.post("http://localhost:8989/history/add", data, {
-                headers: { "Content-Type": "multipart/form-data" },
-            });
+            const response = await axios.post("http://localhost:8989/history/add", data); // headers를 명시하지 않음
 
-            if (response.status === 200) {
-                alert("상품 등록 성공!");
+            if (response.data.data === true) {
+                console.log(response);
                 onClose();
             } else {
                 alert("상품 등록 실패!");
@@ -116,40 +142,15 @@ const AddHistoryModal = ({ isOpen, onClose }) => {
                         {/* 메인이미지 */}
                         <div className="image-upload">
                             <label>메인이미지</label>
-                            {/* 이미지 미리보기 컨테이너 */}
-                            <div
-                                className={mainImagePreview ? "image-box-preview" : "image-box"}
-                                onClick={() => document.querySelector(".hidden-input").click()}
-                            >
+                            <div className="image-box-container">
                                 {mainImagePreview ? (
-                                    <img src={mainImagePreview} alt="메인이미지 미리보기" />
-                                ) : (
-                                    "+" // 업로드되지 않은 경우 "+" 표시
-                                )}
-                            </div>
-                            
-                            <input
-                                type="file"
-                                accept="image/*"
-                                className="hidden-input"
-                                onChange={insertMainImage}
-                            />
-                        </div>
-
-                        {/* 서브이미지 */}
-                        <div className="image-upload">
-                            <label>서브이미지</label>
-                            <div className="sub-images-preview">
-                                {subImagesPreview.map((image, index) => (
-                                    <div key={index} className="image-box-preview">
-                                        <img src={image} alt={`서브이미지 ${index + 1}`} />
+                                    <div className="image-box-preview">
+                                        <img src={mainImagePreview} alt="메인이미지 미리보기" />
                                     </div>
-                                ))}
-                                {/* 추가 이미지 박스는 항상 마지막에 위치 */}
-                                {subImagesPreview.length < 4 && (
+                                ) : (
                                     <div
                                         className="image-box"
-                                        onClick={() => document.getElementById("sub-images-input").click()}
+                                        onClick={() => document.querySelector(".hidden-input").click()}
                                     >
                                         +
                                     </div>
@@ -157,12 +158,51 @@ const AddHistoryModal = ({ isOpen, onClose }) => {
                             </div>
                             <input
                                 type="file"
-                                id="sub-images-input"
-                                className="hidden-input"
                                 accept="image/*"
-                                multiple
-                                onChange={insertSubImage}
+                                className="hidden-input"
+                                onChange={insertMainImage}
                             />
+                        </div>
+                        {/* 서브이미지 */}
+                        <div className="image-upload">
+                            <label>서브이미지</label>
+                            <div className="image-box-container">
+                                {subImagesPreview.map((image, index) => (
+                                    <div
+                                        key={index}
+                                        className="image-box-preview"
+                                        onClick={() =>
+                                            document.getElementById(`sub-image-input-${index}`).click()
+                                        }
+                                    >
+                                        <img src={image} alt={`서브이미지 ${index + 1}`} />
+                                        <input
+                                            type="file"
+                                            id={`sub-image-input-${index}`}
+                                            className="hidden-input"
+                                            accept="image/*"
+                                            onChange={(e) => insertSubImage(e, index)}
+                                        />
+                                    </div>
+                                ))}
+                                {subImagesPreview.length < 4 && (
+                                    <div
+                                        className="image-box"
+                                        onClick={() => document.getElementById("new-sub-image-input").click()}
+                                    >
+                                        +
+                                    </div>
+                                )}
+                            </div>
+                            {subImagesPreview.length < 4 && (
+                                <input
+                                    type="file"
+                                    id="new-sub-image-input"
+                                    className="hidden-input"
+                                    accept="image/*"
+                                    onChange={addSubImage}
+                                />
+                            )}
                         </div>
                     </div>
 
