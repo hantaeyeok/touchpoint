@@ -25,6 +25,7 @@
 			    Q.QNA_TITLE,
 			    Q.QNA_CONTENT,
 			    Q.QNA_NO,
+			    F.FILE_NO,
 			    F.ORIGIN_NAME,
 			    F.CHANGE_NAME,
 			    F.PATH
@@ -165,17 +166,6 @@
    		 		ANSWER_NO = #{answerNo}
    </update>
    
-   <update id="updateFile" parameterType="com.touchpoint.kh.qna.model.vo.FileDto">
-   		UPDATE
-   				FILE_ADD
-		   SET
-		   		ORIGIN_NAME = #{originName},
-		   		CHANGE_NAME = #{changeName},
-		   		PATH =	#{path}
-   		 WHERE
-   		 		FILE_NO = #{fileNo}
-   </update>
-  
    <delete id="deleteFile">
    		DELETE
 		  FROM
@@ -192,6 +182,7 @@
 	    <result property="qnaNo" column="QNA_NO"/>
 	
 	    <collection property="files" ofType="com.touchpoint.kh.qna.model.vo.FileDto">
+		    <result property="fileNo" column="FILE_NO"/>
 	        <result property="originName" column="ORIGIN_NAME"/>
 	        <result property="changeName" column="CHANGE_NAME"/>
 	        <result property="path" column="PATH"/>
@@ -207,6 +198,7 @@
 	    <result property="phoneNo" column="PHONE_NO" />
 	
 	    <collection property="files" ofType="com.touchpoint.kh.qna.model.vo.FileDto">
+	        <result property="fileNo" column="FILE_NO"/>
 	        <result property="originName" column="ORIGIN_NAME"/>
 	        <result property="changeName" column="CHANGE_NAME"/>
 	        <result property="path" column="PATH"/>

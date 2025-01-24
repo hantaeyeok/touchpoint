@@ -137,7 +137,6 @@ public class QnaController {
 	        fileDto.setQnaNo(qnaNo);
 	        fileDtos.add(fileDto);
 	    }
-
 	    return fileDtos;
 	}
 	
@@ -159,7 +158,6 @@ public class QnaController {
 	                throw new RuntimeException("파일 DB 저장 중 오류 발생: " + fileDto.getOriginName(), e);
 	            }
 	        }
-
 	        return responseHandler.createResponse("QnA 등록 및 파일 첨부 성공", savedQna, HttpStatus.OK);
 	    } catch (Exception e) {
 	        return responseHandler.handleException("QnA 등록 실패", e);
@@ -186,7 +184,6 @@ public class QnaController {
 	                throw new RuntimeException("파일 DB 저장 중 오류 발생: " + fileDto.getOriginName(), e);
 	            }
 	        }
-
 	        return responseHandler.createResponse("답변 등록 및 파일 첨부 성공", answerSave, HttpStatus.OK);
 	    } catch (Exception e) {
 	        return responseHandler.handleException("답변 등록 실패", e);
@@ -210,34 +207,51 @@ public class QnaController {
 	        System.out.println("prevFile: " + prevFile);
 	        System.out.println("files: " + files);
 
-	        // 새로 추가된 파일 필터링
+	        // 새로 추가된 파일 필터링 (조건 필터링)
 	        List<MultipartFile> newFilesToSave = files.stream()
 	        									.filter(file -> prevFiles.stream()
 												.noneMatch(prev -> file.getOriginalFilename().equals(prev.getOriginName())))
         										.collect(Collectors.toList());
-
+	        
 	        // 새로 추가된 파일만 저장
 	        List<FileDto> newFiles = saveFiles(request, newFilesToSave, qnaNo);
-
-	        // 기존 파일 중 삭제 대상 처리
-	        for (FileDto existingFile : prevFiles) {
-					 boolean isDeleted = newFilesToSave.stream()
-	            					     .noneMatch(file -> file.getOriginalFilename().equals(existingFile.getOriginName()));
-	            if (isDeleted) {
-	                // 파일 삭제
-	                File oldFile = new File(request.getServletContext().getRealPath("/resources/qnaUpload/"), existingFile.getChangeName());
-	                if (oldFile.exists()) {
-	                    oldFile.delete();
-	                }
-	                System.out.println("existingFile: " + existingFile);
-	                System.out.println("isDeleted: " + isDeleted);
-	                System.out.println("existingFile: " + existingFile);
-	                qnaService.deleteFile(existingFile.getFileNo());
-	                qnaService.updateFile(existingFile.getFileNo());
-	                log.debug("Updating file with data: {}", existingFile);
+	        System.out.println("newFilesToSave: " + newFilesToSave);
+	        System.out.println("newFiles: " + newFiles);
+	        
+	        for (FileDto fileDto : newFiles) {
+	            try {
+	                qnaService.createQnaFile(fileDto);
+	            } catch (Exception e) {
+	                log.error("파일 DB 저장 중 오류 발생: {}, 이유: {}", fileDto.getOriginName(), e.getMessage(), e);
+	                throw new RuntimeException("파일 DB 저장 중 오류 발생: " + fileDto.getOriginName(), e);
 	            }
 	        }
+	        
+	        //기존 파일 삭제
+	        for (FileDto existingFile : prevFiles) {
+	            try {
+	                System.out.println("Processing existingFile: " + existingFile.getOriginName());
+	                
+	                // 겹치는 파일이 있는지 확인 (조건없이 일치하지 않는것만)
+	                boolean isDeleted = files.stream()
+	                				   .noneMatch(file -> file.getOriginalFilename().equals(existingFile.getOriginName()));
 
+	                if (isDeleted) {
+	                    System.out.println("File to delete: " + existingFile.getOriginName());
+	                    File oldFile = new File(request.getServletContext().getRealPath("/resources/qnaUpload/"), existingFile.getChangeName());
+	                    if (oldFile.exists()) {
+	                        oldFile.delete();
+	                        System.out.println("Deleting physical file: " + oldFile.getAbsolutePath());
+	                    }
+	                    qnaService.deleteFile(existingFile.getFileNo());
+	                } else {
+	                    System.out.println("File retained: " + existingFile.getOriginName());
+	                }
+	            } catch (Exception e) {
+	                System.out.println("Error processing file: " + existingFile.getOriginName());
+	                e.printStackTrace();
+	            }
+	        }
 	        return responseHandler.createResponse("QnA 업데이트 및 파일 첨부 성공", qnaNo, HttpStatus.OK);
 	    } catch (Exception e) {
 	        return responseHandler.handleException("QnA 업데이트 실패", e);
