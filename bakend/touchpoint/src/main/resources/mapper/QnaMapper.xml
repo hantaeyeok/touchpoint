@@ -135,6 +135,26 @@
 			        )    
    </insert>
    
+   <insert id="insNewFile" parameterType="com.touchpoint.kh.qna.model.vo.FileDto">
+   		INSERT
+		    INTO FILE_ADD (
+			                FILE_NO,
+			                ORIGIN_NAME,
+			                CHANGE_NAME,
+			                QNA_NO,
+			                ANSWER_NO,
+			                PATH
+            )
+		           VALUES (
+			                FILE_SEQ.NEXTVAL,
+			                #{originName},
+			                #{changeName},
+			                #{qnaNo},
+			                #{answerNo],
+			                #{path}
+			        )    
+   </insert>
+   
    <update id="updateStatus" parameterType="com.touchpoint.kh.qna.model.vo.QnaDto">
 	    UPDATE 
 	    		QNA

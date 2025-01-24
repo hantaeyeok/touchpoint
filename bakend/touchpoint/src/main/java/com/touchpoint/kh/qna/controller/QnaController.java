@@ -203,9 +203,6 @@ public class QnaController {
 	        qnaService.updateQna(qnaDto);
 	        QnaDto prevFile = qnaService.qnaDetail(qnaNo);
 	        List<FileDto> prevFiles = prevFile.getFiles();
-	        System.out.println("prevFiles: " + prevFiles);
-	        System.out.println("prevFile: " + prevFile);
-	        System.out.println("files: " + files);
 
 	        // 새로 추가된 파일 필터링 (조건 필터링)
 	        List<MultipartFile> newFilesToSave = files.stream()
@@ -215,8 +212,6 @@ public class QnaController {
 	        
 	        // 새로 추가된 파일만 저장
 	        List<FileDto> newFiles = saveFiles(request, newFilesToSave, qnaNo);
-	        System.out.println("newFilesToSave: " + newFilesToSave);
-	        System.out.println("newFiles: " + newFiles);
 	        
 	        for (FileDto fileDto : newFiles) {
 	            try {
@@ -230,8 +225,6 @@ public class QnaController {
 	        //기존 파일 삭제
 	        for (FileDto existingFile : prevFiles) {
 	            try {
-	                System.out.println("Processing existingFile: " + existingFile.getOriginName());
-	                
 	                // 겹치는 파일이 있는지 확인 (조건없이 일치하지 않는것만)
 	                boolean isDeleted = files.stream()
 	                				   .noneMatch(file -> file.getOriginalFilename().equals(existingFile.getOriginName()));
@@ -253,6 +246,19 @@ public class QnaController {
 	            }
 	        }
 	        return responseHandler.createResponse("QnA 업데이트 및 파일 첨부 성공", qnaNo, HttpStatus.OK);
+	    } catch (Exception e) {
+	        return responseHandler.handleException("QnA 업데이트 실패", e);
+	    }
+	}
+	
+	@PutMapping("updateAnswer/{qnaNo}")
+	public ResponseEntity<ResponseData> updateAnswer(HttpServletRequest request,
+													 @PathVariable("qnaNo")int qnaNo,
+													 @RequestPart("Answer")AnswerDto answerDto,
+													 @RequestPart(value ="files", required = false) List<MultipartFile> files){
+		try {
+			
+			   return responseHandler.createResponse("QnA 업데이트 및 파일 첨부 성공", qnaNo, HttpStatus.OK);
 	    } catch (Exception e) {
 	        return responseHandler.handleException("QnA 업데이트 실패", e);
 	    }
