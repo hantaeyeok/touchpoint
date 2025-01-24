@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.touchpoint.kh.product.model.dao.ProductMapper">
+
+	 <!-- 상품 정보 업데이트 -->
+    <update id="setProduct" parameterType="Product">
+        UPDATE TB_PRODUCT
+        SET 
+            PRODUCT_NAME = #{productName},               -- 새로운 상품명
+            PRODUCT_CATEGORY = #{productCategory},       -- 새로운 카테고리
+            SHORT_DESCRIPTION = #{shortDescription},     -- 새로운 짧은 설명
+            DETAILED_DESCRIPTION = #{detailedDescription}, -- 새로운 상세 설명
+            THUMBNAIL_IMAGE = #{thumbnailImage}          -- 새로운 썸네일 이미지 경로
+        WHERE 
+            PRODUCT_ID = #{productId}                    -- 수정할 상품의 ID
+    </update>
+    
+    <select id="getImagePathById" parameterType="Long" resultType="String">
+	    SELECT IMAGE_URL
+	    FROM TB_PRODUCT_IMAGES
+	    WHERE IMAGE_ID = #{imageId}
+	</select>
+    
+    <update id="updateProductImage" parameterType="ProductImage">
+	    UPDATE TB_PRODUCT_IMAGES
+		    SET IMAGE_URL = #{imageUrl},
+		        DISPLAY_ORDER = #{displayOrder}
+		    WHERE PRODUCT_ID = #{productId}
+	    AND IMAGE_ID = #{imageId} 	
+	</update>
+	
+	<delete id="removeImg" parameterType="Long">
+		DELETE FROM TB_PRODUCT_IMAGES
+		    WHERE IMAGE_ID = #{imageId}
+	</delete>
+	
+	<select id="getImageId">
+		select 
+				image_id
+			from 
+				tb_product_images 
+			where 
+				product_id=  #{productId}
+	</select>
+	
+
+</mapper>

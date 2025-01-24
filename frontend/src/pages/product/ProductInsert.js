@@ -1,17 +1,9 @@
-import "@styles/ProductInsert.css";
+/*import "@styles/ProductInsert.css";
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
 
 
-const onChangeTitle = (e) => {
-    console.log(e.target.value); // 입력값 출력 (추후 상태 관리 가능)
-};
-
 function ProductInsert() {
-
-
-    const [type, setType] = useState(''); 
-
 
     const [kioskList, setKioskList] = useState(''); 
     const [cctvList, setCctvList] = useState(''); 
@@ -40,27 +32,18 @@ function ProductInsert() {
     }
    
     
-    const [obj, setObj] = useState({
-        productName: '',
-        productCategory: '',
-        shortDescription: '',
-        detailedDescription: '',
-        thumbnailImage: '',
 
-    });
-
-    
     const onChangeButton = e => {
         const updatedObj = {
             productName: title,
             productCategory: kind,
             shortDescription: shortDesc,
             detailedDescription: details,
-            thumbnailImage: mainImg.name, // 파일 이름 설정
+            thumbnailImage: mainImg.name // 파일 이름 설정
         };
-    
-        setObj(updatedObj);
-    
+
+
+
         const updatedList =
             kind === 'kiosk'
                 ? [...kioskList, updatedObj]
@@ -74,14 +57,22 @@ function ProductInsert() {
             ? setCctvList(updatedList)
             : setOtherList(updatedList);
     
-        post(updatedObj, mainImg); // 파일 객체를 전달
+        post(updatedObj, mainImg, imgList); // 파일 객체를 전달
     };
     
-    const post = (data, file) => {
+    const post = (data, file, imageFiles) => {  //Q. 위에서 객체를 만들때 이미지들도 넣었는데 왜 또 따로 보냄?
         const formData = new FormData();
         formData.append('product', JSON.stringify(data)); // JSON 데이터를 추가
         formData.append('upfile', file); // 파일 추가 (업로드할 파일 객체 전달)
-    
+        //formData.append('images', file);
+
+        // 상세 이미지 파일을 반복문으로 추가
+        imageFiles.forEach((imageFile) => {
+            if (imageFile.originFile) {
+                formData.append('images', imageFile.originFile); // 각 파일을 'images' 키로 추가
+            }
+        });
+
         axios
             .post('http://localhost:8989/product/save', formData, {
                 headers: {
@@ -90,6 +81,7 @@ function ProductInsert() {
             })
             .then(response => {
                 console.log('Response:', response.data);
+                alert('상품이 등록되었습니다!');
             })
             .catch(error => {
                 if (error.response) {
@@ -103,7 +95,7 @@ function ProductInsert() {
     // 썸네일 이미지 추가 함수
     const onMainImgSelected = (e) => {
         const file = e.target.files[0]; // 선택한 파일
-    
+        
         if (!file) return; // 파일이 없는 경우 종료
     
         setMainImg(file); // 파일 객체로 저장
@@ -116,13 +108,12 @@ function ProductInsert() {
             // 미리보기 이미지 설정
             console.log(reader.result); // 이미지 데이터 URI 출력
         };
-    
+
         reader.onerror = (error) => {
             console.error("File reading error:", error);
         };
     };
     
-
     // 상세 이미지 추가 함수
     const onDetailImgSelected = (e) => {
         const now = new Date();
@@ -137,20 +128,7 @@ function ProductInsert() {
             ]); // 상세 이미지 리스트에 추가(url이랑 오리진 파일이랑 뭔차이)
         };
     };
-
     
-    const [button, setButton] = useState('');
-
-
-    const onChangeHandler = e =>{
-        console.log(e.target.name);
-        console.log(e.target.value);
-    }
-
-    
-    
-    
-
     return (
         <>
             <div className="insertPage">
@@ -259,16 +237,16 @@ function ProductInsert() {
 
                             <div className="buttons">
                                 <button type="button" className="square-button">취소하기</button>
-                                <button onClick={onChangeButton} type="button" className="square-button-fa">수정하기</button>
+                                <button onClick={onChangeButton} type="button" className="square-button-fa">등록하기</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-
-     
         </>
     );
 }
+
+
 
 export default ProductInsert;

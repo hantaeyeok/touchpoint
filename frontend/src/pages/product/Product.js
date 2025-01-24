@@ -2,7 +2,7 @@ import "@styles/Product.css";
 import InfoImg from "@components/productcomponents/InfoImg";
 import Search from "@components/productcomponents/Search";
 import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNaviState } from "react-router-dom";
 import axios from "axios";
 
 const Product = () => {
@@ -19,7 +19,7 @@ const Product = () => {
         responseType: 'json',
         })
         .then((response) => {
-            const data = response.data.responseData;
+            const data = response.data.data;
             setResponseData(data); // 상태에 responseData 저장
         })
         .catch((error) => {
@@ -35,30 +35,39 @@ const Product = () => {
         //여기에 버튼 색 고정 시켜놓으면 될듯
     }, [clickCategory]); // clickCategory 상태가 변경될 때 실행
 
-    const onClick_kioskButton = () => {
+    const onClick_kioskButton = (category) => {
         setParam('키오스크/포스');
+        setActiveButton(category);
     };
-    const onClick_cctvButton = () => {
+    const onClick_cctvButton = (category) => {
         setParam('출입인증기/CCTV/인터넷');
+        setActiveButton(category);
     };
-    const onClick_otherButton = () => {
+    const onClick_otherButton = (category) => {
         setParam('부가상품');
+        setActiveButton(category);
     };
 
-    
+   
 
     const ResponseProduct = (props) => {
         const data = props.data; // props 구조 분해
         return (
           <div className="product-component">
+            <Link to={`/detailProduct/${data.productId}`} style={{ textDecoration: "none" }}>
             {/*<img className="proImg" src={process.env.PUBLIC_URL + data.thumbnailImage} alt={data.productName} />  */}{/*이미지를 동적으로 불러오고싶으면 publid폴더에 넣어야함*/}
-            <img src={`http://localhost:8989${data.thumbnailImage}`} alt={data.productName} />
+            <img className="proImg" src={`http://localhost:8989${data.thumbnailImage}`} alt={data.productName} />
             <h4>{data.productName}</h4>
             <p className="proP">{data.shortDescription}</p>
-          </div>
+            </Link></div>
         );
       };
+      const [activeButton, setActiveButton] = useState(""); 
 
+      const onClickButton = (category) => {
+        setActiveButton(category);
+        
+      };
 
   return (
     <>
@@ -70,9 +79,10 @@ const Product = () => {
 
       {/*카테고리 나뉘는 부분*/}
       <div className="style-divPro">
-        <button className="style-button1" onClick={onClick_kioskButton}>키오스크 / 포스</button>
-        <button className="style-button1" onClick={onClick_cctvButton}>출입인증기 / CCTV / 인터넷</button>
-        <button className="style-button1" onClick={onClick_otherButton}>부가상품</button>
+        <button className={`style-button1 ${ activeButton === "키오스크/포스" ? "active" : "" }`} onClick={() => onClick_kioskButton("키오스크/포스")}>키오스크 / 포스</button>      
+        <button className={`style-button1 ${ activeButton === "출입인증기 / CCTV / 인터넷" ? "active" : "" }`} onClick={() => onClick_cctvButton("출입인증기 / CCTV / 인터넷")}>출입인증기 / CCTV / 인터넷</button>      
+        <button className={`style-button1 ${ activeButton === "부가상품" ? "active" : "" }`} onClick={() => onClick_otherButton("부가상품")}>부가상품</button>      
+
       </div>
             
       <div className="product-list">
@@ -92,13 +102,11 @@ const Product = () => {
 
         <div>
           <button className="insert-button">
-            <Link to="/productInsert" style={{ textDecoration: "none"}}>상품 추가</Link>
+            {/*<Link to="/productInsert" style={{ textDecoration: "none"}}>상품 추가</Link>*/}
+            <Link to="/productRegister" style={{ textDecoration: "none"}}>상품 추가</Link>
           </button>
         </div>
       </div>
-
-      
-      
     </>
   );
 }

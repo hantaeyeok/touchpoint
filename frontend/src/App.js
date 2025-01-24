@@ -3,8 +3,12 @@ import { Route, Routes, useNavigate } from 'react-router-dom';
 import { FaqProvider } from 'context/FaqContext';
 import './App.css'
 import Menubar from '@components/indexcomponents/Menubar';
+import ProductRegister from '@components/productcomponents/ProductRegister';
+import ProductEdit from '@components/productcomponents/ProductEdit';
 import Product from '@pages/product/Product';
 import ProductInsert from '@pages/product/ProductInsert';
+import DetailProduct from "@pages/product/DetailProduct";
+import ProductChange from "@pages/product/ProductChange";
 import Qna from '@pages/Qna/Qna';
 import Faq from '@pages/Qna/Faq';
 import AddFaq from '@components/qna/AddFaq';
@@ -58,7 +62,9 @@ function App() {
             <Route path="/auth/:token" element={<AuthHandler/>} />
 
             <Route path="/product" element={<Product/>}/>
-            <Route path="/productInsert" element={<ProductInsert/>}/>
+            <Route path="/detailProduct/:productId" element={<DetailProduct/>}/>
+            <Route path="/productRegister" element={<ProductRegister/>}/>
+            <Route path="/productEdit/:productId" element={<ProductEdit/>}/>
             <Route path="/login" element={<Login />} /> 
             <Route path="/signupform" element={<SignUpForm />} /> 
             <Route path="/socalsignup/:token" element={<SocalSignUp />} /> 
