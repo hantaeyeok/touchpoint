@@ -32,6 +32,7 @@ import FindId from "@pages/login/FindId";
 import UseUserId from "@components/login/UseUserId";
 import UseAdmin from "@components/login/UseAdmin";
 
+import AdminPage from "@pages/admin/AdminPage";
 function App() {
 
   const userId = UseUserId();
@@ -83,6 +84,7 @@ function App() {
             <Route path="/recaptcha" element={<RecaptchaTest />} />
             <Route path="/findPassword" element={<FindPassword />} />
             <Route path="/findId" element={<FindId />} />
+            <Route path="/adminPage" element={<AdminPage />} />
             
           </Routes>
         </div>
@@ -101,7 +103,7 @@ export default App;
 //   return (
 //     <div>
 //       <h1>Admin Page</h1>
-//       {userId && role === "ADMIN" ? (
+//       {userId && role === "ROLE_ADMIN" ? (
 //         <p>Welcome, Admin {userId}!</p>
 //       ) : (
 //         <p>You do not have access to this page.</p>
