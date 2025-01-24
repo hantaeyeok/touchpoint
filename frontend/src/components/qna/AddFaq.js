@@ -40,7 +40,6 @@ function AddFaq() {
 
     return(
         <div>
-            <h1>시작해볼까</h1>
             <div className="imgBox"> 
                 <img src={imageUrl}/>
             </div>
@@ -52,7 +51,7 @@ function AddFaq() {
                 <button className="qna_btn" onClick={faqSubmit}>글 등록</button>
             </div>
             <div className="qna-form-container">
-                <div className="form-group">
+                <div className="qna-form-group">
                     <input 
                             className="qnaInput"
                             value={faqTitle}

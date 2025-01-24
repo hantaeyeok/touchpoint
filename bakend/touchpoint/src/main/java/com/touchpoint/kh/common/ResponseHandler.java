@@ -20,7 +20,7 @@ public class ResponseHandler {
 	
 	// 공통 응답 실패	
 	public ResponseEntity<ResponseData> handleException(String errorMessage, Exception e) {
-        log.error("{}: {}", errorMessage, e.getMessage());
+		log.error("{}: {}", errorMessage, e);
         return createResponse(errorMessage + ": " + e.getMessage(), "error", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
