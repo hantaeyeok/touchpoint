@@ -144,14 +144,14 @@ public class SetupHistoryServiceImpl implements SetupHistoryService {
     }
 
     @Override
-    @Transactional
+    @Transactional //매서드 처리로직에서도 작동가능
     public int deleteHistory(List<Integer> historyNos) {
         // 1. 이미지 삭제
         int deletedImages = setupHistoryMapper.deleteHistoryImage(historyNos);
         if (deletedImages == 0) {
             throw new RuntimeException("이미지 삭제에 실패했습니다.");
         }
-
+        
         // 2. 히스토리 삭제
         int deletedHistories = setupHistoryMapper.deleteHistory(historyNos);
         if (deletedHistories == 0) {

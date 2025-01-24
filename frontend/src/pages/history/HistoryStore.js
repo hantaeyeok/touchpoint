@@ -61,7 +61,7 @@ const HistoryStore = ({ deleteMode, CheckboxChange }) => {
                     </div>
                 ))
             ) : (
-                <p>Loading...</p>
+                <p>게시된 글이 없습니다.</p>
             )}
 
             {/* DetailHistoryModal */}

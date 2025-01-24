@@ -89,12 +89,12 @@ function App() {
 
 export default App;
 // 사용 방법법
-// const { userId, role } = useAdmin();
+// const { userId, role } = useAmidn();
 
 //   return (
 //     <div>
 //       <h1>Admin Page</h1>
-//       {userId && role === "ROLE_ADMIN" ? (
+//       {ROLE === "ROLE_ADMIN" ? (
 //         <p>Welcome, Admin {userId}!</p>
 //       ) : (
 //         <p>You do not have access to this page.</p>
