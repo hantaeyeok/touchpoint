@@ -1,11 +1,15 @@
 package com.touchpoint.kh.qna.controller;
 
+import java.awt.PageAttributes.MediaType;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -124,7 +128,7 @@ public class QnaController {
 	    for (MultipartFile file : files) {
 	        String originName = file.getOriginalFilename();
 	        String changeName = System.currentTimeMillis() + "_" + originName;
-	        String filePath = baseUrl + "uploads/qna/" + changeName;
+	        String filePath = baseUrl + changeName;
 
 	        try {
 	            file.transferTo(new File(directory, changeName));
@@ -188,7 +192,7 @@ public class QnaController {
 	        
 	        if (files == null || files.isEmpty()) {
 	            log.warn("첨부 파일이 없습니다.");
-	            return responseHandler.createResponse("QnA 등록 성공 (첨부 파일 없음)", answerSave, HttpStatus.OK);
+	            return responseHandler.createResponse("Answer 등록 성공 (첨부 파일 없음)", answerSave, HttpStatus.OK);
 	        }
 	        
 	        List<FileDto> fileDtos = saveFiles(request, files, qnaNo, number);
@@ -262,7 +266,25 @@ public class QnaController {
         return newFiles;
 	}
 	
-	
+	private List<FileDto> deletePrevFile(HttpServletRequest request,
+										 List<FileDto> prevFiles){
+		List<FileDto> deletedFiles = new ArrayList<>();
+		for (FileDto existingFile : prevFiles) {
+            try {
+                File oldFile = new File(request.getServletContext().getRealPath("/resources/qnaUpload/"), existingFile.getChangeName());
+                if (oldFile.exists()) {
+                    oldFile.delete();
+                    System.out.println("Deleting physical file: " + oldFile.getAbsolutePath());
+                }
+                deletedFiles.add(existingFile);
+                qnaService.deleteFile(existingFile.getFileNo());
+            } catch (Exception e) {
+                System.out.println("Error processing file: " + existingFile.getOriginName());
+                e.printStackTrace();
+            }
+        }
+		return deletedFiles;
+	}
 	
 	@PutMapping("/updateQna/{qnaNo}")
 	public ResponseEntity<ResponseData> updateQna(HttpServletRequest request,
@@ -274,6 +296,12 @@ public class QnaController {
 	        QnaDto prevFile = qnaService.qnaDetail(qnaNo);
 	        List<FileDto> prevFiles = prevFile.getFiles();
 	        
+	        if (files == null || files.isEmpty()) {
+	            log.warn("첨부 파일이 없습니다.");
+	            List<FileDto> deletePrevFiles = deletePrevFile(request, prevFiles);
+	            return responseHandler.createResponse("QnA 등록 성공 (첨부 파일 없음)", deletePrevFiles, HttpStatus.OK);
+	        }
+	        
 	        List<FileDto> updatedFiles = updateFile(request, files, prevFiles);
 	        
 	        return responseHandler.createResponse("QnA 업데이트 및 파일 첨부 성공", updatedFiles, HttpStatus.OK);
@@ -282,23 +310,54 @@ public class QnaController {
 	    }
 	}
 	
-	@PutMapping("updateAnswer/{qnaNo}")
+	@PutMapping("/updateAnswer/{qnaNo}")
 	public ResponseEntity<ResponseData> updateAnswer(HttpServletRequest request,
 													 @PathVariable("qnaNo") int qnaNo,
 													 @RequestPart("AnswerDto") AnswerDto answerDto,
 													 @RequestPart(value ="files", required = false) List<MultipartFile> files){
 		try {
-			System.out.println("answerDto: " + answerDto );
 			qnaService.updateAnswer(answerDto);
 			AnswerDto prevFile = qnaService.answerFind(qnaNo);
 			List<FileDto> prevFiles = prevFile.getFiles();
 			
+			if (files == null || files.isEmpty()) {
+	            log.warn("첨부 파일이 없습니다.");
+	            List<FileDto> deletePrevFiles = deletePrevFile(request, prevFiles);
+	            return responseHandler.createResponse("Answer 등록 성공 (첨부 파일 없음)", deletePrevFiles, HttpStatus.OK);
+	        }
+			
 			List<FileDto> updatedFiles = updateFile(request, files, prevFiles);
-			System.out.println("updatedFiles: " + updatedFiles );
+			
 			return responseHandler.createResponse("QnA 업데이트 및 파일 첨부 성공", updatedFiles, HttpStatus.OK);
 	    } catch (Exception e) {
 	        return responseHandler.handleException("QnA 업데이트 실패", e);
 	    }
 	}
 	
+	@GetMapping("/download/{changeName}")
+	public ResponseEntity<Resource> downloadFile(@PathVariable("changeName") String fileName,
+			      								 HttpServletRequest request) {
+		System.out.println("요청된 파일 이름: " + fileName);
+	    // 파일 저장 경로 "C:/Users/User/Desktop/new/touchpoint/bakend/touchpoint/src/main/webapp/resources/qnaUpload/"
+	    String filePath = request.getServletContext().getRealPath("/resources/qnaUpload/"+ fileName); 
+	    File file = new File(filePath);
+	    System.out.println("실제 파일 경로: " + filePath);
+
+	    if (!file.exists()) {
+	        throw new RuntimeException("파일이 존재하지 않습니다: " + fileName);
+	    }
+
+	    // 파일 리소스 생성
+	    Resource resource = new FileSystemResource(file);
+
+	    // 파일 다운로드 강제 설정
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.add(HttpHeaders.CONTENT_TYPE, "application/octet-stream"); // Content-Type 설정
+	    headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\""); // 다운로드 강제
+
+	    // HTTP 응답 생성
+	    return ResponseEntity.ok()
+	            .headers(headers)
+	            .body(resource);
+	}
 }

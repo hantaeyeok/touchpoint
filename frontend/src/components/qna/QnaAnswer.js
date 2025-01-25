@@ -62,7 +62,7 @@ function QnaAnswer() {
                     <label>파일첨부</label>
                     {answer.files?.length > 0 ? (
                         answer.files.map((file, index) => (
-                            <a key={index} href={file.path} download={file.originName}>
+                            <a key={index} href={`http://localhost:8989/qna/download/${file.changeName}`} download={file.originName}>
                                 {file.originName}
                             </a>
                         ))
