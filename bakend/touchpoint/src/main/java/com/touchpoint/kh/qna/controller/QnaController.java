@@ -337,11 +337,9 @@ public class QnaController {
 	@GetMapping("/download/{changeName}")
 	public ResponseEntity<Resource> downloadFile(@PathVariable("changeName") String fileName,
 			      								 HttpServletRequest request) {
-		System.out.println("요청된 파일 이름: " + fileName);
-	    // 파일 저장 경로 "C:/Users/User/Desktop/new/touchpoint/bakend/touchpoint/src/main/webapp/resources/qnaUpload/"
+	    // 파일 저장 경로 
 	    String filePath = request.getServletContext().getRealPath("/resources/qnaUpload/"+ fileName); 
 	    File file = new File(filePath);
-	    System.out.println("실제 파일 경로: " + filePath);
 
 	    if (!file.exists()) {
 	        throw new RuntimeException("파일이 존재하지 않습니다: " + fileName);
