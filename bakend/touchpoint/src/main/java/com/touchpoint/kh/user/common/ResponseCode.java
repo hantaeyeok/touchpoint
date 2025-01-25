@@ -27,5 +27,33 @@ public interface ResponseCode {
     String PASSWORD_RESET_FAIL = "PRF"; // 비밀번호 초기화 실패
     
     String SOCIAL_AUTH_FAIL = "SAF";
-
+    String USER_NOT_FOUND = "UNF"; // 사용자 정보 없음
+    String USER_ALREADY_ACTIVE = "UAA"; // 계정 이미 활성화됨
+    String USER_NOT_ACTIVE = "UNA";
+    String UNAUTHORIZED = "UA"; // 인증 실패
+    String NO_COOKIE = "NC"; // 쿠키 없음
 }
+//String SUCCESS = "SU"; // 성공
+//String VALIDATION_FAIL = "VF"; // 검증 실패
+//String DUPLICATE_ID = "DI"; // 중복 아이디
+//String DUPLICATE_EMAIL = "DE"; // 중복 이메일
+//String DUPLICATE_PHONE = "DP"; // 중복 전화번호
+//
+//String SIGN_IN_FAIL = "SF"; // 로그인 실패
+//String CERTIFICATION_FAIL = "CF"; // 인증 실패
+//
+//String MAIL_FAIL = "MF"; // 메일 전송 실패
+//String DATABASE_ERROR = "DBE"; // 데이터베이스 오류
+//
+////로그인 관련
+//String ACCOUNT_LOCKED = "AL"; // 계정 잠김
+//String CAPTCHA_FAIL = "CP"; // 캡차 실패
+//String PASSWORD_FAIL_AFTER_CAPTCHA = "PF"; // 캡차 후 비밀번호 실패
+//
+////아이디 및 비밀번호 찾기 관련
+//String ID_FIND_SUCCESS = "IFS"; // 아이디 찾기 성공
+//String ID_FIND_FAIL = "IFF"; // 아이디 찾기 실패
+//String PASSWORD_RESET_SUCCESS = "PRS"; // 비밀번호 초기화 성공
+//String PASSWORD_RESET_FAIL = "PRF"; // 비밀번호 초기화 실패
+//
+//String SOCIAL_AUTH_FAIL = "SAF"; // 소셜 인증 실패

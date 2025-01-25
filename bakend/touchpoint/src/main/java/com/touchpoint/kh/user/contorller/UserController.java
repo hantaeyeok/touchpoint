@@ -1,8 +1,12 @@
 package com.touchpoint.kh.user.contorller;
 
+import java.util.Arrays;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,6 +20,7 @@ import com.touchpoint.kh.user.model.dto.request.check.IdCheckRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.PhoneCheckRequestDto;
 import com.touchpoint.kh.user.model.dto.request.find.FindIdRequestDto;
 import com.touchpoint.kh.user.model.dto.request.find.FindPasswordRequestDto;
+import com.touchpoint.kh.user.model.dto.response.CheckCookieResponseDto;
 import com.touchpoint.kh.user.model.dto.response.EmailCertificaionResponseDto;
 import com.touchpoint.kh.user.model.dto.response.SignInResponseDto;
 import com.touchpoint.kh.user.model.dto.response.SignUpResponseDto;
@@ -29,9 +34,12 @@ import com.touchpoint.kh.user.model.dto.response.find.FindPasswordResponseDto;
 import com.touchpoint.kh.user.model.service.UserService;
 import com.touchpoint.kh.user.model.service.UserSocialService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/login")
 @RequiredArgsConstructor
@@ -84,8 +92,8 @@ public class UserController {
 	
 	@PostMapping("/sign-in")
 	public ResponseEntity<? super SignInResponseDto> signIn(
-			@RequestBody SignInRequestDto responsebody){
-		ResponseEntity<? super SignInResponseDto> response = userService.signIn(responsebody);
+			@RequestBody SignInRequestDto responsebody, HttpServletResponse sevletResponse){
+		ResponseEntity<? super SignInResponseDto> response = userService.signIn(responsebody,sevletResponse);
 		return response;
 	}
 	
@@ -117,7 +125,32 @@ public class UserController {
 		return response;	
 	}
 
-	
+//	@GetMapping("/check-cookie")
+//	public ResponseEntity<? super CheckCookieResponseDto> checkAuth(@CookieValue(value = "authToken", required = false) String authToken) {
+//		log.info("authtoken{}",authToken);
+//		ResponseEntity<? super CheckCookieResponseDto> response = userService.checkAuth(authToken);
+//	    return response;
+//	}
+	@GetMapping("/check-cookie")
+	public ResponseEntity<? super CheckCookieResponseDto> checkAuth(
+	    @RequestHeader(value = "Cookie", required = false) String cookieHeader
+	) {
+		log.info("cookieGeader{}",cookieHeader);
+	    if (cookieHeader != null && cookieHeader.contains("authToken")) {
+	        String authToken = Arrays.stream(cookieHeader.split(";"))
+	            .map(String::trim)
+	            .filter(cookie -> cookie.startsWith("authToken="))
+	            .map(cookie -> cookie.substring("authToken=".length()))
+	            .findFirst()
+	            .orElse(null);
+
+	        log.info("authToken from Cookie: {}", authToken);
+	        return userService.checkAuth(authToken);
+	    } else {
+	        log.warn("No authToken found in cookies");
+	        return CheckCookieResponseDto.unauthorized();
+	    }
+	}
 	
 	
 }

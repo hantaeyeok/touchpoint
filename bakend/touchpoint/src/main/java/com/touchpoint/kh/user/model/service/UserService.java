@@ -11,6 +11,7 @@ import com.touchpoint.kh.user.model.dto.request.check.IdCheckRequestDto;
 import com.touchpoint.kh.user.model.dto.request.check.PhoneCheckRequestDto;
 import com.touchpoint.kh.user.model.dto.request.find.FindIdRequestDto;
 import com.touchpoint.kh.user.model.dto.request.find.FindPasswordRequestDto;
+import com.touchpoint.kh.user.model.dto.response.CheckCookieResponseDto;
 import com.touchpoint.kh.user.model.dto.response.EmailCertificaionResponseDto;
 import com.touchpoint.kh.user.model.dto.response.SignInResponseDto;
 import com.touchpoint.kh.user.model.dto.response.SignUpResponseDto;
@@ -21,6 +22,9 @@ import com.touchpoint.kh.user.model.dto.response.check.PhoneCheckResponsetDto;
 import com.touchpoint.kh.user.model.dto.response.find.FindIdResponseDto;
 import com.touchpoint.kh.user.model.dto.response.find.FindPasswordResponseDto;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 public interface UserService {
 	
 	ResponseEntity<? super IdCheckResponseDto> idCheck(IdCheckRequestDto dto);
@@ -29,9 +33,9 @@ public interface UserService {
 	ResponseEntity<? super EmailCertificaionResponseDto> emailCertification(EmailCertificaionRequsetDto dto);
 	ResponseEntity<? super CheckCertificaionResponseDto> checkCertificaion(CheckCertificaionRequestDto dto);
 	ResponseEntity<? super SignUpResponseDto> signUp(SignUpRequestDto dto);
-	ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto);
+	ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto, HttpServletResponse response);
 	ResponseEntity<? super FindIdResponseDto> findId(FindIdRequestDto dto);
 	ResponseEntity<? super FindPasswordResponseDto> findPassword(FindPasswordRequestDto dto);
 	ResponseEntity<? super CheckCertificaionResponseDto> passwordCertification(CheckCertificaionRequestDto dto);
-
+	ResponseEntity<? super CheckCookieResponseDto> checkAuth(String authToken);
 }

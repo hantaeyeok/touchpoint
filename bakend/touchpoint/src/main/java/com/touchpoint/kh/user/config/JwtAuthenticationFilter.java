@@ -3,6 +3,7 @@ package com.touchpoint.kh.user.config;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,16 +47,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 				return;
 			}
 			
-			String userId = jwtProvider.validata(token);
-			if(userId == null) {
+			//String  = jwtProvider.validata(token);
+			Map<String, String> result = jwtProvider.validata(token);
+			
+			if(result == null) {
 				filterChain.doFilter(request, response);
 				return;
 			}
+			String userId = result.get("userId");
 			
 			User user = userRepository.findByUserId(userId);
 			String role = user.getUserRole();
-			System.out.println(role);
-			log.info("role : {}",role);
 	
 			List<GrantedAuthority> authorities = new ArrayList<>();
 			authorities.add(new SimpleGrantedAuthority(role));
@@ -67,11 +69,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 			authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 			securityContext.setAuthentication(authenticationToken);
 			SecurityContextHolder.setContext(securityContext);
-			
-			
-			
-			
-			
 			
 			
 		} catch (Exception e) {
