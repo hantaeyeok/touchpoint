@@ -4,10 +4,13 @@ import "@styles/Qna2.css";
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import Modal from "react-modal";
 
+Modal.setAppElement("#root");
 
 function QnaAnswer() {
 
+    const [answerModalIsOpen, setAnswerModalIsOpen] = useState(false);
     const { qnaNo } = useParams();
     const navigate = useNavigate();
     const [answer, setAnswer] = useState({
@@ -44,6 +47,23 @@ function QnaAnswer() {
         fetchQnas();
     },[]);
 
+    function modalIsOpen() {
+        setAnswerModalIsOpen(true);
+    }
+
+    const handleDelte = async () => {
+        try {
+            const response = await axios.post(`http://localhost:8989/qna/answerDelete/${qnaNo}`, answer,{ headers :{"Content-Type": "application/json"}});
+            console.log("서버 응답:",response.data);
+            alert("글 삭제가 정상 처리되었습니다.");
+        } catch (error) {
+            console.error("데이터 저장 중 오류 발생:", error.message);
+            alert("글 저장 중 문제가 발생했습니다. 다시 시도해주세요.");
+        };
+        navigate("/qna");
+        setAnswerModalIsOpen(false);
+    }
+
     return(
         <div className="formContainer">
             <h1>답변</h1>
@@ -77,6 +97,15 @@ function QnaAnswer() {
             <div className="qnaAdd_btn">
                 <button onClick={()=>{navigate(-1)}}>이전으로</button>
                 <button onClick={handleEdit}>수정하기</button>
+                <button onClick={modalIsOpen}>삭제하기</button>
+            </div>
+            <div>
+                <Modal className="deleteModal"
+                    isOpen={answerModalIsOpen}
+                    onRequestClose={()=> setAnswerModalIsOpen(false)}>
+                    <p>삭제를 그대로 진행 하시겠습니까?</p>
+                    <button onClick={handleDelte}>삭제하기</button>
+                </Modal>
             </div>
         </div>
     )

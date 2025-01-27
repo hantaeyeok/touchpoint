@@ -1,6 +1,5 @@
 package com.touchpoint.kh.qna.controller;
 
-import java.awt.PageAttributes.MediaType;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -334,6 +334,7 @@ public class QnaController {
 	    }
 	}
 	
+	//down
 	@GetMapping("/download/{changeName}")
 	public ResponseEntity<Resource> downloadFile(@PathVariable("changeName") String fileName,
 			      								 HttpServletRequest request) {
@@ -357,5 +358,40 @@ public class QnaController {
 	    return ResponseEntity.ok()
 	            .headers(headers)
 	            .body(resource);
+	}
+	
+	//delete
+	@PostMapping("/qnaDelete/{qnaNo}")
+	public ResponseEntity<ResponseData> qnaDelete(@PathVariable("qnaNo") int qnaNo,
+												  @RequestBody QnaDto qnaDto,
+												  HttpServletRequest request){
+		try {
+			QnaDto prevFile = qnaService.qnaDetail(qnaNo);
+			List<FileDto> prevFiles = prevFile.getFiles();
+			if(prevFiles != null && !prevFiles.isEmpty()) {
+				deletePrevFile(request, prevFiles);
+			}
+			int deleteQna = qnaService.deleteQna(qnaNo); 
+			return responseHandler.createResponse("QnA 삭제 성공", deleteQna, HttpStatus.OK);
+	    } catch (Exception e) {
+	        return responseHandler.handleException("QnA 삭제 실패", e);
+	    }										  
+	}
+	
+	@PostMapping("/answerDelete/{qnaNo}")
+	public ResponseEntity<ResponseData> answerDelete(@PathVariable("qnaNo") int qnaNo,
+													 @RequestBody AnswerDto answerDto,
+													 HttpServletRequest request){
+		try {
+			AnswerDto prevFile = qnaService.answerFind(qnaNo);
+			List<FileDto> prevFiles = prevFile.getFiles();
+			if(prevFiles != null && !prevFiles.isEmpty()) {
+				deletePrevFile(request, prevFiles);
+			}
+			int deleteAnswer = qnaService.deleteAnswer(qnaNo); 
+			return responseHandler.createResponse("QnA 삭제 성공", deleteAnswer, HttpStatus.OK);
+		} catch (Exception e) {
+			return responseHandler.handleException("QnA 삭제 실패", e);
+		}										  
 	}
 }

@@ -30,6 +30,10 @@ public interface QnaService {
 
 	public void insNewFile(FileDto fileDto);
 
+	public int deleteQna(int qnaNo);
+
+	public int deleteAnswer(int qnaNo);
+
 	//public int createQna(QnaDto qnaDto, List<FileDto> fileDtos);
 
 

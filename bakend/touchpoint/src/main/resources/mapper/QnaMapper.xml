@@ -197,6 +197,22 @@
 		 		FILE_NO = #{fileNo}
    </delete>
    
+   <delete id="deleteQna">
+   		DELETE
+   		  FROM
+   		  		QNA
+  		 WHERE
+  		 		QNA_NO = #{qnaNo}
+   </delete>
+   
+   <delete id="deleteAnswer">
+   		DELETE
+   		  FROM
+   		  		ANSWER
+  		 WHERE
+  		 		QNA_NO = #{qnaNo}
+   </delete>
+   
    <resultMap id="AnswerResultMap" type="com.touchpoint.kh.qna.model.vo.AnswerDto">
 	    <id property="answerNo" column="ANSWER_NO"/>
 	    <result property="answerTitle" column="ANSWER_TITLE"/>

@@ -80,6 +80,16 @@ public class QnaServiceImpl implements QnaService {
 		qnaMapper.insNewFile(fileDto);
 	}
 
+	@Override
+	public int deleteQna(int qnaNo) {
+		return qnaMapper.deleteQna(qnaNo);
+	}
+
+	@Override
+	public int deleteAnswer(int qnaNo) {
+		return qnaMapper.deleteAnswer(qnaNo);
+	}
+
 
 //	@Transactional(rollbackOn = Exception.class) 안되는데 ㅡㅡㅗ
 //	@Override
