@@ -17,7 +17,8 @@
 	          FROM 
 	          		QNA
 	    )
-	    WHERE RNUM BETWEEN #{offset} + 1 AND #{offset} + #{size}
+	     WHERE 
+	    		RNUM BETWEEN #{offset} + 1 AND #{offset} + #{size}
    </select>
    
    <select id="qnaTotalCount" resultType="int">

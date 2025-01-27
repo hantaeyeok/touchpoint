@@ -7,6 +7,7 @@ function QnaList() {
     const [qnaList, setQnaList] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+    const [pageGroup, setPageGroup] = useState(0);
 
     const fetchQnas = async (page) => {
         try {
@@ -29,6 +30,35 @@ function QnaList() {
         setCurrentPage(page);
     };
 
+    const handleNextGroup = () => {
+        setPageGroup((prev) => prev + 1);
+        setCurrentPage((pageGroup + 1) * 5); // 다음 그룹 첫 페이지로 이동
+    };
+
+    const handlePrevGroup = () => {
+        setPageGroup((prev) => Math.max(prev - 1, 0)); // 0보다 작을경우 방어코드 작성
+        setCurrentPage((pageGroup - 1) * 5); // 이전 그룹 첫 페이지로 이동
+    };
+
+    const renderPagination = () => {
+        const start = pageGroup * 5;
+        const end = Math.min(start + 5, totalPages);
+
+        const buttons = [];
+        for (let i = start; i < end; i++) {
+            buttons.push(
+                <button
+                    key={i}
+                    className={i === currentPage ? "active" : ""}
+                    onClick={() => handlePageChange(i)}
+                >
+                    {i + 1}
+                </button>
+            );
+        }
+
+        return buttons;
+    };
     return (
         <div>
             <div className="qnaList">
@@ -56,14 +86,14 @@ function QnaList() {
                 </table>
             </div>
             <div className="pagination">
-                {Array.from({ length: totalPages }, (_, i) => (
-                    <button
-                        key={i}
-                        className={i === currentPage ? "active" : ""}
-                        onClick={() => handlePageChange(i)}>
-                        {i + 1}
-                    </button>
-                ))}
+                {pageGroup > 0 && <button onClick={handlePrevGroup}>이전</button>}
+                    
+
+                {renderPagination()}
+
+                {pageGroup < Math.ceil(totalPages / 5) - 1 && <button onClick={handleNextGroup}>다음</button>}
+                    
+                
             </div>
         </div>
     );

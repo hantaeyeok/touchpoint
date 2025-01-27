@@ -12,8 +12,6 @@ import com.touchpoint.kh.qna.model.vo.QnaDto;
 @Mapper
 public interface QnaMapper {
 
-	List<QnaDto> qnaFindAll();
-
 	int insQna(QnaDto qnaDto);
 
 	int insQnaFile(FileDto fileAdd);

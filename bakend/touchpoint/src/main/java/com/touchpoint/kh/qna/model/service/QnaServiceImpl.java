@@ -20,11 +20,6 @@ public class QnaServiceImpl implements QnaService {
 	private final QnaMapper qnaMapper;
 
 	@Override
-	public List<QnaDto> qnaFindAll() {
-		return qnaMapper.qnaFindAll();
-	}
-
-	@Override
 	public int  createQna(QnaDto qnaDto) {
 		return qnaMapper.insQna(qnaDto);
 	}
