@@ -1,26 +1,35 @@
-import React, {useContext, useEffect, useState } from "react";
-import { useRef } from "react";
-import "@styles/Qna.css";
-import { Routes, Route, Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
+import "@styles/Qna.css";
 
 function QnaList() {
-    
     const [qnaList, setQnaList] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+
+    const fetchQnas = async (page) => {
+        try {
+            const response = await axios.get("http://localhost:8989/qna/qnaList", {params: { page, size: 10 }});
+            
+            const data = response.data.data;
+            setQnaList(data.qnaList);
+            setTotalPages(data.totalPages);
+            setCurrentPage(data.currentPage);
+        } catch (error) {
+            console.error("FAQ 데이터를 가져오는 중 오류 발생:", error);
+        }
+    };
 
     useEffect(() => {
-        const fetchQnas = async () => {
-            try {
-                const response = await axios.get("http://localhost:8989/qna/qnaList");
-                setQnaList(response.data.data); 
-            } catch (error) {
-                console.error("FAQ 데이터를 가져오는 중 오류 발생:", error);
-            }
-        };
-        fetchQnas();
-    }, [setQnaList]);
-    
-    return(
+        fetchQnas(currentPage);
+    }, [currentPage]);
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
+
+    return (
         <div>
             <div className="qnaList">
                 <table>
@@ -46,7 +55,18 @@ function QnaList() {
                     </tbody>
                 </table>
             </div>
+            <div className="pagination">
+                {Array.from({ length: totalPages }, (_, i) => (
+                    <button
+                        key={i}
+                        className={i === currentPage ? "active" : ""}
+                        onClick={() => handlePageChange(i)}>
+                        {i + 1}
+                    </button>
+                ))}
+            </div>
         </div>
-    )
+    );
 }
-export default QnaList
+
+export default QnaList;

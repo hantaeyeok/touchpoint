@@ -3,6 +3,7 @@ package com.touchpoint.kh.qna.controller;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -81,14 +82,15 @@ public class QnaController {
 	
 	//select
 	@GetMapping("/qnaList")
-	public ResponseEntity<ResponseData> getQnaAll(){
-		try {
-			List<QnaDto> qnaList = qnaService.qnaFindAll();
-			return responseHandler.createResponse("Qna 목록 조회 성공",qnaList, HttpStatus.OK);
-		} catch (Exception e) {
-			return responseHandler.handleException("조회 실패", e);
-		}
-	}
+    public ResponseEntity<ResponseData> getQnaAll(@RequestParam(name = "page") int page,
+    											  @RequestParam(name = "size") int size) {
+        try {
+            Map<String, Object> qnaList = qnaService.qnaFindAllWithPaging(page, size);
+            return responseHandler.createResponse("Qna 목록 조회 성공", qnaList, HttpStatus.OK);
+        } catch (Exception e) {
+            return responseHandler.handleException("조회 실패", e);
+        }
+    }
 	
 	
 	@GetMapping("/qnaDetail/{qnaNo}")

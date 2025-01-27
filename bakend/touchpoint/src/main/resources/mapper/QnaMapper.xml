@@ -4,17 +4,24 @@
 
 <mapper namespace="com.touchpoint.kh.qna.model.dao.QnaMapper">
 	
-   <select id="qnaFindAll" resultType="com.touchpoint.kh.qna.model.vo.QnaDto" >
-   		SELECT 
-			    QNA_NO,
-			    QNA_TITLE,
-			    USER_ID,
-			    QNA_DATE,
-			    STATUS
-		  FROM
-			    QNA 
-	  ORDER BY
-			    QNA_NO DESC
+   <select id="qnaFindAllWithPaging" parameterType="map" resultType="com.touchpoint.kh.qna.model.vo.QnaDto">
+	    SELECT *
+	      FROM (
+	        SELECT 
+	            	QNA_NO,
+	            	QNA_TITLE,
+	            	USER_ID,
+	            	QNA_DATE,
+	            	STATUS,
+	            	ROW_NUMBER() OVER (ORDER BY QNA_NO DESC) AS RNUM
+	          FROM 
+	          		QNA
+	    )
+	    WHERE RNUM BETWEEN #{offset} + 1 AND #{offset} + #{size}
+   </select>
+   
+   <select id="qnaTotalCount" resultType="int">
+    	SELECT COUNT(*) FROM QNA
    </select>
 
    <select id="qnaDetail" resultMap="QnaResultMap">

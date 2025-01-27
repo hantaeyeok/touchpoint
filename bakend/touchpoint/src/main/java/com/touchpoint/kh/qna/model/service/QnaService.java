@@ -1,6 +1,7 @@
 package com.touchpoint.kh.qna.model.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.touchpoint.kh.qna.model.vo.AnswerDto;
 import com.touchpoint.kh.qna.model.vo.FileDto;
@@ -33,6 +34,8 @@ public interface QnaService {
 	public int deleteQna(int qnaNo);
 
 	public int deleteAnswer(int qnaNo);
+
+	public Map<String, Object> qnaFindAllWithPaging(int page, int size);
 
 	//public int createQna(QnaDto qnaDto, List<FileDto> fileDtos);
 
