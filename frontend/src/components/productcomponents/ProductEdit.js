@@ -164,7 +164,7 @@ if (mainImg instanceof File) {
       
           // Axios 요청
           const response = await axios.put(
-              `http://localhost:8989/product/${productId}`,
+              `http://localhost:8989/product/admin/${productId}`,
               formData
           );
       

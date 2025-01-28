@@ -33,7 +33,7 @@ const DetailProduct = () => {
     //삭제함수
     const productDelete =  () => {
         if (window.confirm("정말 삭제하시겠습니까?")) {
-            axios.delete(`http://localhost:8989/product/${productId}`)
+            axios.delete(`http://localhost:8989/product/admin/${productId}`)
             .then(response =>{
                 console.log(response);
                 alert("상품 삭제 완료!");

@@ -48,7 +48,7 @@ public class ProductController {
 	private final ProductService productService;
 	private final ResponseHandler responseHandler;
 
-	@PostMapping("save")
+	@PostMapping("/admin/save")
 	public ResponseEntity<ResponseData> save(
 										    @RequestParam("product") String productJson, 
 										    @RequestParam("upfile") MultipartFile upfile, 
@@ -160,7 +160,7 @@ public class ProductController {
 	}
 	
 	
-	@DeleteMapping("/{productId}")
+	@DeleteMapping("/admin/{productId}")
 	public ResponseEntity<ResponseData>deletelById(@PathVariable("productId")Long productId, HttpServletRequest request ){
 		productService.deleteProductWithImages(productId, request);
 		//productService.deleteImages(productId);
@@ -215,7 +215,7 @@ public class ProductController {
 
 	
 	//수정
-	@PutMapping("/{productId}")
+	@PutMapping("/admin/{productId}")
 	public ResponseEntity<ResponseData> update(@PathVariable("productId") Long productId,
 																@RequestParam("product") String productJson, 
 															    @RequestParam("upfile") MultipartFile upfile, 
