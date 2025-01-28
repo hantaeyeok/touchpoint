@@ -138,7 +138,7 @@ public class ProductServiceImpl implements ProductService {
 
 	}
 	
-	
+	/*
 	@Override
 	@Transactional
 	public void deleteImages(List<Long> imageIds, HttpServletRequest request) {
@@ -150,7 +150,6 @@ public class ProductServiceImpl implements ProductService {
 	    for (Long imageId : imageIds) {
 	        try {
 	            // 1. DB에서 파일 경로 조회
-	        	
 	            String filePath = productMapper.getImagePathById(imageId);
 	            String absolutePath = request.getServletContext().getRealPath(filePath);
 
@@ -172,47 +171,91 @@ public class ProductServiceImpl implements ProductService {
 	        }
 	    }
 	}
+	*/
+	
+	@Override
+	@Transactional
+	public void deleteImages(List<Long> imageIds, HttpServletRequest request) {
+	    if (imageIds == null || imageIds.isEmpty()) {
+	        log.info("삭제할 이미지가 없습니다.");
+	        return;
+	    }
+
+	    // 1. 저장 경로 설정
+	    String savePath = request.getServletContext().getRealPath("/resources/uploadFiles/");
+
+	    for (Long imageId : imageIds) {
+	        try {
+	            // 2. DB에서 파일 경로 조회
+	            String filePath = productMapper.getImagePathById(imageId);
+	            String absolutePath = request.getServletContext().getRealPath(filePath);
+
+	            if (filePath != null ) {
+	                // 3. 파일 삭제
+	                File file = new File(absolutePath);
+	                if (file.exists()) {
+	                    if (file.delete()) {
+	                        log.info("파일 삭제 성공: {}", absolutePath);
+	                    } else {
+	                        log.warn("파일 삭제 실패: {}", absolutePath);
+	                    }
+	                } else {
+	                    log.warn("파일이 존재하지 않음: {}", absolutePath);
+
+	                }
+	                //filePath가 null이면 썸네일인지 검사 
+	            } else {  
+                    File dir = new File(savePath); 
+                    if (dir.exists() && dir.isDirectory()) {
+                        File[] files = dir.listFiles((dir1, name) -> name.contains(String.valueOf(imageId)));
+                        if (files != null && files.length > 0) {
+                            //log.info("이미지 ID {}와 일치하는 파일: {}", imageId, files[0].getAbsolutePath());
+                            if (files[0].delete()) {
+    	                        log.info("파일 삭제 성공: {}", files[0].getAbsolutePath());
+    	                    } else {
+    	                        log.warn("파일 삭제 실패: {}", files[0].getAbsolutePath());
+    	                    }
+                        }
+                    }
+	            }
+	        } catch (Exception e) {
+	            log.error("이미지 삭제 중 오류 발생. ID = {}, 에러 = {}", imageId, e.getMessage(), e);
+	        }
+	    }
+	}
+
 
 
 	@Transactional
 	public void updateProductWithImages(Product product, List<ProductImage> productImages, List<Long> deleteImg) {
-		
-		long start = System.currentTimeMillis();
-		
-	    Logger logger = LoggerFactory.getLogger(getClass());
-
-	    // 1. 삭제된 이미지 DB에서 삭제
+	    // 1. 삭제된 이미지 처리
 	    if (deleteImg != null && !deleteImg.isEmpty()) {
 	        for (Long imageId : deleteImg) {
 	            try {
 	                productMapper.removeImg(imageId);
-	                logger.info("삭제된 이미지 ID: {}", imageId);
+	                log.info("삭제된 이미지 ID: {}", imageId);
 	            } catch (Exception e) {
-	                logger.error("이미지 삭제 실패: ID = {}, 에러 = {}", imageId, e.getMessage(), e);
+	                log.error("이미지 삭제 실패: ID = {}, 에러 = {}", imageId, e.getMessage(), e);
 	            }
 	        }
-	    }else {
-	        logger.info("No images to delete.");
 	    }
 
-
-	    // 2. 상세 이미지 저장
+	    // 2. 새 이미지 저장 또는 기존 이미지 업데이트
 	    for (ProductImage image : productImages) {
-	        image.setProductId(product.getProductId()); // productId 설정
+	        image.setProductId(product.getProductId());
 
-	        // 이미지 ID가 null인경우 새로운 이미지로 저장
-	        if (image.getImageId() == null) {
-	            productRepository.save(image);  
-	            logger.info("새로운 이미지 저장: {}", image);
+	        if (image.getImageId() == null) { 
+	            // 새로 추가된 이미지만 저장
+	            productRepository.save(image);
+	            log.info("새로운 이미지 저장: {}", image);
 	        } else {
-	            productMapper.updateProductImage(image); 
-	            logger.info("기존 이미지 업데이트: {}", image);
+	            // 기존 이미지는 업데이트
+	            productMapper.updateProductImage(image);
+	            log.info("기존 이미지 업데이트: {}", image);
 	        }
 	    }
-	    
-	    long end = System.currentTimeMillis();
-	    logger.info("Execution time: {} ms", (end - start));
 	}
+
 
 
 

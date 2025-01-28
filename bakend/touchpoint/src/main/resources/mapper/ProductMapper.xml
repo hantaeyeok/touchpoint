@@ -44,5 +44,11 @@
 				product_id=  #{productId}
 	</select>
 	
+	
+	<select id="getExistingImagePaths" resultType="string">
+	    SELECT IMAGE_URL
+	    FROM TB_PRODUCT_IMAGES
+	    WHERE product_id = #{productId}
+	</select>
 
 </mapper>

@@ -1,6 +1,7 @@
 package com.touchpoint.kh.product.model.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.data.repository.query.Param;
@@ -23,6 +24,8 @@ public interface ProductMapper {
 	String getImagePathById(Long imageId);
 
 	List<Long> getImageId(Long productId);
+
+	Set<String> getExistingImagePaths(Long productId);
 
 	//String getImagePathById(List<Long>  imageId);
 

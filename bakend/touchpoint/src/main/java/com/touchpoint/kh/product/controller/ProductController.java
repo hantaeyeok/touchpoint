@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,7 +66,7 @@ public class ProductController {
 	    
 	    product.setThumbnailImage(saveFile(upfile, request));
 	    
-	    List<ProductImage> productImages = saveImages(images, null, null, request);
+	    List<ProductImage> productImages = saveImages(images, null, request);
 	    
 	    productService.saveProductWithImages(product, productImages);
 	    
@@ -98,35 +100,30 @@ public class ProductController {
 	}
 	
 	// 상세 이미지를 저장하기 위한 메서드
-	private List<ProductImage> saveImages(List<MultipartFile> images, List<Long> imageIds, List<Long> deleteImg, HttpServletRequest request) throws IOException {
+	private List<ProductImage> saveImages(List<MultipartFile> images, List<Long> imageIds, HttpServletRequest request) throws IOException {
 	    List<ProductImage> productImages = new ArrayList<>();
 
+	    log.info("images.size():{} ", images.size());
+	    
 	    for (int i = 0; i < images.size(); i++) {
 	        MultipartFile image = images.get(i); // 현재 이미지
-	        String imagePath = null; // 이미지 경로 초기화
+	        
+	        log.info("앞단에서 넘어온 image:{} ", image);
+	        
 	        Long imageId = (imageIds != null && i < imageIds.size()) ? imageIds.get(i) : null; // 기존 이미지 ID 가져오기
 
-	        // 기존 이미지 재사용
-	        if (imageId != null && (deleteImg == null || !deleteImg.contains(imageId))) {
-	            // 기존 이미지는 saveFile을 호출하지 않고 기존 경로를 사용
-	            imagePath = productService.getPathById(imageId); // 기존 경로 가져오기 (가정)
-	            log.info("기존 이미지 사용: imageId = {}, imagePath = {}", imageId, imagePath);
-	        } 
+	        
 	        // 새로운 이미지는 저장
-	        else if (image != null && !image.isEmpty()) {
-	            imagePath = saveFile(image, request); // 새 이미지 저장
+	        if (image != null && !image.isEmpty()) {
+	            String imagePath = saveFile(image, request); // 새 이미지 저장
 	            log.info("새로운 이미지 저장: {}", imagePath);
 
-	            // 새로 저장된 이미지는 항상 imageId를 null로 설정
-	            imageId = null; 
+	            productImages.add(new ProductImage(imagePath, i, null, null));
 	        }
-
-	        // 이미지 정보를 List에 추가 (새로운 이미지는 imageId를 null로 넘김)
-	        productImages.add(new ProductImage(imagePath, i, null, imageId));
+	        
 	    }
 	    return productImages;
 	}
-
 
 
 
@@ -171,34 +168,103 @@ public class ProductController {
 		return responseHandler.createResponse("상품 삭제 성공!", null, HttpStatus.OK);
 	}
 	
+	// 상세이미지 수정, 삭제, 추가 메서드
+	private List<ProductImage> updateImages(List<MultipartFile> images, List<Long> imageIds, List<Long> deleteImg, List<Long> updateImg, HttpServletRequest request) throws IOException {
+	    List<ProductImage> productImages = new ArrayList<>();
+
+	    for (int i = 0; i < images.size(); i++) {
+	        MultipartFile image = images.get(i);
+	        Long imageId = (imageIds != null && i < imageIds.size()) ? imageIds.get(i) : null;
+	        log.info("처리 중인 이미지 ID: {}", imageId);
+
+	        // 1. 삭제된 이미지는 처리에서 제외
+	        if (deleteImg != null && deleteImg.contains(imageId)) {
+	            log.info("삭제 대상 이미지: {}", imageId);
+	            continue;
+	        }
+
+	        // 2. 수정 대상 이미지
+	        if (updateImg != null && updateImg.contains(imageId)) {
+	            log.info("수정 대상 이미지: {}", imageId);
+	            String updatedImagePath = saveFile(image, request); // 새 이미지 저장
+	            productImages.add(new ProductImage(updatedImagePath, i, null, imageId)); // 기존 이미지 ID 유지
+	            continue;
+	        }
+
+	        // 3. 새 이미지 추가
+	        if (imageId == null) {
+	            log.info("새로운 이미지 추가");
+	            String newImagePath = saveFile(image, request); // 새 이미지 저장
+	            productImages.add(new ProductImage(newImagePath, i, null, null)); // 새로운 이미지 추가
+	        } else {
+	            // 4. 기존 이미지를 유지
+	            log.info("기존 이미지 재사용: {}", imageId);
+	            String existingPath = productService.getPathById(imageId);
+	            productImages.add(new ProductImage(existingPath, i, null, imageId)); // 기존 이미지 추가
+	        }
+	    }
+
+	    return productImages;
+	}
+
+	
+	
+	
+
+
+
+	
 	//수정
 	@PutMapping("/{productId}")
 	public ResponseEntity<ResponseData> update(@PathVariable("productId") Long productId,
 																@RequestParam("product") String productJson, 
 															    @RequestParam("upfile") MultipartFile upfile, 
 															    @RequestParam("deleteImg") String deleteImgJson,
+															    @RequestParam("updateImg") String updateImgJson,
 															    @RequestParam("images") List<MultipartFile> images,
 															    HttpServletRequest request ) throws IOException {
 
 		long start = System.currentTimeMillis();
 		
+	    log.info(" 제일처음 앞단에서 넘어온 images:{} ", images); //멀티파일 나옴..
+
+		
 	    List<Long> deleteImg = new ObjectMapper().readValue(deleteImgJson, new TypeReference<List<Long>>() {});
+	    List<Long> updateImg = new ObjectMapper().readValue(updateImgJson, new TypeReference<List<Long>>() {});
 
 		Product updateProduct = new ObjectMapper().readValue(productJson, Product.class); 
 		
 	    Product product = productService.findByProductId(productId);  //imageId받기위해서 갔다옴(수정사항은 반영되지않으니 다른 변수로 받아야함)
+	   
 	    
-	    List<ProductImage> productImage =product.getProductImages(); 
-	    List<Long> imageIds = new ArrayList<>(); 
+	    List<ProductImage> productImage = product.getProductImages();
 	    
-	    for (ProductImage image : productImage) {  //반복문으로 imageIds 배열에 상세이미지 아이디만 담아줌
-	        imageIds.add(image.getImageId());
-	    };
+	 // displayOrder를 기준으로 정렬
+	    productImage = productImage.stream()
+	            .sorted(Comparator.comparingInt(ProductImage::getDisplayOrder))
+	            .collect(Collectors.toList());
+
+	    log.info("정렬된 이미지 아이디 잘 나옴 ? productImage : {}", productImage);  //순서 잘 안지켜짐
+	    List<Long> imageIds = new ArrayList<>();
+
+	    // 삭제한 이미지를 제외하고 imageIds에 추가
+	    for (ProductImage image : productImage) {
+	        Long imageId = image.getImageId();
+	        if (deleteImg == null || !deleteImg.contains(imageId) || !updateImg.contains(imageId)) {
+	            imageIds.add(imageId); // 삭제된 이미지가 아닌 경우에만 추가
+	        }
+	    }
+	    
+	    log.info("삭제된 이미지를 제외한 이미지 아이디: {}", imageIds);
 	    
 	    updateProduct.setThumbnailImage(saveFile(upfile, request));
 	    
-	    List<ProductImage> productImages = saveImages(images, imageIds, deleteImg, request);  //여기 갔다오면 인덱스, 이미지 아이디 배정
+	    List<ProductImage> productImages = updateImages(images, imageIds, deleteImg, updateImg,  request);  //여기 갔다오면 인덱스, 이미지 아이디 배정
 	
+	    
+	    
+	    log.info("앞단에서 넘어온 productImages:{} ", productImages); //여기까지 삭제된거 제외하고 잘 나옴 - 마지막 이미지 아이디 null
+	    
 	    productService.saveProduct(updateProduct);
 	    
 	    productService.deleteImages(deleteImg, request);
