@@ -38,7 +38,7 @@
     margin: 10px 0;
 }
 
-.page-indicator {
+.page-buttonPro {
     display: flex;
     
     font-size: 16px;
@@ -50,16 +50,16 @@
     margin-top: 50px;
 }
 
-.page-num{
+.page-numPro{
     align-items: center;
     text-align: center;
 }
 
-.current-page {
+.current-pagePro {
     color: #fff;
     font-weight: bold;
 }
 
-.total-page {
+.total-pagePro {
     color: #dddddd;
 }
