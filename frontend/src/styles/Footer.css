@@ -1,0 +1,76 @@
+.footer {
+    background-color: #e91e63;
+    color: white;
+    padding: 20px 0;
+    font-family: Arial, sans-serif;
+    margin-top: 100px;
+}
+
+.footer-top {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.footer-button {
+    background: white;
+    color: black;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.footer-button span {
+    display: block;
+    font-size: 12px;
+    font-weight: normal;
+    margin-top: 5px;
+}
+
+.footer-button:hover {
+    background: #f8bbd0;
+}
+
+.footer-bottom {
+    background: #d81b60;
+    padding: 20px;
+    margin: 0 auto;
+    max-width: 800px;
+    border-radius: 10px;
+}
+
+.footer-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.footer-contact {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.footer-bottom p {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+.footer-bottom a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.footer-bottom a:hover {
+    text-decoration: underline;
+}
+
+.footer-copyright {
+    margin-top: 10px;
+    font-size: 12px;
+    opacity: 0.8;
+}

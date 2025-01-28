@@ -31,7 +31,7 @@ const Menubar = () => {
                 </div>
 
                 <div className="dropdown">
-                    <a href="#support" className="dropdown-title">고객상담</a>
+                    <a href="/qna" className="dropdown-title">고객상담</a>
                     <div className="dropdown-content">
                         <Link to="/qna">QNA</Link>
                         <Link to="/faq">FAQ</Link>

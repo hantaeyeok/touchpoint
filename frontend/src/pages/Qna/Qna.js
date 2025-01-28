@@ -12,7 +12,7 @@ function Qna() {
     const searchInput = useRef(null);
     
     return(
-        <div>
+        <div className="qnaPage">
             <div className="imgBox"> 
                 <img src={imageUrl}/>
             </div>

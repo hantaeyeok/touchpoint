@@ -85,7 +85,7 @@ function QnaList() {
                     </tbody>
                 </table>
             </div>
-            <div className="pagination">
+            <div className="qnaPagination">
                 {pageGroup > 0 && <button onClick={handlePrevGroup}>이전</button>}
                     
 

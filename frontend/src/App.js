@@ -25,6 +25,10 @@ import FindId from "@pages/login/FindId";
 import UseUserId from "@components/login/UseUserId";
 import UseAdmin from "@components/login/UseAdmin";
 import AdminPage from "@pages/admin/AdminPage";
+import Sidebar from "@components/Sidebar";
+import Footer from "@components/Footer";
+import MainTop from "@components/bootstrap/MainTop";
+
 function App() {
 
   const userId = UseUserId();
@@ -51,10 +55,12 @@ function App() {
   
     <FaqProvider>
         <Menubar/>
-
+        <Sidebar/>
         <div>
-          {/* 라우트 설정 */}
           <Routes>
+            {/* 메인화면 라우트 설정 */}
+            <Route path="/" element={<MainTop />} />
+            {/* 라우트 설정 */}
             <Route path="/qna/*" element={<Qna />} />
             <Route path="/faq/*" element={<Faq />} />
             <Route path="/addFaq/*" element={<AddFaq />} />
@@ -65,7 +71,6 @@ function App() {
             <Route path="/" element={<h1>메인</h1>} />
             <Route path="/" element={<h1>메인</h1>} />
             <Route path="/auth/:token" element={<AuthHandler/>} />
-
             <Route path="/product" element={<Product/>}/>
             <Route path="/detailProduct/:productId" element={<DetailProduct/>}/>
             <Route path="/productRegister" element={<ProductRegister/>}/>
@@ -78,9 +83,10 @@ function App() {
             <Route path="/findPassword" element={<FindPassword />} />
             <Route path="/findId" element={<FindId />} />
             <Route path="/adminPage" element={<AdminPage />} />
-            
           </Routes>
+
         </div>
+        <Footer/>
     </FaqProvider>
 
     </>
