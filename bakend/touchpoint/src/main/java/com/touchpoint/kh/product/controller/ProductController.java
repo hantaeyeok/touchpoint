@@ -269,6 +269,8 @@ public class ProductController {
 	    
 	    productService.deleteImages(deleteImg, request);
 	    
+	    productService.deleteImages(updateImg, request);
+	    
 	    productService.updateProductWithImages(updateProduct, productImages, deleteImg);
 	    
 	    long end = System.currentTimeMillis();
