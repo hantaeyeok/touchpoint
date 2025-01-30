@@ -34,6 +34,7 @@ import com.touchpoint.kh.common.ResponseHandler;
 import com.touchpoint.kh.product.model.service.ProductService;
 import com.touchpoint.kh.product.model.vo.Product;
 import com.touchpoint.kh.product.model.vo.ProductImage;
+import com.touchpoint.kh.product.model.vo.ProductResultDto;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +48,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ProductController {
 	private final ProductService productService;
 	private final ResponseHandler responseHandler;
-	//private final ProductConverter productConverter;
 
 	
 	//상품 추가
@@ -56,10 +56,9 @@ public class ProductController {
 										    @RequestParam("upfile") MultipartFile upfile, 
 										    @RequestParam("images") List<MultipartFile> images, HttpServletRequest request ) throws IOException {
 		try {
-	        Product product = productService.save(productJson, upfile, images, request);
-	        return responseHandler.createResponse("상품 추가 성공!", product, HttpStatus.OK);
+			ProductResultDto responseData = productService.save(productJson, upfile, images, request);
+	        return responseHandler.createResponse("상품 추가 성공!", responseData, HttpStatus.OK);
 	    } catch (Exception e) {
-	        log.error("상품 추가 실패", e);
 	        return responseHandler.handleException("상품 추가 실패", e);
 	    }
 	}
@@ -71,7 +70,6 @@ public class ProductController {
 	    	List<Product> all_products = productService.findAll();
 	        return responseHandler.createResponse("전체 상품 조회 성공!", all_products, HttpStatus.OK);
 	    } catch (Exception e) {
-	        log.error("상품 추가 실패", e);
 	        return responseHandler.handleException("전체상품 조회 실패", e);
 	    }
 	}
@@ -83,7 +81,6 @@ public class ProductController {
 			List<Product> productCategory = productService.findByProductCategory(category);
 	    	return responseHandler.createResponse("카테고리별 조회 성공!", productCategory, HttpStatus.OK);	    
 	    } catch (Exception e) {
-	        log.error("상품 추가 실패", e);
 	        return responseHandler.handleException("카테고리별 조회 실패", e);
 	    }
 	}
@@ -92,10 +89,9 @@ public class ProductController {
 	@GetMapping("/{productId}")
 	public ResponseEntity<ResponseData> findByProductId(@PathVariable("productId") Long productId) {
 		try {
-		    Map<String, Object> responseData = productService.findByProductId(productId);
+			ProductResultDto responseData = productService.findByProductId(productId);
 			return responseHandler.createResponse("상품 상세 조회 성공!", responseData, HttpStatus.OK);
 	    } catch (Exception e) {
-	        log.error("상품 추가 실패", e);
 	        return responseHandler.handleException("상품 상세 조회 실패", e);
 	    }
 	}
@@ -105,9 +101,8 @@ public class ProductController {
 	public ResponseEntity<ResponseData>deletelById(@PathVariable("productId")Long productId, HttpServletRequest request ){
 		try {
 			productService.deleteProductWithImages(productId, request);
-			return responseHandler.createResponse("상품 삭제 성공!", null, HttpStatus.OK);
+			return responseHandler.createResponse("상품 삭제 성공!", true, HttpStatus.OK);
 	    } catch (Exception e) {
-	        log.error("상품 추가 실패", e);
 	        return responseHandler.handleException("상품 삭제 실패", e);
 	    }
 	}
@@ -121,10 +116,9 @@ public class ProductController {
 															    @RequestParam("updateImg") String updateImgJson,
 															    @RequestParam("images") List<MultipartFile> images, HttpServletRequest request ) throws IOException {
 	    try {
-			Map<String, Object> responseData = productService.updateProduct(productId, productJson, upfile, deleteImgJson, updateImgJson, images, request);
+	    	ProductResultDto responseData = productService.updateProduct(productId, productJson, upfile, deleteImgJson, updateImgJson, images, request);
 		    return responseHandler.createResponse("상품 수정 성공!", responseData, HttpStatus.OK);
 	    } catch (Exception e) {
-	        log.error("상품 추가 실패", e);
 	        return responseHandler.handleException("상품 수정 실패", e);
 	    }
 	}
