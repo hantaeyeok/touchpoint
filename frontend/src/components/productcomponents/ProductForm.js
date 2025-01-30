@@ -146,7 +146,7 @@ const ProductForm = ({ images, initialData, onSubmit , thumbnailId }) => {
 };
 
 const [deleteImg, setDeleteImg] = useState([]); //삭제할 이미지들
-//console.log("deleteImg",deleteImg);
+//console.log("deleteImg :: ",deleteImg);
 
 const onImgDelete = (id) => {
     setImgList((prev) =>

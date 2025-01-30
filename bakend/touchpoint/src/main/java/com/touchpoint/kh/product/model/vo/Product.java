@@ -42,7 +42,7 @@ public class Product {
     private String thumbnailImage;
 
     private LocalDateTime createdDate;
-
+    
 	public void updateFromProduct(Product product) {
 		// TODO Auto-generated method stub
 		

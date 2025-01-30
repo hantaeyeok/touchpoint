@@ -13,7 +13,7 @@ import com.touchpoint.kh.product.model.vo.ProductImage;
 public interface ProductMapper {
 	List<ProductImage> findImagesByProductId(@Param("productId") Long productId);
 
-	void setProduct(Product product);
+	int setProduct(Product product);
 
 	void updateProductImage(ProductImage image);
 
