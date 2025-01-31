@@ -6,8 +6,10 @@ import com.touchpoint.kh.history.model.vo.HistoryImage;
 import com.touchpoint.kh.history.model.vo.SetupHistory;
 import com.touchpoint.kh.history.model.vo.SetupHistoryDto;
 import com.touchpoint.kh.history.model.vo.UpdateHistoryDto;
-
-
+import com.touchpoint.kh.history.model.vo.UpdateHistoryImageDto;
+import com.touchpoint.kh.history.model.vo.UpdatedImageDto;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.touchpoint.kh.common.ResponseData;
 import com.touchpoint.kh.common.ResponseHandler;
 import com.touchpoint.kh.common.message.HistoryMessage;
@@ -100,7 +102,6 @@ public class SetupHistoryController {
     public ResponseEntity<ResponseData> deleteHistory(@RequestBody DeleteHistoryDto deleteHistoryDto) {
         List<Integer> historyNos = deleteHistoryDto.getHistoryNo();
         
-        log.info("historyNos나오냐:{}",historyNos);
         // 서비스 호출
         int result = setupHistoryService.deleteHistory(historyNos);
 
@@ -120,9 +121,8 @@ public class SetupHistoryController {
     }
     
     //Get 메서드:데이터 상새보기
-    @GetMapping("/{historyNo}")
+    @GetMapping("/detail/{historyNo}")
     public ResponseEntity<ResponseData> getDetailSetupHistory(@PathVariable("historyNo") int historyNo) {
-        log.info("사용자로부터 받아온 게시글번호: {}", historyNo);
 
         // 서비스 호출
         DetailHistoryDto detailHistory = setupHistoryService.detailHistoryById(historyNo);
@@ -146,56 +146,60 @@ public class SetupHistoryController {
     
     @PutMapping("/update")
     public ResponseEntity<ResponseData> updateSetupHistory(
-            @RequestPart("data") UpdateHistoryDto updateHistoryDto, // UpdateHistoryDto 사용
-            @RequestPart(value = "newMainImage", required = false) MultipartFile newMainImage,
-            @RequestPart(value = "newSubImages", required = false) List<MultipartFile> newSubImages,
-            @RequestPart(value = "deleteSubImages", required = false) List<String> deleteSubImages) {
-
+            @RequestPart("data") UpdateHistoryDto updateHistoryDto,  // 게시글 데이터 DTO
+            @RequestPart(value = "updatedImages", required = false) List<MultipartFile> updatedImages, // 수정된 파일
+            @RequestPart(value = "updatedImageInfo", required = false) String updatedImageInfoJson, // 수정된 이미지 정보 JSON
+            @RequestPart(value = "addedImages", required = false) List<MultipartFile> addedImages, // 추가된 파일
+            @RequestPart(value = "addedImageInfo", required = false) String addedImageInfoJson // 추가된 이미지 정보 JSON
+    ) {
         try {
-            // 로그 확인
-            if (newMainImage != null) {
-                log.info("New Main Image: {}", newMainImage.getOriginalFilename());
-            } else {
-                log.info("No new main image provided");
+            log.info("===== UPDATE 요청 도착=====");
+            log.info("DTO: {}", updateHistoryDto);
+            log.info("수정된 파일 개수: {}", (updatedImages != null) ? updatedImages.size() : "없음");
+            log.info("수정된 이미지 정보 (JSON): {}", updatedImageInfoJson);
+            log.info("추가된 파일 개수: {}", (addedImages != null) ? addedImages.size() : "없음");
+            log.info("추가된 이미지 정보 (JSON): {}", addedImageInfoJson);
+
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            // 🚀 수정된 이미지 정보 변환
+            List<UpdatedImageDto> updatedImageInfo = objectMapper.readValue(
+                    updatedImageInfoJson, new TypeReference<List<UpdatedImageDto>>() {});
+
+            // 🚀 추가된 이미지 정보 변환
+            List<UpdatedImageDto> addedImageInfo = objectMapper.readValue(
+                    addedImageInfoJson, new TypeReference<List<UpdatedImageDto>>() {});
+
+            // 🚀 이미지 데이터 매핑
+            UpdateHistoryImageDto updateHistoryImageDto = UpdateHistoryImageDto.builder()
+                    .updatedImages(updatedImages)
+                    .updatedImageInfo(updatedImageInfo)
+                    .addedImages(addedImages) // ✅ 추가된 이미지 추가
+                    .addedImageInfo(addedImageInfo) // ✅ 추가된 이미지 정보 추가
+                    .build();
+
+            if (updateHistoryDto == null || updateHistoryImageDto == null) {
+                log.error("요청 데이터가 null입니다!");
+                return responseHandler.createResponse("잘못된 요청 데이터입니다.", false, HttpStatus.BAD_REQUEST);
             }
 
-            if (newSubImages != null && !newSubImages.isEmpty()) {
-                log.info("New Sub Images:");
-                newSubImages.forEach(image -> log.info(" - {}", image.getOriginalFilename()));
-            } else {
-                log.info("No new sub images provided");
-            }
-
-            if (deleteSubImages != null && !deleteSubImages.isEmpty()) {
-                log.info("Delete Sub Images:");
-                deleteSubImages.forEach(image -> log.info(" - {}", image));
-            } else {
-                log.info("No delete sub images provided");
-            }
-
-            // DTO에 파일 데이터와 삭제 이미지 리스트 설정
-            updateHistoryDto.setNewMainImage(newMainImage);
-            updateHistoryDto.setNewSubImages(newSubImages);
-            updateHistoryDto.setDeleteSubImages(deleteSubImages);
-
-            // 서비스 계층 호출
-            int result = setupHistoryService.updateSetupHistory(updateHistoryDto);
+            // 서비스 호출
+            int result = setupHistoryService.updateSetupHistory(updateHistoryDto, updateHistoryImageDto);
 
             if (result == 1) {
-                // 성공 응답
                 return responseHandler.createResponse(
-                    HistoryMessage.HISTORY_UPDATE_SUCCESS, true, HttpStatus.OK);
+                        HistoryMessage.HISTORY_UPDATE_SUCCESS, true, HttpStatus.OK);
             } else {
-                // 실패 응답
                 return responseHandler.createResponse(
-                    HistoryMessage.HISTORY_UPDATE_FAILURE, false, HttpStatus.BAD_REQUEST);
+                        HistoryMessage.HISTORY_UPDATE_FAILURE, false, HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
-            // 예외 발생 처리
             log.error("Exception during update: ", e);
             return responseHandler.handleException(HistoryMessage.SERVER_ERROR, e);
         }
     }
+
+
 
 
 }

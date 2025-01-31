@@ -205,8 +205,8 @@ public class ProductServiceImpl implements ProductService {
 	            productRepository.save(image);  
 	            logger.info("새로운 이미지 저장: {}", image);
 	        } else {
-	            productMapper.updateProductImage(image); 
-	            logger.info("기존 이미지 업데이트: {}", image);
+	          productMapper.updateProductImage(image); 
+	          logger.info("기존 이미지 업데이트: {}", image);
 	        }
 	    }
 	    
