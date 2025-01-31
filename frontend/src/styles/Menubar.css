@@ -1,7 +1,6 @@
 .menu-bar {
     height: 60px;
     display: flex;
-
     align-items: center;
     background-color: #f8f9fa;
     padding: 10px 20px;
@@ -45,7 +44,7 @@
 .dropdown-content {
     display: none;
     position: absolute;
-    top: 170%; /* 부모 메뉴 바로 아래에 위치 */
+    top: 130%; /* 부모 메뉴 바로 아래에 위치 */
     left: 0;
     background-color: #fff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);

@@ -6,56 +6,55 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { handleFileChange } from "@components/qna/handleFileChange";
 
-function QnaEdit() {
+function AnswerEdit() {
 
     const fileInputRef = useRef(null);
     const navigate = useNavigate();
     const fileImg = `${process.env.PUBLIC_URL}/images/fileAdd.JPG`;
     const location = useLocation();
     const [originName,setOriginName] = useState('');
-    const [qnaData, setQnaData] = useState({
-        qnaNo: "",
-        qnaTitle: "",
-        qnaContent: "",
+    const [answerData, setAnswerData] = useState({
+        qnaNo:"",
+        answerNo: "",
+        answerTitle: "",
+        answerContent: "",
         files: [],
     });
 
     useEffect(() => {
         if (location.state) {
-            setQnaData(location.state);
+            setAnswerData(location.state);
         }
     }, [location.state]);
     
     useEffect(() => {
-        if (qnaData.files.length > 0) {
-            const fileNames = qnaData.files.map((file) => file.originName).join(", ");
+        if (answerData.files.length > 0) {
+            const fileNames = answerData.files.map((file) => file.originName).join(", ");
             setOriginName(fileNames);
         }
-    }, [qnaData.files]);
+    }, [answerData.files]);
 
     const editSubmit = async () => {
-        if(!qnaData.qnaTitle || !qnaData.qnaContent){
+        if(!answerData.answerTitle || !answerData.answerContent){
             alert("제목과 내용을 입력해주세요")
             return;
         };
 
         const formData = new FormData();
-        formData.append("QnaDto", new Blob([JSON.stringify(qnaData)], { type: "application/json" }));
-        console.log("QnaDto :",qnaData);
+        formData.append("AnswerDto", new Blob([JSON.stringify(answerData)], { type: "application/json" }));
+        console.log("AnswerDto :",answerData);
         console.log("fileInputRef.current.files:", fileInputRef.current?.files);
         if (fileInputRef.current.files.length > 0) {
             Array.from(fileInputRef.current.files).forEach((file) => {
                 formData.append("files", file); //파일 실제 데이터 저장
             });
         }
-        console.log("formData :",formData);
-        console.log(qnaData.qnaNo);
         
         try {
-            const response = await axios.put(`http://localhost:8989/qna/updateQna/${qnaData.qnaNo}`, formData, {
+            const response = await axios.put(`http://localhost:8989/qna/updateAnswer/${answerData.qnaNo}`, formData, {
                 headers: {"Content-Type": "multipart/form-data"}
             });
-            console.log("서버 응답:", response.data);
+            console.log("서버 응답:", response.data.data);
             alert("글이 성공적으로 저장되었습니다!");
             navigate(-1);
         } catch (error) {
@@ -70,8 +69,8 @@ function QnaEdit() {
                 <div className="formField fullWidth">
                 <label>제 목</label>
                 <input 
-                    value={qnaData.qnaTitle}
-                    onChange={(event)=>setQnaData((prev)=>({...prev, qnaTitle : event.target.value}))}
+                    value={answerData.answerTitle}
+                    onChange={(event)=>setAnswerData((prev)=>({...prev, answerTitle : event.target.value}))}
                     type="text" 
                     placeholder="제목을 입력하세요" />
                 </div>
@@ -97,8 +96,8 @@ function QnaEdit() {
             </div>
             <div className="formTextarea">
                 <textarea
-                    value={qnaData.qnaContent}
-                    onChange={(event)=>setQnaData((prev)=>({...prev, qnaContent : event.target.value}))}
+                    value={answerData.answerContent}
+                    onChange={(event)=>setAnswerData((prev)=>({...prev, answerContent : event.target.value}))}
                     placeholder="내용을 입력하세요">
                 </textarea>
             </div>
@@ -109,4 +108,4 @@ function QnaEdit() {
         </div>
     )
 }
-export default QnaEdit
+export default AnswerEdit

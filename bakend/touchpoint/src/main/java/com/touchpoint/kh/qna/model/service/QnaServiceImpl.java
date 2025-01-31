@@ -1,6 +1,8 @@
 package com.touchpoint.kh.qna.model.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -9,7 +11,6 @@ import com.touchpoint.kh.qna.model.vo.AnswerDto;
 import com.touchpoint.kh.qna.model.vo.FileDto;
 import com.touchpoint.kh.qna.model.vo.QnaDto;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -19,22 +20,14 @@ public class QnaServiceImpl implements QnaService {
 	private final QnaMapper qnaMapper;
 
 	@Override
-	public List<QnaDto> qnaFindAll() {
-		return qnaMapper.qnaFindAll();
-	}
-	
-
-	@Override
 	public int  createQna(QnaDto qnaDto) {
 		return qnaMapper.insQna(qnaDto);
 	}
-	
 
 	@Override
 	public void createQnaFile(FileDto fileAdd) {
 		qnaMapper.insQnaFile(fileAdd);
 	}
-	
 
 	@Override
 	public QnaDto qnaDetail(int qnaNo) {
@@ -58,30 +51,56 @@ public class QnaServiceImpl implements QnaService {
 	    }
 	}
 
-
 	@Override
 	public void createAnswerFile(FileDto fileAdd) {
 		qnaMapper.insAnswerFile(fileAdd);
 	}
-
 
 	@Override
 	public void updateQna(QnaDto qnaDto) {
 		qnaMapper.updateQna(qnaDto);
 	}
 
-
 	@Override
 	public void deleteFile(int fileNo) {
 		qnaMapper.deleteFile(fileNo);
 	}
 
+	@Override
+	public void updateAnswer(AnswerDto answerDto) {
+		qnaMapper.updateAnswer(answerDto);
+	}
 
 	@Override
-	public void updateFile(int fileNo) {
-		qnaMapper.updateFile(fileNo);
-		
+	public void insNewFile(FileDto fileDto) {
+		qnaMapper.insNewFile(fileDto);
 	}
+
+	@Override
+	public int deleteQna(int qnaNo) {
+		return qnaMapper.deleteQna(qnaNo);
+	}
+
+	@Override
+	public int deleteAnswer(int qnaNo) {
+		return qnaMapper.deleteAnswer(qnaNo);
+	}
+
+	@Override
+	public Map<String, Object> qnaFindAllWithPaging(int page, int size) {
+        int offset = page * size; // OFFSET 계산
+        List<QnaDto> qnaList = qnaMapper.qnaFindAllWithPaging(offset, size); 
+        int totalCount = qnaMapper.qnaTotalCount(); // 전체 데이터 개수 조회
+
+        // 결과 데이터 구성
+        Map<String, Object> result = new HashMap<>();
+        result.put("qnaList", qnaList);
+        result.put("totalCount", totalCount);
+        result.put("totalPages", (int) Math.ceil((double) totalCount / size));
+        result.put("currentPage", page);
+
+        return result;
+    }
 
 
 //	@Transactional(rollbackOn = Exception.class) 안되는데 ㅡㅡㅗ
