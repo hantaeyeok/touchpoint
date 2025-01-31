@@ -231,7 +231,7 @@ public class ProductServiceImpl implements ProductService {
 	        } else {
 
 	          productMapper.updateProductImage(image); 
-	          logger.info("기존 이미지 업데이트: {}", image);
+	          log.info("기존 이미지 업데이트: {}", image);
 
 	        }
 	    }

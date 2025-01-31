@@ -27,7 +27,7 @@ import UseAdmin from "@components/login/UseAdmin";
 import AdminPage from "@pages/admin/AdminPage";
 import Sidebar from "@components/Sidebar";
 import Footer from "@components/Footer";
-import MainTop from "@components/bootstrap/MainTop";
+
 
 function App() {
 
@@ -59,8 +59,7 @@ function App() {
         <div>
           <Routes>
             {/* 메인화면 라우트 설정 */}
-            <Route path="/" element={<MainTop />} />
-            {/* 라우트 설정 */}
+           
             <Route path="/qna/*" element={<Qna />} />
             <Route path="/faq/*" element={<Faq />} />
             <Route path="/addFaq/*" element={<AddFaq />} />
