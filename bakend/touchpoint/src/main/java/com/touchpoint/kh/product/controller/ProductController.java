@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,7 @@ import com.touchpoint.kh.common.ResponseHandler;
 import com.touchpoint.kh.product.model.service.ProductService;
 import com.touchpoint.kh.product.model.vo.Product;
 import com.touchpoint.kh.product.model.vo.ProductImage;
+import com.touchpoint.kh.product.model.vo.ProductResultDto;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -46,168 +49,77 @@ public class ProductController {
 	private final ProductService productService;
 	private final ResponseHandler responseHandler;
 
-	@PostMapping("save")
-	public ResponseEntity<ResponseData> save(
-										    @RequestParam("product") String productJson, 
+	
+	//상품 추가
+	@PostMapping("/admin/save")
+	public ResponseEntity<ResponseData> save(@RequestParam("product") String productJson, 
 										    @RequestParam("upfile") MultipartFile upfile, 
-										    @RequestParam("images") List<MultipartFile> images,
-										    HttpServletRequest request ) throws IOException {
-	    
-		
-		long start = System.currentTimeMillis();
-		
-	    Product product = new ObjectMapper().readValue(productJson, Product.class);
-	    
-	    product.setCreatedDate(LocalDateTime.now());
-	    
-	    log.info("반환받은 upfile :{}" , upfile);
-	    
-	    product.setThumbnailImage(saveFile(upfile, request));
-	    
-	    List<ProductImage> productImages = saveImages(images, null, null, request);
-	    
-	    productService.saveProductWithImages(product, productImages);
-	    
-	    long end = System.currentTimeMillis();
-	    log.info("등록 처리하는데 걸린 시간 : {} ms", (end - start));
-	    
-	    return responseHandler.createResponse("상품추가 성공!", true, HttpStatus.OK);
-	}
-
-	
-	public String saveFile(MultipartFile upfile, HttpServletRequest request) throws IOException {
-		
-	    String savePath = request.getServletContext().getRealPath("/resources/uploadFiles/");
-	    
-	    if (savePath == null) {
-	        savePath = "/path/to/your/upload/directory/";  // 사용자의 디렉터리 경로로 수정
+										    @RequestParam("images") List<MultipartFile> images, HttpServletRequest request ) throws IOException {
+		try {
+			ProductResultDto responseData = productService.save(productJson, upfile, images, request);
+	        return responseHandler.createResponse("상품 추가 성공!", responseData, HttpStatus.OK);
+	    } catch (Exception e) {
+	        return responseHandler.handleException("상품 추가 실패", e);
 	    }
-	    File directory = new File(savePath);
-	    
-	    if (!directory.exists()) {
-	        directory.mkdirs();  
-	    }
-	    
-	    String fileName = System.currentTimeMillis() + "_" + upfile.getOriginalFilename();
-	    File file = new File(savePath + fileName);
-	    upfile.transferTo(file);
-	    
-	    
-	    
-	    return "/resources/uploadFiles/" + fileName;  
 	}
 	
-	// 상세 이미지를 저장하기 위한 메서드
-	private List<ProductImage> saveImages(List<MultipartFile> images, List<Long> imageIds, List<Long> deleteImg, HttpServletRequest request) throws IOException {
-	    List<ProductImage> productImages = new ArrayList<>();
-
-	    for (int i = 0; i < images.size(); i++) {
-	        MultipartFile image = images.get(i); // 현재 이미지
-	        String imagePath = null; // 이미지 경로 초기화
-	        Long imageId = (imageIds != null && i < imageIds.size()) ? imageIds.get(i) : null; // 기존 이미지 ID 가져오기
-
-	        // 기존 이미지 재사용
-	        if (imageId != null && (deleteImg == null || !deleteImg.contains(imageId))) {
-	            // 기존 이미지는 saveFile을 호출하지 않고 기존 경로를 사용
-	            imagePath = productService.getPathById(imageId); // 기존 경로 가져오기 (가정)
-	            log.info("기존 이미지 사용: imageId = {}, imagePath = {}", imageId, imagePath);
-	        } 
-	        // 새로운 이미지는 저장
-	        else if (image != null && !image.isEmpty()) {
-	            imagePath = saveFile(image, request); // 새 이미지 저장
-	            log.info("새로운 이미지 저장: {}", imagePath);
-
-	            // 새로 저장된 이미지는 항상 imageId를 null로 설정
-	            imageId = null; 
-	        }
-
-	        // 이미지 정보를 List에 추가 (새로운 이미지는 imageId를 null로 넘김)
-	        productImages.add(new ProductImage(imagePath, i, null, imageId));
-	    }
-	    return productImages;
-	}
-
-
-
-
+	//전체상품 조회
 	@GetMapping("/category")
 	public ResponseEntity<ResponseData> findAll() {
-		
-		List<Product> all_products = productService.findAll();
-		//log.info("반환받은 product :{}" , all_products);
-		
-	    return responseHandler.createResponse("전체상품 조회 성공!", all_products, HttpStatus.OK);
+	    try {
+	    	List<Product> all_products = productService.findAll();
+	        return responseHandler.createResponse("전체 상품 조회 성공!", all_products, HttpStatus.OK);
+	    } catch (Exception e) {
+	        return responseHandler.handleException("전체상품 조회 실패", e);
+	    }
 	}
 	
+	//카테고리별 조회
 	@GetMapping()
 	public ResponseEntity<ResponseData> findByProductCategory (@RequestParam("category") String category){
-		
-		List<Product> productCategory = productService.findByProductCategory(category);
-	
-		return responseHandler.createResponse("카테고리별 조회 성공!", productCategory, HttpStatus.OK);
+		try {
+			List<Product> productCategory = productService.findByProductCategory(category);
+	    	return responseHandler.createResponse("카테고리별 조회 성공!", productCategory, HttpStatus.OK);	    
+	    } catch (Exception e) {
+	        return responseHandler.handleException("카테고리별 조회 실패", e);
+	    }
 	}
 	
-	
+	//상품 상세보기
 	@GetMapping("/{productId}")
-	public ResponseEntity<ResponseData> findByProduct(@PathVariable("productId") Long productId) {
-
-	    Product product = productService.findByProductId(productId);
-
-	    List<ProductImage> images = productService.findImagesByProductId(productId);
-	    
-	    Map<String, Object> responseData = new HashMap<>();
-	    responseData.put("product", product);
-	    responseData.put("images", images);
-
-		return responseHandler.createResponse("상품 상세보기 조회 성공!", responseData, HttpStatus.OK);
+	public ResponseEntity<ResponseData> findByProductId(@PathVariable("productId") Long productId) {
+		try {
+			ProductResultDto responseData = productService.findByProductId(productId);
+			return responseHandler.createResponse("상품 상세 조회 성공!", responseData, HttpStatus.OK);
+	    } catch (Exception e) {
+	        return responseHandler.handleException("상품 상세 조회 실패", e);
+	    }
 	}
 	
-	
-	@DeleteMapping("/{productId}")
+	//상품 삭제
+	@DeleteMapping("/admin/{productId}")
 	public ResponseEntity<ResponseData>deletelById(@PathVariable("productId")Long productId, HttpServletRequest request ){
-		productService.deleteProductWithImages(productId, request);
-		//productService.deleteImages(productId);
-		
-		return responseHandler.createResponse("상품 삭제 성공!", null, HttpStatus.OK);
+		try {
+			productService.deleteProductWithImages(productId, request);
+			return responseHandler.createResponse("상품 삭제 성공!", true, HttpStatus.OK);
+	    } catch (Exception e) {
+	        return responseHandler.handleException("상품 삭제 실패", e);
+	    }
 	}
 	
 	//수정
-	@PutMapping("/{productId}")
+	@PutMapping("/admin/{productId}")
 	public ResponseEntity<ResponseData> update(@PathVariable("productId") Long productId,
 																@RequestParam("product") String productJson, 
 															    @RequestParam("upfile") MultipartFile upfile, 
 															    @RequestParam("deleteImg") String deleteImgJson,
-															    @RequestParam("images") List<MultipartFile> images,
-															    HttpServletRequest request ) throws IOException {
-
-		long start = System.currentTimeMillis();
-		
-	    List<Long> deleteImg = new ObjectMapper().readValue(deleteImgJson, new TypeReference<List<Long>>() {});
-
-		Product updateProduct = new ObjectMapper().readValue(productJson, Product.class); 
-		
-	    Product product = productService.findByProductId(productId);  //imageId받기위해서 갔다옴(수정사항은 반영되지않으니 다른 변수로 받아야함)
-	    
-	    List<ProductImage> productImage =product.getProductImages(); 
-	    List<Long> imageIds = new ArrayList<>(); 
-	    
-	    for (ProductImage image : productImage) {  //반복문으로 imageIds 배열에 상세이미지 아이디만 담아줌
-	        imageIds.add(image.getImageId());
-	    };
-	    
-	    updateProduct.setThumbnailImage(saveFile(upfile, request));
-	    
-	    List<ProductImage> productImages = saveImages(images, imageIds, deleteImg, request);  //여기 갔다오면 인덱스, 이미지 아이디 배정
-	
-	    productService.saveProduct(updateProduct);
-	    
-	    productService.deleteImages(deleteImg, request);
-	    
-	    productService.updateProductWithImages(updateProduct, productImages, deleteImg);
-	    
-	    long end = System.currentTimeMillis();
-	    log.info("수정 처리하는데 걸린 시간 : {} ms", (end - start));
-	    
-	    return responseHandler.createResponse("상품 수정 성공!", productImages, HttpStatus.OK);
+															    @RequestParam("updateImg") String updateImgJson,
+															    @RequestParam("images") List<MultipartFile> images, HttpServletRequest request ) throws IOException {
+	    try {
+	    	ProductResultDto responseData = productService.updateProduct(productId, productJson, upfile, deleteImgJson, updateImgJson, images, request);
+		    return responseHandler.createResponse("상품 수정 성공!", responseData, HttpStatus.OK);
+	    } catch (Exception e) {
+	        return responseHandler.handleException("상품 수정 실패", e);
+	    }
 	}
 }

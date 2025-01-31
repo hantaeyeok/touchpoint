@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.touchpoint.kh.product.model.vo.Product;
+import com.touchpoint.kh.product.model.vo.ProductDto;
 import com.touchpoint.kh.product.model.vo.ProductImage;
 
 import jakarta.transaction.Transactional;

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import "@styles/ProductInsert.css";
 
-const ProductForm = ({ images, initialData, onSubmit }) => {
+const ProductForm = ({ images, initialData, onSubmit , thumbnailId }) => {
     const [productData, setProductData] = useState(initialData || {
         productName: '',
         productCategory: '키오스크/포스',  // 기본값 설정
@@ -15,6 +15,8 @@ const ProductForm = ({ images, initialData, onSubmit }) => {
       
     const [mainImg, setMainImg] = useState(''); 
     const [imgList, setImgList] = useState([]); 
+
+    const [currentThumbnailId, setCurrentThumbnailId] = useState(null); // 현재 썸네일 ID
  
     
     
@@ -28,14 +30,16 @@ const ProductForm = ({ images, initialData, onSubmit }) => {
     useEffect(() => { //화면에 원래정보 넣어줌
         if (initialData) {                  //initialData에 데이터가 있다면
             setProductData((prevState) => ({
-                ...prevState,                   //prevState기존상태를 유지하면서 썸네일이미지 설정정
+                ...prevState,                   //prevState기존상태를 유지하면서 썸네일이미지 설정
                 thumbnailImage: initialData.thumbnailImage || '',
             }));
       
             if (initialData.thumbnailImage) {    //썸네일 이미지 있으면 실행
-                convertUrlToFile(`http://localhost:8989${initialData.thumbnailImage}`, 'thumbnailImage.jpg')  //thumbnailImage.jpg이름의 파일객체로 만듦듦
+                convertUrlToFile(`http://localhost:8989${initialData.thumbnailImage}`, `${initialData.createdDate.split(".")[1]}`)  //thumbnailImage.jpg이름의 파일객체로 만듦
                 .then(file => {
                     setMainImg(file);  // file을 mainImg 상태에 저장
+                    setCurrentThumbnailId(initialData.createdDate.split(".")[1]);
+                    console.log('initialData.createdDate.split(".")[1]:', initialData.createdDate.split(".")[1]);
                 })
                 .catch((error) => {
                     console.error('Error converting URL to file:', error);
@@ -43,8 +47,8 @@ const ProductForm = ({ images, initialData, onSubmit }) => {
             }
       
             // imgList 처리
-            if (initialData.productImages && initialData.productImages.length > 0) {  //productImages가 있을경우
-                const formattedImages = initialData.productImages.map((img, index) => {  //initialData.productImages 배열을 map 메서드를 사용하여 새로운 형식의 formattedImages 배열로 변환
+            if (images && initialData.productImages.length > 0) {  //productImages가 있을경우
+                const formattedImages = images.map((img, index) => {  //initialData.productImages 배열을 map 메서드를 사용하여 새로운 형식의 formattedImages 배열로 변환
                 return {
                     id: img.imageId,
                     displayOrder:index,
@@ -57,8 +61,21 @@ const ProductForm = ({ images, initialData, onSubmit }) => {
         }
     }, [initialData]);
 
+    
+
     // 썸네일 이미지 추가 함수
     const onMainImgSelected = (e) => {
+
+        const newThumbnail = e.target.files[0];
+        setMainImg(newThumbnail); // 새 썸네일 설정
+        console.log("새로운 썸네일 파일:", newThumbnail);
+
+    if (thumbnailId) {
+      setDeleteImg((prev) => [...prev, thumbnailId]); // 기존 썸네일 ID를 삭제 목록에 추가
+      console.log("삭제할 썸네일 ID:", thumbnailId);
+    }
+
+
         const file = e.target.files[0]; // 선택한 파일
         
         if (!file) {
@@ -129,7 +146,7 @@ const ProductForm = ({ images, initialData, onSubmit }) => {
 };
 
 const [deleteImg, setDeleteImg] = useState([]); //삭제할 이미지들
-//console.log("deleteImg",deleteImg);
+//console.log("deleteImg :: ",deleteImg);
 
 const onImgDelete = (id) => {
     setImgList((prev) =>
@@ -272,12 +289,14 @@ const handleSubmit = (e) => {
                                                 }}
                                             />
 
-                                        <button
-                                            style={{  top: '0', right: '0' }}
+                                        
+                                            <input onChange={(e) => onImgChanged(img.id, e)}  accept="image/*" type="file" />
+                                            <button
+                                            style={{   top: '0', right: '0' }}
                                             onClick={() => { onImgDelete(img.id) }}
                                             type='button'>삭제하기
                                         </button>
-                                            <input onChange={(e) => onImgChanged(img.id, e)}  accept="image/*" type="file" />
+                                        
                                         </label>
                                     )
                                 }

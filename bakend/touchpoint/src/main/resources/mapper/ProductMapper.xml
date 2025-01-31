@@ -9,7 +9,7 @@
         SET 
             PRODUCT_NAME = #{productName},               -- 새로운 상품명
             PRODUCT_CATEGORY = #{productCategory},       -- 새로운 카테고리
-            SHORT_DESCRIPTION = #{shortDescription},     -- 새로운 짧은 설명
+            SHORT_DESCRIPTION = #{shortDescription},     -- 새로운 짧은 설명2
             DETAILED_DESCRIPTION = #{detailedDescription}, -- 새로운 상세 설명
             THUMBNAIL_IMAGE = #{thumbnailImage}          -- 새로운 썸네일 이미지 경로
         WHERE 
@@ -44,5 +44,11 @@
 				product_id=  #{productId}
 	</select>
 	
+	
+	<select id="getExistingImagePaths" resultType="string">
+	    SELECT IMAGE_URL
+	    FROM TB_PRODUCT_IMAGES
+	    WHERE product_id = #{productId}
+	</select>
 
 </mapper>

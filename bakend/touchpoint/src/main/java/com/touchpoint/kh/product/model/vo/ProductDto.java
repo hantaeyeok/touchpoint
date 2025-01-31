@@ -1,6 +1,7 @@
 package com.touchpoint.kh.product.model.vo;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,5 +31,9 @@ public class ProductDto {
     private String thumbnailImage;
 
     private LocalDateTime createdDate;
+    
+    List<ProductImage> productImages;
+    
+    private Long imageId;
 
 }

@@ -1,6 +1,7 @@
 import "@styles/Product.css";
 import InfoImg from "@components/productcomponents/InfoImg";
 import Search from "@components/productcomponents/Search";
+import Pagenation from "@components/productcomponents/Pagenation"
 import React, { useState, useEffect } from 'react';
 import { Link, useNaviState } from "react-router-dom";
 import axios from "axios";
@@ -69,6 +70,15 @@ const Product = () => {
         
       };
 
+      const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
+
+      // 페이지 변경 핸들러
+      const handlePageChange = (newPage) => {
+        setCurrentPage(newPage); // 페이지 변경 시 currentPage 업데이트
+      };
+
+      
+
   return (
     <>
       {/*product페이지 소개이미지*/}
@@ -86,6 +96,7 @@ const Product = () => {
       </div>
             
       <div className="product-list">
+      
         {
           clickCategory === '키오스크/포스' 
           ? responseData.map((cctv, index) => (
@@ -99,6 +110,9 @@ const Product = () => {
             <ResponseProduct data={kiosk} key={index} />
             ))
         }
+        
+
+
 
         <div>
           <button className="insert-button">
@@ -106,7 +120,17 @@ const Product = () => {
             <Link to="/productRegister" style={{ textDecoration: "none"}}>상품 추가</Link>
           </button>
         </div>
+        {
+        <Pagenation 
+          totalItems={responseData.length}          // 총 아이템 수
+          itemCountPerPage={3}     // 페이지당 아이템 수
+          pageCount={5}             // 한 번에 보여줄 페이지 수
+          currentPage={1}           // 현재 페이지
+          onPageChange={handlePageChange}   // 페이지 변경 핸들러
+        />
+        }
       </div>
+      
     </>
   );
 }

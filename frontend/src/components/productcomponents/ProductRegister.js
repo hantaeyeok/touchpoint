@@ -23,7 +23,7 @@ const ProductRegister = () => {
         });
 
         axios
-        .post('http://localhost:8989/product/save', formData, {
+        .post('http://localhost:8989/product/admin/save', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
