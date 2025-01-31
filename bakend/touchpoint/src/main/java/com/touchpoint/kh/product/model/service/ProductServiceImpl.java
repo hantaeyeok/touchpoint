@@ -292,38 +292,26 @@ public class ProductServiceImpl implements ProductService {
 				e.printStackTrace();
 			}
         }
-	    productMapper.setProduct(updateProduct);
+	    productMapper.setProduct(updateProduct); //DB에 업데이트
 		
 	    //productId로 기존 이미지들 찾기
-	    Product product = productRepository.findByProductId(productId);
-	    
-	    List<ProductImage> productImage = product.getProductImages();  //이미지 id, displayOder 필요함
+	    Product product = productRepository.findByProductId(productId);   //기존 상품 데이터 조회
+	    List<ProductImage> productImage = product.getProductImages();  //기존 상세이미지 조회
 	    
 	    // displayOrder 기준으로 정렬
 	    productImage.sort(Comparator.comparingInt(ProductImage::getDisplayOrder));
 
-        // 이미지 ID 리스트 추출 (stream 사용하여 간결하게 처리)
+        // 이미지 ID 리스트 추출 
         List<Long> imageIds = productImage.stream()
                                            .map(ProductImage::getImageId)
                                            .collect(Collectors.toList());
 	    
-	    List<ProductImage> productImages;
-		try {
-			productImages = updateImages(images, imageIds, deleteImg, updateImg , request);
-			log.info("이미지 업데이트한 productImages:{} ", productImages); //삭제된거 제외하고 잘 나옴
-			
-			removeAndUpdateImages(productId, productImages, deleteImg);  //DB에서 이미지 삭제, 새 이미지 저장하거나 업데이트
-			
-			Map<String, Object> responseData = new HashMap<>();
-		    responseData.put("product", product);
-		    responseData.put("images", productImages);
-		    
-		    return new ProductResultDto(product, productImages);
-		    
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}  
+	    List<ProductImage> productImages = updateImages(images, imageIds, deleteImg, updateImg , request);
+		log.info("이미지 업데이트한 productImages:{} ", productImages); //삭제된거 제외하고 잘 나옴
+		
+		removeAndUpdateImages(productId, productImages, deleteImg);  //DB에서 이미지 삭제, 새 이미지 저장하거나 업데이트
+		
+		return new ProductResultDto(product, productImages);
 	}
 
 	//상품 상세보기

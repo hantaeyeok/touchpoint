@@ -19,7 +19,7 @@ const DetailProduct = () => {
             .then(response => {
                 console.log("response:",response);
                 setProduct(response.data.data.product); 
-                setImages(response.data.data.images);
+                setImages(response.data.data.productImages);
             })
             .catch(error => {
                 console.error('Error fetching product details:', error);

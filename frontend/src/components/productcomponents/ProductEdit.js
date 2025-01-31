@@ -29,15 +29,15 @@ const ProductEdit = () => {
     axios
       .get(`http://localhost:8989/product/${productId}`)
       .then((response) => {
-        console.log("response.data.data.:",response.data.data);
-        console.log("response.data.data.:",response.data.data.images);
+        console.log("response.data.data:",response.data.data);
+        console.log("response.data.data.productImages:",response.data.data.productImages);
         setThumbnailId((response.data.data.product.thumbnailImage).split('/').pop().split('_')[0]); // 초기 썸네일 ID 설정
         console.log("썸네일 아이디",(response.data.data.product.thumbnailImage).split('/').pop().split('_')[0]);
         
         setMainImg(response.data.data.product.thumbnailImage);
 
         setInitialData(response.data.data.product);  //백에서 product안에 상세이미지도 담겨서 넘어옴
-        setImages(response.data.data.images);
+        setImages(response.data.data.productImages);
       })
       .catch((error) => {
         console.error('Error fetching product details:', error);
