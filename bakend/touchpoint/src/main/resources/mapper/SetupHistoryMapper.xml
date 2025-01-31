@@ -126,5 +126,38 @@
             #{id}
         </foreach>
     </delete>
+ 	
+ 	<!--게시글 수정 -->
+    <update id="updateHistory">
+        UPDATE TB_SETUP_HISTORY
+        SET store_name = #{storeName},
+            store_address = #{storeAddress},
+            model_name = #{modelName},
+            history_content = #{historyContent}
+        WHERE history_no = #{historyNo}
+    </update>
 
+ 
+    <!-- 수정하기 시 새로운 이미지 추가 처리 -->
+    <insert id="updateInsertHistoryImage">
+    INSERT INTO TB_HISTORY_IMAGE (
+        image_no, 
+        history_no,
+        history_image_order,
+        history_image_name
+    ) VALUES (
+        SEQ_HISTORY_IMAGE.NEXTVAL,
+        #{historyNo},
+        #{historyImageOrder},
+        #{historyImageName}
+    )
+	</insert>
+
+    <!-- 수정하기 시 이미지 수정 처리 -->
+    <update id="updateUpdateHistoryImage">
+        UPDATE TB_HISTORY_IMAGE
+        SET history_image_name = #{historyImageName}
+        WHERE history_no = #{historyNo}
+          AND history_image_order = #{historyImageOrder}
+    </update>
 </mapper>

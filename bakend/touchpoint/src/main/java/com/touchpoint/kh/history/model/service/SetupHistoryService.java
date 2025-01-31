@@ -5,6 +5,7 @@ import com.touchpoint.kh.history.model.vo.HistoryImage;
 import com.touchpoint.kh.history.model.vo.SetupHistory;
 import com.touchpoint.kh.history.model.vo.SetupHistoryDto;
 import com.touchpoint.kh.history.model.vo.UpdateHistoryDto;
+import com.touchpoint.kh.history.model.vo.UpdateHistoryImageDto;
 
 import java.util.List;
 
@@ -19,6 +20,6 @@ public interface SetupHistoryService {
 	//게시글 상세보기
 	DetailHistoryDto detailHistoryById(int historyNo);
 	//게시글 수정
-	int updateSetupHistory(UpdateHistoryDto updateHistoryDto);
+	int updateSetupHistory(UpdateHistoryDto updateHistoryDto, UpdateHistoryImageDto updateHistoryImageDto);
 }
 
