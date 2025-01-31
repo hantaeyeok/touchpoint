@@ -47,4 +47,7 @@ public class Qna {
 
 	@Column(name = "PHONE_NO")
 	private int phoneNo;
+
+	@Column(name = "STATUS")
+	private int status;
 }

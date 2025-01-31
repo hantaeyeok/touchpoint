@@ -5,10 +5,14 @@ import { Routes, Route, Link, useNavigate  } from "react-router-dom";
 import QnaAnswerAdd from "@components/qna/QnaAnswerAdd";
 import QnaAnswer from "@components/qna/QnaAnswer";
 import axios from "axios";
+import Modal from "react-modal";
 
+Modal.setAppElement("#root");
 
 function QnaDetail() {
 
+    const [qnaModalIsOpen, setQnaModalIsOpen] = useState(false);
+    const { qnaNo } = useParams(); // URL에서 qnaNo 가져오기
     const [hasAnswer, setHasAnswer] = useState(false);
     const navigate = useNavigate();
     const [qnaDetail, setQnaDetail] = useState({
@@ -20,8 +24,6 @@ function QnaDetail() {
         phoneNo: '',
         files: []
     });
-    
-    const { qnaNo } = useParams(); // URL에서 qnaNo 가져오기
 
     const handleEdit = () => {
         navigate("/qnaEdit", {
@@ -37,8 +39,6 @@ function QnaDetail() {
         });
     };
 
-    console.log("QnA 번호:", qnaNo);
-    
     useEffect(()=> {
         const fetchQnas = async () => {
             try {
@@ -54,7 +54,22 @@ function QnaDetail() {
         fetchQnas();
     },[]);
 
+    function modalIsOpen() {
+        setQnaModalIsOpen(true);
+    }
 
+    const handleDelte = async () => {
+        try {
+            const response = await axios.post(`http://localhost:8989/qna/qnaDelete/${qnaNo}`, qnaDetail,{ headers :{"Content-Type": "application/json"}});
+            console.log("서버 응답:",response.data);
+            alert("글 삭제가 정상 처리되었습니다.");
+        } catch (error) {
+            console.error("데이터 저장 중 오류 발생:", error.message);
+            alert("글 저장 중 문제가 발생했습니다. 다시 시도해주세요.");
+        };
+        navigate("/qna");
+        setQnaModalIsOpen(false);
+    }
     
     return(
         <div className="formContainer">
@@ -83,7 +98,7 @@ function QnaDetail() {
                     <label>파일첨부</label>
                     {qnaDetail.files?.length > 0 ? (
                         qnaDetail.files.map((file, index) => (
-                            <a key={index} href={file.path} download={file.originName}>
+                            <a key={index} href={`http://localhost:8989/qna/download/${file.changeName}`} download={file.originName}>
                                 {file.originName}
                             </a>
                         ))
@@ -98,6 +113,15 @@ function QnaDetail() {
             <div className="qnaAdd_btn">
                 <button onClick={()=>{navigate(-1)}}>이전으로</button>
                 <button onClick={handleEdit}>수정하기</button>
+                <button onClick={modalIsOpen}>삭제하기</button>
+            </div>
+            <div>
+                <Modal className="deleteModal"
+                    isOpen={qnaModalIsOpen}
+                    onRequestClose={()=> setQnaModalIsOpen(false)}>
+                    <p>삭제를 그대로 진행 하시겠습니까?</p>
+                    <button onClick={handleDelte}>삭제하기</button>
+                </Modal>
             </div>
             {hasAnswer ? <QnaAnswer/> : <QnaAnswerAdd/> }
         </div>

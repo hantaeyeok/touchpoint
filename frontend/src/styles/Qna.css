@@ -1,3 +1,7 @@
+.qnaPage {
+    height: auto;
+}
+
 .qnaList {
     width: 100%;
     display: flex;
@@ -238,4 +242,27 @@ text-align: center;
 
 .qnaList th {
 background-color: #f5f5f5;
+}
+
+.qnaPagination {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.qnaPagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+.qnaPagination button.active {
+    font-weight: bold;
+    color: white;
+    background-color: #007bff;
+}
+
+.qnaPagination button:hover {
+    background-color: #ddd;
 }

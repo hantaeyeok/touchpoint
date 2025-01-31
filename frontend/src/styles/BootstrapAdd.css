@@ -1,0 +1,4 @@
+.carousel-item img {
+    max-height: 500px; /* 원하는 높이로 제한 */
+    object-fit: cover; /* 비율 유지 */
+}

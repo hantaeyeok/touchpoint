@@ -6,6 +6,8 @@ import com.touchpoint.kh.history.model.vo.HistoryImage;
 import com.touchpoint.kh.history.model.vo.SetupHistory;
 import com.touchpoint.kh.history.model.vo.SetupHistoryDto;
 import com.touchpoint.kh.history.model.vo.UpdateHistoryDto;
+import com.touchpoint.kh.history.model.vo.UpdateHistoryImageDto;
+import com.touchpoint.kh.history.model.vo.UpdatedImageDto;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -82,7 +84,6 @@ public class SetupHistoryServiceImpl implements SetupHistoryService {
                     .historyImageName(mainImagePath) // 저장된 파일명 설정
                     .historyImageOrder(order++) // 순서 설정
                     .build());
-            log.info("메인 이미지 저장 성공: {}", mainImagePath);
         }
 
         // 서브 이미지 처리
@@ -95,7 +96,6 @@ public class SetupHistoryServiceImpl implements SetupHistoryService {
                             .historyImageName(subImagePath) // 저장된 파일명 설정
                             .historyImageOrder(order++) // 순서 설정
                             .build());
-                    log.info("서브 이미지 저장 성공: {}", subImagePath);
                 }
             }
         }
@@ -160,36 +160,106 @@ public class SetupHistoryServiceImpl implements SetupHistoryService {
 
         return deletedHistories; // 삭제된 히스토리 수 반환
     }
-
+    //게시글 상세조회
 	@Override
 	public DetailHistoryDto detailHistoryById(int historyNo) {
-		log.info("Service에서 no를 받아오는가: {}", historyNo);
         // 기본 이력 정보 조회
         SetupHistory detailHistory = setupHistoryMapper.detailHistory(historyNo);
-        log.info("조회된 게시글 데이터: {}", detailHistory); // 조회된 데이터 로그
         if (detailHistory == null) {
             return null; // 해당 이력 정보가 없을 경우 null 반환
         }
         // 연관된 이미지 리스트 조회
         List<HistoryImage> detailImages = setupHistoryMapper.detailHistoryImage(historyNo);
-        log.info("조회된 이미지 데이ㅌ터: {}", detailImages); // 조회된 데이터 로그
         // 조회된 데이터를 DetailHistoryDto로 매핑하여 반환
         return DetailHistoryDto.builder()
-                .historyNo(detailHistory.getHistoryNo())
-                .storeName(detailHistory.getStoreName())
-                .storeAddress(detailHistory.getStoreAddress())
-                .modelName(detailHistory.getModelName())
-                .historyContent(detailHistory.getHistoryContent())
-                .historyDate(detailHistory.getHistoryDate())
-                .userId(detailHistory.getUserId())
-                .images(detailImages) 
+                .setupHistory(detailHistory) // SetupHistory 객체 전체 전달
+                .images(detailImages)      // 이미지 리스트 설정
                 .build();
     }
-
 	@Override
-	public int updateSetupHistory(UpdateHistoryDto updateHistoryDto) {
-		// TODO Auto-generated method stub
-		return 0;
+	@Transactional
+	public int updateSetupHistory(UpdateHistoryDto updateHistoryDto, UpdateHistoryImageDto updateHistoryImageDto) {
+	    try {
+	        // 📌 1. 게시글 기본 정보 업데이트
+	        int updateResult = setupHistoryMapper.updateHistory(updateHistoryDto);
+	        if (updateResult == 0) {
+	            throw new RuntimeException("🚨 게시글 정보 업데이트 실패");
+	        }
+
+	        // 📌 2. 이미지 수정 처리 (updatedImages)
+	        List<MultipartFile> updatedImages = updateHistoryImageDto.getUpdatedImages();
+	        List<UpdatedImageDto> updatedImageInfo = updateHistoryImageDto.getUpdatedImageInfo();
+
+	        if (updatedImages != null && !updatedImages.isEmpty()) {
+	            for (int i = 0; i < updatedImages.size(); i++) {
+	                try {
+	                    MultipartFile imageFile = updatedImages.get(i);
+	                    UpdatedImageDto imageInfo = updatedImageInfo.get(i);
+
+	                    // 파일 저장 (새 이미지 저장)
+	                    String savedPath = saveFile(imageFile);
+
+	                    // DB 업데이트 (기존 이미지의 같은 위치에 새로운 이미지 업데이트)
+	                    HistoryImage updatedImage = HistoryImage.builder()
+	                            .historyNo(updateHistoryDto.getHistoryNo())
+	                            .historyImageOrder(imageInfo.getImageOrder()) // 기존 이미지 순서 유지
+	                            .historyImageName(savedPath) // 새 파일 경로
+	                            .build();
+
+	                    log.info("업데이트된 이미지 - historyNo: {}, imageOrder: {}, imageName: {}",
+	                            updatedImage.getHistoryNo(), updatedImage.getHistoryImageOrder(), updatedImage.getHistoryImageName());
+
+	                    setupHistoryMapper.updateUpdateHistoryImage(updatedImage);
+	                } catch (IOException e) {
+	                    throw new RuntimeException("🚨 이미지 업데이트 실패", e);
+	                }
+	            }
+	        }
+
+	        // 📌 3. 추가된 이미지 처리 (addedImages)
+	        List<MultipartFile> addedImages = updateHistoryImageDto.getAddedImages();
+	        List<UpdatedImageDto> addedImageInfo = updateHistoryImageDto.getAddedImageInfo();
+
+	        if (addedImages != null && !addedImages.isEmpty()) {
+	            for (int i = 0; i < addedImages.size(); i++) {
+	                try {
+	                    MultipartFile imageFile = addedImages.get(i);
+	                    UpdatedImageDto imageInfo = addedImageInfo.get(i);
+
+	                    // 파일 저장 (새로운 파일 저장)
+	                    String savedPath = saveFile(imageFile);
+
+	                    // DB에 새 이미지 추가
+	                    HistoryImage newImage = HistoryImage.builder()
+	                            .historyNo(updateHistoryDto.getHistoryNo()) // 기존 게시글 번호
+	                            .historyImageOrder(imageInfo.getImageOrder()) // 추가된 이미지 순서
+	                            .historyImageName(savedPath) // 새 파일 경로
+	                            .build();
+
+	                    log.info("추가된 이미지 - historyNo: {}, imageOrder: {}, imageName: {}",
+	                            newImage.getHistoryNo(), newImage.getHistoryImageOrder(), newImage.getHistoryImageName());
+
+	                    setupHistoryMapper.updateInsertHistoryImage(newImage);
+	                } catch (IOException e) {
+	                    throw new RuntimeException("추가된 이미지 저장 실패", e);
+	                }
+	            }
+	        }
+
+	        log.info("모든 업데이트 완료! 정상적으로 return 1 실행");
+	        return 1; // 성공적으로 업데이트 완료
+
+	    } catch (Exception e) {
+	        throw new RuntimeException("🚨 게시글 수정 중 오류 발생", e);
+	    }
 	}
+
+
+
+
+
+
+
+
 }
 

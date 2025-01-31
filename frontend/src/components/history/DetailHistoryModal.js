@@ -11,7 +11,7 @@ const DetailHistoryModal = ({ historyNo, onCloseDetail }) => {
     useEffect(() => {
         if (historyNo) {
             axios
-                .get(`http://localhost:8989/history/${historyNo}`)
+                .get(`http://localhost:8989/history/detail/${historyNo}`)
                 .then((response) => {
                     const { data } = response.data;
                     setItem(data);
@@ -20,7 +20,7 @@ const DetailHistoryModal = ({ historyNo, onCloseDetail }) => {
                     }
                 })
                 .catch((error) => {
-                    console.error("Error fetching detail data:", error);
+                    console.error("상세보기데이터 불러오기실패:", error);
                 });
         }
     }, [historyNo]);
@@ -61,7 +61,7 @@ const DetailHistoryModal = ({ historyNo, onCloseDetail }) => {
                                 <img
                                     key={index}
                                     src={`http://localhost:8989${image.historyImageName}`}
-                                    alt={`Sub Preview ${index + 1}`}
+                                    alt={`Sub Preview ${index}`}
                                     onClick={() => setMainImage(image.historyImageName)}
                                     className={
                                         mainImage === image.historyImageName
@@ -74,13 +74,13 @@ const DetailHistoryModal = ({ historyNo, onCloseDetail }) => {
                     </div>
                     <div className="modal-right">
                         <div className="modal-header">
-                            <h2>매장명:{item.storeName}</h2>
-                            <p>매장주소:{item.storeAddress}</p>
-                            <p>등록일:{item.historyDate}</p>
+                            <h2>매장명:{item.setupHistory.storeName}</h2>
+                            <p>매장주소:{item.setupHistory.storeAddress}</p>
+                            <p>등록일:{item.setupHistory.historyDate}</p>
                         </div>
                         <div className="details">
-                            <p>모델명: {item.modelName}</p>
-                            <p>내용:{item.historyContent}</p>
+                            <p>모델명: {item.setupHistory.modelName}</p>
+                            <p>내용:{item.setupHistory.historyContent}</p>
                         </div>
                         <div className="modal-footer">
                             <button
@@ -89,7 +89,6 @@ const DetailHistoryModal = ({ historyNo, onCloseDetail }) => {
                             >
                                 수정
                             </button>
-                            <button className="delete-button">삭제</button>
                         </div>
                     </div>
                 </div>

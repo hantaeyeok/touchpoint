@@ -57,7 +57,7 @@ function QnaEdit() {
             });
             console.log("서버 응답:", response.data);
             alert("글이 성공적으로 저장되었습니다!");
-            navigate("/qna");
+            navigate(-1);
         } catch (error) {
         console.error("데이터 저장 중 오류 발생:", error.message);
         alert("글 저장 중 문제가 발생했습니다. 다시 시도해주세요.");
