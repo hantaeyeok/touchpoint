@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LoginValidationService {
 
-	//private final LoginAttemptRepository loginAttemptRepository;
 	private final GoogleRecaptchaService googleRecaptchaService;
 	private final LoginAttemptRepository loginAttemptRepository;
 	private final UserRepository userRepository;
@@ -29,7 +28,6 @@ public class LoginValidationService {
 	@Transactional
 	public ResponseEntity<SignInResponseDto> validateLogin(User user, SignInRequestDto dto) {
 	
-		System.out.println(user);
 		String userId = user.getUserId();
 		String password = dto.getPassword();
 		String encodedPassword = user.getPassword();
