@@ -23,7 +23,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.touchpoint.kh.user.common.handler.OAuth2SucessHandler;
-
+import java.util.Arrays;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -88,10 +88,19 @@ public class WebSecurityConfig {
 	protected CorsConfigurationSource corsConfigurationSource() {
 		
 		CorsConfiguration corsConfiguration = new CorsConfiguration();
-		corsConfiguration.addAllowedOrigin("*");
-		corsConfiguration.addAllowedMethod("*");
-		corsConfiguration.addAllowedHeader("*");
 		
+//		corsConfiguration.addAllowedOrigin("*");
+//		corsConfiguration.addAllowedMethod("*");
+//		corsConfiguration.addAllowedHeader("*");
+//		corsConfiguration.setAllowCredentials(true); // 쿠키 허용
+		
+		
+		corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://localhost:3000"));
+	    corsConfiguration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용
+	    corsConfiguration.addAllowedHeader("*"); // 모든 헤더 허용
+	    corsConfiguration.setAllowCredentials(true); // 쿠키 및 인증 정보 허용
+	    corsConfiguration.setExposedHeaders(Arrays.asList("Set-Cookie"));
+
 		UrlBasedCorsConfigurationSource soruse = new UrlBasedCorsConfigurationSource();
 		soruse.registerCorsConfiguration("/**", corsConfiguration);
 		

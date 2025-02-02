@@ -1,12 +1,10 @@
 import React from "react";
-import "@styles/Menubar.css";
 import { Link } from "react-router-dom";
 import { useAuth } from "@components/login/AuthProvider";
-import UseAdmin from "@components/login/UseAdmin";
+import "@styles/Menubar.css";
 
 const Menubar = () => {
-  const { isLoggedIn } = useAuth();
-  const { userId, role } = UseAdmin();
+  const { isAuthenticated, userId, role } = useAuth();
 
   return (
     <div className="menu-bar">
@@ -34,13 +32,15 @@ const Menubar = () => {
           </div>
         </div>
         <div className="dropdown">
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <>
               <Link className="dropdown-title" to="/logout">로그아웃</Link>
               <div className="dropdown-content">
-                {userId && <Link to="/delete-account">탈퇴하기</Link>}
+                {userId && (
+                  <Link to="/delete-account">탈퇴하기</Link>
+                )}
                 {role === "ROLE_ADMIN" && (
-                  <Link to="/adminPage">관리자페이지</Link>
+                  <Link to="/admin/adminPage">관리자페이지</Link>
                 )}
               </div>
             </>

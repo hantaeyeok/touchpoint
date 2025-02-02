@@ -3,9 +3,12 @@ import axios from "axios";
 import "@styles/Login.css";
 import naverIcon from "@pages/login/icon/navericon.png";
 import kakaoIcon from "@pages/login/icon/kakoicon.png";
+import { useNavigate } from "react-router-dom";
 
 import ButtonLogin from "@components/login/ButtonLogin";
 import { Link } from "react-router-dom";
+import { useAuth } from "@components/login/AuthProvider";
+
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +16,8 @@ const Login = () => {
     password: "",
     captchaToken: "",
   });
+  const navigate = useNavigate();
+  const { refreshAuthState } = useAuth(); // 상태 갱신 함수
 
   const [captchaRequired, setCaptchaRequired] = useState(false); // 캡차 활성화 여부
   const [failedLoginCnt, setFailedLoginCnt] = useState(0); // 로그인 실패 횟수
@@ -72,19 +77,23 @@ const Login = () => {
         handleRecaptchaVerify(recaptchaResponse);
         token = recaptchaResponse;
       }
-
+      
       const response = await axios.post("http://localhost:8989/login/sign-in", {
         userIdOrPhone: formData.userIdOrPhone,
         password: formData.password,
         captchaToken: token,
-      });
+      
+      }
+    
+    
+    );
 
       if (response.data.code === "SU") {
         const authToken = response.data.token;
         console.log("authToken", authToken);
         alert("로그인 성공");
-        window.location.href = `/auth/${authToken}`;
-
+        refreshAuthState();
+        navigate("/");
       } else {
         handleServerError(response.data);
       }

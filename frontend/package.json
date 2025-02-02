@@ -18,7 +18,9 @@
     "start": "react-app-rewired  start",
     "build": "react-app-rewired  build",
     "test": "react-app-rewired  test",
-    "eject": "react-app-rewired  eject"
+    "eject": "react-app-rewired  eject",
+  "start:mac": "HTTPS=true SSL_CRT_FILE=cert/localhost.pem SSL_KEY_FILE=cert/localhost-key.pem npm run start",
+  "start:windows": "set HTTPS=true&&set SSL_CRT_FILE=cert/localhost.pem&&set SSL_KEY_FILE=cert/localhost-key.pem&&npm run start"
   },
   "eslintConfig": {
     "extends": [
@@ -47,4 +49,5 @@
     "react-app-rewired": "^2.2.1",
     "webpack": "^4.42.0"
   }
+  
 }
