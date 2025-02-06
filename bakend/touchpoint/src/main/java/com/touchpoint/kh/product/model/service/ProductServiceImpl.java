@@ -49,13 +49,13 @@ public class ProductServiceImpl implements ProductService {
     	
 	    Product product = new ObjectMapper().readValue(productJson, Product.class);
 	    
-	    product.setCreatedDate(LocalDateTime.now());
+	    //product.setCreatedDate(LocalDateTime.now());
 	    
 	    log.info("반환받은 upfile :{}" , upfile);
 	    
 	    product.setThumbnailImage(saveFile(upfile, request));
 	    
-	    List<ProductImage> productImages = saveImages(images, null, request);
+	    List<ProductImage> productImages = saveImages(images, request);
 	    
 	    product = productRepository.save(product);  //product 저장
 	    
@@ -91,7 +91,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 	
 	//상세 이미지 저장하기 위한 메서드
-		private List<ProductImage> saveImages(List<MultipartFile> images, List<Long> imageIds, HttpServletRequest request) throws IOException {
+		private List<ProductImage> saveImages(List<MultipartFile> images, HttpServletRequest request) throws IOException {
 		    List<ProductImage> productImages = new ArrayList<>();
 
 		    log.info("images.size():{} ", images.size());
@@ -99,10 +99,6 @@ public class ProductServiceImpl implements ProductService {
 		    for (int i = 0; i < images.size(); i++) {
 		        MultipartFile image = images.get(i); // 현재 이미지
 		        
-		        log.info("앞단에서 넘어온 image:{} ", image);
-		        
-		        Long imageId = (imageIds != null && i < imageIds.size()) ? imageIds.get(i) : null; // 기존 이미지 ID 가져오기
-
 		        // 새로운 이미지는 저장
 		        if (image != null && !image.isEmpty()) {
 		            String imagePath = saveFile(image, request); // 새 이미지 저장
@@ -114,6 +110,7 @@ public class ProductServiceImpl implements ProductService {
 		    return productImages;
 		}
     
+	//상품 삭제
 	@Override
 	@Transactional
 	public void deleteProductWithImages(Long productId, HttpServletRequest request) {
@@ -155,15 +152,13 @@ public class ProductServiceImpl implements ProductService {
 	    productRepository.delete(product);  // Product 삭제
 	}
 	
-	//파일삭제
+	//상세이미지 파일 삭제
 	@Override
 	public void deletefiles(List<Long> imageIds, HttpServletRequest request) {
 	    if (imageIds == null || imageIds.isEmpty()) {
 	        log.info("삭제할 이미지가 없습니다.");
 	        return;
 	    }
-	    String savePath = request.getServletContext().getRealPath("/resources/uploadFiles/");
-
 	    for (Long imageId : imageIds) {
 	        try {
 	            //DB에서 파일 경로 조회
@@ -181,30 +176,44 @@ public class ProductServiceImpl implements ProductService {
 	                    }
 	                } else {
 	                    log.warn("파일이 존재하지 않음: {}", absolutePath);
-
 	                }
-	                //filePath가 null이면 썸네일인지 검사 
-	            } else {  
-                    File dir = new File(savePath); 
-                    if (dir.exists() && dir.isDirectory()) {
-                        File[] files = dir.listFiles((dir1, name) -> name.contains(String.valueOf(imageId)));
-                        if (files != null && files.length > 0) {
-                            //log.info("이미지 ID {}와 일치하는 파일: {}", imageId, files[0].getAbsolutePath());
-                            if (files[0].delete()) {
-    	                        log.info("파일 삭제 성공: {}", files[0].getAbsolutePath());
-    	                    } else {
-    	                        log.warn("파일 삭제 실패: {}", files[0].getAbsolutePath());
-    	                    }
-                        }
-                    }
-	            }
+	            } 
 	        } catch (Exception e) {
 	            log.error("이미지 삭제 중 오류 발생. ID = {}, 에러 = {}", imageId, e.getMessage(), e);
 	        }
 	    }
 	}
+	//썸네일이미지 파일 삭제
+	private void deleteMainFile(List<Long> imageIds, Long id, HttpServletRequest request) throws IOException {
+		
+        String savePath = request.getServletContext().getRealPath("/resources/uploadFiles/");
+        
+        File dir = new File(savePath); // 저장된 파일이 위치한 디렉터리
 
+        if (dir.exists() && dir.isDirectory()) {
+            // deleteImg 배열이 있을 경우, 첫 번째 값만 사용하여 문자열로 변환
+            String deleteImgValue = String.valueOf(id);
 
+            // deleteImg 값을 포함하는 파일 찾기
+            File[] files = dir.listFiles((dir1, name) -> name.contains(deleteImgValue));
+
+            if (files != null && files.length > 0) {
+                for (File file : files) {
+                    if (file.delete()) {
+                        log.info("썸네일 파일 삭제 성공: {}", file.getAbsolutePath());
+                    } else {
+                        log.warn("썸네일 파일 삭제 실패: {}", file.getAbsolutePath());
+                    }
+                }
+            } else {
+                log.info("삭제할 파일을 찾을 수 없습니다: deleteImg = {}", deleteImgValue);
+            }
+        } else {
+            log.warn("디렉터리가 존재하지 않거나 유효하지 않습니다: {}", savePath);
+        }
+}
+
+	//DB에서 이미지 삭제
 	@Override
 	@Transactional
 	public void removeAndUpdateImages(Long productId, List<ProductImage> productImages, List<Long> deleteImg) {
@@ -236,7 +245,6 @@ public class ProductServiceImpl implements ProductService {
 	        }
 	    }
 	}
-    
 	
 	// 상품 수정 시 상세이미지 수정, 삭제, 추가 메서드
 		private List<ProductImage> updateImages(List<MultipartFile> images, List<Long> imageIds, List<Long> deleteImg, List<Long> updateImg , HttpServletRequest request) throws IOException {
@@ -253,7 +261,7 @@ public class ProductServiceImpl implements ProductService {
 		            deletefiles(deleteImg, request);  //파일 삭제
 		            continue;
 		        }
-
+		        
 		        // 2. 수정 대상 이미지
 		        if (updateImg != null && updateImg.contains(imageId)) {
 		            log.info("수정 대상 이미지: {}", imageId);
@@ -278,6 +286,7 @@ public class ProductServiceImpl implements ProductService {
 		    return productImages;
 		}
 		
+	//상품 수정
 	@Override
 	public ProductResultDto updateProduct(Long productId, String productJson, MultipartFile upfile, String deleteImgJson, String updateImgJson, List<MultipartFile> images, HttpServletRequest request)  throws IOException  {
 
@@ -289,6 +298,7 @@ public class ProductServiceImpl implements ProductService {
 		if (upfile != null && !upfile.isEmpty()) {
             try {
 				updateProduct.setThumbnailImage(saveFile(upfile, request));
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -309,6 +319,14 @@ public class ProductServiceImpl implements ProductService {
 	    
 	    List<ProductImage> productImages = updateImages(images, imageIds, deleteImg, updateImg , request);
 		log.info("이미지 업데이트한 productImages:{} ", productImages); //삭제된거 제외하고 잘 나옴
+		
+		//deleteImg에 담긴 아이디가 썸네일 아이디일때
+		for (Long id : deleteImg) {
+		    // imageIds에 포함되지 않은 아이디만 처리
+		    if (!imageIds.contains(id)) {
+		        deleteMainFile(imageIds, id, request); // 썸네일 이미지 파일 삭제
+		    }
+		}
 		
 		removeAndUpdateImages(productId, productImages, deleteImg);  //DB에서 이미지 삭제, 새 이미지 저장하거나 업데이트
 		

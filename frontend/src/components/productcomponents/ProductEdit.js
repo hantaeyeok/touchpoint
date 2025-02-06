@@ -49,7 +49,7 @@ const ProductEdit = () => {
       //setDeleteImg(deleteImg);
 
       // 백에 넘길 상품 정보에서 이미지, 날짜 데이터 제거 (productInfo에서는 글 정보만 넘길 것)
-      const productInfo = { ...productData };
+      const productInfo = { ...productData };  
       delete productInfo.thumbnailImage; 
       delete productInfo.productImages; 
       delete productInfo.createdDate; 
@@ -172,6 +172,7 @@ if (mainImg instanceof File) {
           console.log("response:", response);
       } catch (error) {
           console.error('Error updating product:', error);
+          alert('상품 수정 실패');
       }
     };
 

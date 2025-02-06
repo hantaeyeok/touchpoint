@@ -12,9 +12,8 @@ const ProductRegister = () => {
         formData.append('product', JSON.stringify({
             ...productData,
             thumbnailImage: thumbnailImagePath, // 경로로 처리
-          }));
-          
-          formData.append('upfile', mainImg); // 이미지 파일 자체를 전송
+        }));
+        formData.append('upfile', mainImg); // 이미지 파일 자체를 전송
       
         imgList.forEach((imageFile) => {
             if (imageFile.originFile) {
@@ -23,22 +22,22 @@ const ProductRegister = () => {
         });
 
         axios
-        .post('http://localhost:8989/product/admin/save', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        })
-        .then(response => {
-            console.log('Response:', response.data);
-            alert('상품이 등록되었습니다!');
-        })
-        .catch(error => {
-            if (error.response) {
-                console.error('Server Error:', error.response.data);
-            } else {
-                console.error('Error:', error.message);
-            }
-        });
+            .post('http://localhost:8989/product/admin/save', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            })
+            .then(response => {
+                console.log('Response:', response.data);
+                alert('상품이 등록되었습니다!');
+            })
+            .catch(error => {
+                if (error.response) {
+                    console.error('Server Error:', error.response.data);
+                } else {
+                    console.error('Error:', error.message);
+                }
+            });
     };
 
     return (

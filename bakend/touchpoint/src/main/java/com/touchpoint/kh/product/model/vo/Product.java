@@ -3,6 +3,8 @@ package com.touchpoint.kh.product.model.vo;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -41,6 +43,7 @@ public class Product {
 
     private String thumbnailImage;
 
+    @CreationTimestamp
     private LocalDateTime createdDate;
     
 	public void updateFromProduct(Product product) {

@@ -19,7 +19,7 @@ const ProductForm = ({ images, initialData, onSubmit , thumbnailId }) => {
     const [currentThumbnailId, setCurrentThumbnailId] = useState(null); // 현재 썸네일 ID
  
     
-    
+
     const convertUrlToFile = async (url, fileName) => {
         const response = await fetch(url);
         const blob = await response.blob();
@@ -35,11 +35,11 @@ const ProductForm = ({ images, initialData, onSubmit , thumbnailId }) => {
             }));
       
             if (initialData.thumbnailImage) {    //썸네일 이미지 있으면 실행
-                convertUrlToFile(`http://localhost:8989${initialData.thumbnailImage}`, `${initialData.createdDate.split(".")[1]}`)  //thumbnailImage.jpg이름의 파일객체로 만듦
+                convertUrlToFile(`http://localhost:8989${initialData.thumbnailImage}`, `thumbnailImage.jpg`)  //thumbnailImage.jpg이름의 파일객체로 만듦
                 .then(file => {
                     setMainImg(file);  // file을 mainImg 상태에 저장
-                    setCurrentThumbnailId(initialData.createdDate.split(".")[1]);
-                    console.log('initialData.createdDate.split(".")[1]:', initialData.createdDate.split(".")[1]);
+                    setCurrentThumbnailId(initialData.thumbnailImage);
+                    console.log('initialData.thumbnailImage:', initialData.thumbnailImage);
                 })
                 .catch((error) => {
                     console.error('Error converting URL to file:', error);
@@ -86,7 +86,7 @@ const ProductForm = ({ images, initialData, onSubmit , thumbnailId }) => {
         setMainImg(file); // 파일 객체로 저장
         setProductData((prevState) => ({
             ...prevState,
-            //thumbnailImage: file, // 파일 객체로 저장
+            thumbnailImage: file, // 파일 객체로 저장
         }));
     
         const reader = new FileReader();
@@ -242,7 +242,7 @@ const handleSubmit = (e) => {
                                 
                                 <div className="ImgInputWrap">
                                 <label>
-                                        {productData.thumbnailImage === '' ? '+' : (
+                                        {productData.thumbnailImage === undefined ? '+' : (
                                             <img
                                             style={{
                                                 width: '100%',
