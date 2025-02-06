@@ -202,8 +202,8 @@ public class SetupHistoryServiceImpl implements SetupHistoryService {
 	                    // DB 업데이트 (기존 이미지의 같은 위치에 새로운 이미지 업데이트)
 	                    HistoryImage updatedImage = HistoryImage.builder()
 	                            .historyNo(updateHistoryDto.getHistoryNo())
-	                            .historyImageOrder(imageInfo.getImageOrder()) // 기존 이미지 순서 유지
-	                            .historyImageName(savedPath) // 새 파일 경로
+	                            .historyImageOrder(imageInfo.getImageOrder()) // 기존 이미지 순서 유지 
+	                            .historyImageName(savedPath) // 새 파일 경로   
 	                            .build();
 
 	                    log.info("업데이트된 이미지 - historyNo: {}, imageOrder: {}, imageName: {}",

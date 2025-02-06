@@ -11,7 +11,7 @@ const HistoryStore = ({ deleteMode, CheckboxChange }) => {
     useEffect(() => {
         axios
             .get("http://localhost:8989/history")
-            .then((response) => setInstallationData(response.data || []))
+            .then((response) => setInstallationData(response.data || [])) //axios 요청을하면 response 속성에 data라는 값으로넘어옴
             .catch((error) => console.error("Error fetching data:", error));
     }, []);
 

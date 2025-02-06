@@ -145,7 +145,7 @@ const UpdateHistoryModal = ({ data, closeUpdateModal }) => {
          //  추가된 이미지 정보 (파일명 + 오더 매칭)
         const addedImageInfo = addedImages.map((img) => ({
             imageOrder: img.imageOrder,  // 추가된 이미지 순서
-            fileName: img.file.name // 파일 이름 (파일 저장 후 매칭)
+            fileName: img.file.name // 파일 이름 (파일 저장 후 매칭) 
         }));
 
         // 추가된 이미지 파일 추가

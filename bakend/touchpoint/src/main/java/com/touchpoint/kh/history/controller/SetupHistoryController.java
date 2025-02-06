@@ -144,7 +144,7 @@ public class SetupHistoryController {
         }
     }
     
-    @PutMapping("/update")
+    @PutMapping("/update") 
     public ResponseEntity<ResponseData> updateSetupHistory(
             @RequestPart("data") UpdateHistoryDto updateHistoryDto,  // 게시글 데이터 DTO
             @RequestPart(value = "updatedImages", required = false) List<MultipartFile> updatedImages, // 수정된 파일

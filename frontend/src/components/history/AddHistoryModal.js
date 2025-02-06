@@ -93,7 +93,7 @@ const AddHistoryModal = ({ isOpen, onClose }) => {
             if (response.data.data === true) {
                 console.log(response);
                 onClose();
-                window.location.reload();
+                window.location.reload(); //새로고침
             } else {
                 alert("상품 등록 실패!");
             }
