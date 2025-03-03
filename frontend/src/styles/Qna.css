@@ -163,7 +163,7 @@ display: inline-block;
 }
 
 .modalBox {
-    width: 100vh;
+    width: 100vw;
     height: 100vh;
     display: flex;
     justify-content: center; /* 가로 중앙 */
@@ -171,8 +171,8 @@ display: inline-block;
 }
 
 .editModal {
-    width: 800px;
-    height: 500px;
+    width: 750px;
+    height: 570px;
     margin: auto;
     margin-top: 50px;
     background-color: #b6abab;
@@ -182,16 +182,67 @@ display: inline-block;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.button-faqGroup {
+    gap: 10px; 
+    display: flex;
+    margin-left: 550px;
+}
+
+.save-btn, .close-btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.save-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+.save-btn:hover {
+    background-color: #0056b3;
+}
+
+.close-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.close-btn:hover {
+    background-color: #a71d2a;
+}
+
 .deleteModal {
-    width: 250px;
-    height: 70px;
+    width: 400px;
+    height: 100px;
     margin: auto;
-    margin-top: auto;
+    margin-top: 500px;
     background-color: #b6abab;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+}
+
+.deleteBtn {
+    font-weight: bold;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    background-color: #dc3545;
+    color: white;
+    width: 50px;
+    height: 30px;
+    margin-left: 300px;
+}
+
+.deleteBtn:hover {
+    background-color: #a71d2a;
 }
 
 .qnaSearch-container {

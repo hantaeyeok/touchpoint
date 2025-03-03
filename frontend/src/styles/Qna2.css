@@ -25,7 +25,7 @@
 }
 
 .formContainer label {
-    width: 100px;
+    width: 120px;
     margin-right: 15px;
     background-color: #ff66a3;
     color: white;
@@ -69,6 +69,19 @@
     height: 0px;
 }
 
+.fileNameQna {
+    gap: 15px;
+    text-overflow: ellipsis;
+    max-width: 150px;
+    overflow: hidden;
+    text-decoration: none;
+}
+
+.fileNameQna:hover {
+    text-decoration: underline;
+    font-weight: bold;
+}
+
 .fileImg {
     width: 30px;
     height: 30px;
@@ -76,8 +89,10 @@
 
 .qnaAdd_btn {
     display: flex;
-    margin-left: 80%;
-    gap: 10px;
+    justify-content: flex-end; /* 버튼을 오른쪽으로 정렬 */
+    gap: 10px; /* 버튼 간 간격 */
+    margin-top: 20px;
+    padding-right: 20px; /* 오른쪽 여백 추가 */
 }
 
 .qnaAdd_btn button {
@@ -86,4 +101,29 @@
     height: 40px;
     background-color: #ff66a3;
     cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.qnaAdd_btn button:hover {
+    background-color: #ff3385;
+}
+
+.deleteBtn {
+    font-weight: bold;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    background-color: #dc3545;
+    color: white;
+    width: 50px;
+    height: 30px;
+    margin-left: 300px;
+}
+
+.deleteBtn:hover {
+    background-color: #a71d2a;
 }

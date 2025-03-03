@@ -11,7 +11,7 @@ function QnaList() {
 
     const fetchQnas = async (page) => {
         try {
-            const response = await axios.get("http://localhost:8989/qna/qnaList", {params: { page, size: 10 }});
+            const response = await axios.get("http://localhost:8989/qna/qnaList", {params: { page, size: 3 }});
             
             const data = response.data.data;
             setQnaList(data.qnaList);

@@ -69,7 +69,6 @@ function QnaAnswerAdd() {
                     value={originName}
                     readOnly 
                     ype="text" 
-                    id="fileName" 
                     className="fileName" />
                 <label className="fileLabel">
                     <img src={fileImg} className="fileImg"/>

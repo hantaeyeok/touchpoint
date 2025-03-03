@@ -98,8 +98,8 @@ function QnaDetail() {
                     <label>파일첨부</label>
                     {qnaDetail.files?.length > 0 ? (
                         qnaDetail.files.map((file, index) => (
-                            <a key={index} href={`http://localhost:8989/qna/download/${file.changeName}`} download={file.originName}>
-                                {file.originName}
+                            <a className="fileNameQna" key={index} href={`http://localhost:8989/qna/download/${file.changeName}`} download={file.originName}>
+                                {file.originName}&nbsp;
                             </a>
                         ))
                     ) : (
@@ -120,7 +120,7 @@ function QnaDetail() {
                     isOpen={qnaModalIsOpen}
                     onRequestClose={()=> setQnaModalIsOpen(false)}>
                     <p>삭제를 그대로 진행 하시겠습니까?</p>
-                    <button onClick={handleDelte}>삭제하기</button>
+                    <button className="deleteBtn" onClick={handleDelte}>삭제</button>
                 </Modal>
             </div>
             {hasAnswer ? <QnaAnswer/> : <QnaAnswerAdd/> }

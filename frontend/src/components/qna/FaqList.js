@@ -128,14 +128,16 @@ function FaqList() {
                                     placeholder="내용을 입력하세요">
                             </textarea>
                         </div>
-                        <button onClick={editSubmit}>저장</button>
-                        <button onClick={() => setModalIsOpen(false)}>닫기</button>
+                        <div className="button-faqGroup">
+                            <button className="save-btn" onClick={editSubmit}>저장</button>
+                            <button className="close-btn" onClick={() => setModalIsOpen(false)}>닫기</button>
+                        </div>
                 </Modal>
                 <Modal className="deleteModal"
                     isOpen={deleteModalIsOpen}
                     onRequestClose={() => setDeleteModalIsOpen(false)}>
                     <p>삭제를 그대로 진행 하시겠습니까?</p>
-                    <button onClick={deleteSubmit}>삭제</button>
+                    <button className="deleteBtn" onClick={deleteSubmit}>삭제</button>
                 </Modal>
             </div>
         </div>
