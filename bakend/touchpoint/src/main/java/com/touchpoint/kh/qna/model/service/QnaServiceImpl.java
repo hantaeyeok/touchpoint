@@ -103,7 +103,7 @@ public class QnaServiceImpl implements QnaService {
     }
 
 
-//	@Transactional(rollbackOn = Exception.class) 안되는데 ㅡㅡㅗ
+//	@Transactional(rollbackOn = Exception.class) 
 //	@Override
 //	public int createQna(QnaDto qnaDto, List<FileDto> fileDtos) {
 //	    // 1. 글 저장

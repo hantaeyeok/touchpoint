@@ -34,7 +34,6 @@ public interface QnaService {
 
 	public Map<String, Object> qnaFindAllWithPaging(int page, int size);
 
-	//public int createQna(QnaDto qnaDto, List<FileDto> fileDtos);
 
 
 }
