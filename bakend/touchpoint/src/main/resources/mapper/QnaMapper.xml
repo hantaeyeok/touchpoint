@@ -69,7 +69,7 @@
          WHERE
          		A.QNA_NO = #{qnaNo}
    </select>
-   
+
    <insert id="insQna" parameterType="com.touchpoint.kh.qna.model.vo.QnaDto">
    		INSERT
 		    INTO QNA (

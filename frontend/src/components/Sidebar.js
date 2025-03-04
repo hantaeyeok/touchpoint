@@ -28,8 +28,8 @@ const Sidebar = () => {
             });
         } else {
             alert("카카오 SDK 로드 중입니다. 잠시 후 다시 시도해주세요.");
-            }
-        };
+        }
+    };
 
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
